@@ -1,0 +1,116 @@
+@startuml
+Package "Model" {
+    class MapController {
+        addBuilding(position)
+    }
+    class MapGenerator {
+        SIZE
+        generate()
+    }
+    class NonStackableObject {
+        constructionGameTime
+        constructionStartedAt
+        isUnderConstruction
+        calculateSatisfaction()
+    }
+    class StackableObject {
+        constructionGameTime
+        constructionStartedAt
+        isUnderConstruction
+        calculateSatisfaction()
+    }
+    class LeisureBuilding {
+        calculateSatisfaction()
+    }
+    class AccommodationBuilding {
+        calculateSatisfaction()
+    }
+    class TeachingBuilding {
+        lectureHallCount
+        labCount
+
+        calculateSatisfaction()
+    }
+    class Cafeteria {
+        calculateSatisfaction()
+    }
+    abstract class MapObject {
+        name
+        sprite
+        shape
+        capacity
+        calculateSatisfaction()
+    }
+    class EventManager {
+        eventChancePerSec
+        triggerEvent(event)
+    }
+    class Event {
+        title
+        description
+        rarity
+        iconPath
+        modifiers
+    }
+    class ScoreCalculator {
+        activeModifiers
+        currentScore
+        currentStudents
+    }
+    class Timer {
+        timeSeconds
+        tick()
+    }
+    class GameModel {
+        gameState
+    }
+}
+Package "View" {
+    class Main {
+        create()
+        render()
+    }
+    class AudioPlayer {
+        tracks
+        selectTrack()
+    }
+    class UILogic {
+        generateEndScreen()
+    }
+}
+Package "Controller" {
+    class PlayerInputHandler {
+        PAUSE_KEY
+        isMouseDown
+        isPausePressed
+        mousePos
+        handleInput()
+    }
+}
+
+NonStackableObject ..|> MapObject
+StackableObject ..|> MapObject
+LeisureBuilding --|> NonStackableObject
+AccommodationBuilding --|> NonStackableObject
+TeachingBuilding --|> NonStackableObject
+Cafeteria --|> NonStackableObject
+
+MapController -- MapGenerator
+MapController -- MapObject
+
+Main -- GameModel
+Main -- AudioPlayer
+
+PlayerInputHandler -- GameModel
+PlayerInputHandler -- Main
+
+UILogic -- Main
+
+GameModel -- Timer
+GameModel -- ScoreCalculator
+GameModel -- EventManager
+GameModel -- MapController
+
+EventManager -- Event
+
+@enduml

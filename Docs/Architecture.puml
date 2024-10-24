@@ -7,13 +7,13 @@ Package "Model" {
         SIZE
         generate()
     }
-    class NonStackableObject {
+    class Building {
         constructionGameTime
         constructionStartedAt
         isUnderConstruction
         calculateSatisfaction()
     }
-    class StackableObject {
+    class DecorationObject {
         constructionGameTime
         constructionStartedAt
         isUnderConstruction
@@ -23,11 +23,14 @@ Package "Model" {
         calculateSatisfaction()
     }
     class AccommodationBuilding {
+        rentPrice
+
         calculateSatisfaction()
     }
     class TeachingBuilding {
         lectureHallCount
         labCount
+        classroomCount
 
         calculateSatisfaction()
     }
@@ -39,6 +42,7 @@ Package "Model" {
         sprite
         shape
         capacity
+        isStackable
         calculateSatisfaction()
     }
     class EventManager {
@@ -88,12 +92,12 @@ Package "Controller" {
     }
 }
 
-NonStackableObject ..|> MapObject
-StackableObject ..|> MapObject
-LeisureBuilding --|> NonStackableObject
-AccommodationBuilding --|> NonStackableObject
-TeachingBuilding --|> NonStackableObject
-Cafeteria --|> NonStackableObject
+Building ..|> MapObject
+DecorationObject ..|> MapObject
+LeisureBuilding --|> Building
+AccommodationBuilding --|> Building
+TeachingBuilding --|> Building
+Cafeteria --|> Building
 
 MapController -- MapGenerator
 MapController -- MapObject

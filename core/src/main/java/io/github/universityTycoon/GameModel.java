@@ -16,12 +16,20 @@ public class GameModel {
     Timer timer;
     EventManager eventManager;
     GameEventListener eventListener;
+    PlayerInputHandler playerInputHandler;
+    ScoreCalculator scoreCalculator;
+    AudioSelector audioSelector;
+    MapController mapController;
 
-    public GameModel() {
+    public GameModel(PlayerInputHandler inputHandler) {
         timer = new Timer();
 
         eventListener = new GameEventListener(this::handleEvent); // If you're confused, look into "Java listener pattern" (I am also confused)
         eventManager = new EventManager(eventListener);
+        playerInputHandler = inputHandler;
+        scoreCalculator = new ScoreCalculator();
+        audioSelector = new AudioSelector();
+        mapController = new MapController();
     }
 
     public GameState getGameState() {

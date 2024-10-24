@@ -9,14 +9,14 @@ public class Events {
     private float probability;
     public int startTime;
 
-    public Events(String description, int effectOnFunds, int effectOnSatisfaction, float incomeMultiplier, int duration, float probability){
+    public Events(String description, int effectOnFunds, int effectOnSatisfaction, float incomeMultiplier, int duration,
+            float probability) {
         this.description = description;
         this.effectOnFunds = effectOnFunds;
         this.effectOnSatisfaction = effectOnSatisfaction;
         this.incomeMultiplier = incomeMultiplier;
         this.duration = duration;
         this.probability = probability;
-        this.startTime = TimeManager.getCurrentTime();
     }
 
     public int getEffectOnFunds() {
@@ -43,4 +43,7 @@ public class Events {
         return description;
     }
 
+    public void setStartTime(int currentTime) { // allows us to compare the duration of the event to check its end
+        this.startTime = currentTime;
+    }
 }

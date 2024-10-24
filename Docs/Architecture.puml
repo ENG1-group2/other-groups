@@ -50,9 +50,9 @@ Package "Model" {
     }
     class EventManager {
         eventChancePerSec
-        triggerEvent(event)
+        processEvents()
     }
-    class Event {
+    class GameEvent {
         title
         description
         rarity
@@ -120,6 +120,6 @@ GameModel -- EventManager
 GameModel -- MapController
 GameModel -- AudioSelector
 
-EventManager -- Event
+EventManager -- GameEvent
 
 @enduml

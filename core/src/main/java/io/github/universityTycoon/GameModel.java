@@ -2,6 +2,8 @@ package io.github.universityTycoon;
 
 import com.badlogic.gdx.utils.Timer;
 
+import java.time.LocalDateTime;
+
 public class GameModel {
     public enum GameState {
         inProgress,
@@ -32,5 +34,10 @@ public class GameModel {
 
     public void handleEvent(GameEvent event) {
         // Do lots of things probably
+    }
+
+    // Converts the value in the timer to the relative game time (for example, after 2 minutes of real world time, the game year might be 2026)
+    public LocalDateTime getGameTime() {
+        return LocalDateTime.of(2024, 10, 24, 18, 29);
     }
 }

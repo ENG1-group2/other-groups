@@ -14,9 +14,6 @@ Package "Model" {
         calculateSatisfaction()
     }
     class DecorationObject {
-        constructionGameTime
-        constructionStartedAt
-        isUnderConstruction
         calculateSatisfaction()
     }
     class LeisureBuilding {
@@ -50,9 +47,9 @@ Package "Model" {
     }
     class EventManager {
         eventChancePerSec
-        triggerEvent(event)
+        processEvents()
     }
-    class Event {
+    class GameEvent {
         title
         description
         rarity
@@ -71,16 +68,15 @@ Package "Model" {
     class GameModel {
         gameState
     }
+    class AudioSelector {
+        tracks
+        selectTrack()
+    }
 }
 Package "View" {
     class Main {
         create()
         render()
-    }
-    class AudioPlayer {
-        tracks
-        soundEffects
-        selectTrack()
     }
     class UILogic {
         generatePauseScreen()
@@ -109,7 +105,6 @@ MapController -- MapGenerator
 MapController -- MapObject
 
 Main -- GameModel
-Main -- AudioPlayer
 
 PlayerInputHandler -- GameModel
 PlayerInputHandler -- Main
@@ -120,7 +115,8 @@ GameModel -- Timer
 GameModel -- ScoreCalculator
 GameModel -- EventManager
 GameModel -- MapController
+GameModel -- AudioSelector
 
-EventManager -- Event
+EventManager -- GameEvent
 
 @enduml

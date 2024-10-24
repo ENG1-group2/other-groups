@@ -64,15 +64,15 @@ Package "Model" {
     class GameModel {
         gameState
     }
+    class AudioSelector {
+        tracks
+        selectTrack()
+    }
 }
 Package "View" {
     class Main {
         create()
         render()
-    }
-    class AudioPlayer {
-        tracks
-        selectTrack()
     }
     class UILogic {
         generateEndScreen()
@@ -99,7 +99,8 @@ MapController -- MapGenerator
 MapController -- MapObject
 
 Main -- GameModel
-Main -- AudioPlayer
+
+GameModel -- AudioSelector
 
 PlayerInputHandler -- GameModel
 PlayerInputHandler -- Main

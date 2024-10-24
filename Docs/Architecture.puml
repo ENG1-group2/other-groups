@@ -4,7 +4,7 @@ Package "Model" {
         addBuilding(position)
     }
     class MapGenerator {
-        SIZE
+        size
         generate()
     }
     class Building {
@@ -20,11 +20,12 @@ Package "Model" {
         calculateSatisfaction()
     }
     class LeisureBuilding {
+
         calculateSatisfaction()
     }
     class AccommodationBuilding {
         rentPrice
-
+        commonRooms
         calculateSatisfaction()
     }
     class TeachingBuilding {
@@ -35,6 +36,8 @@ Package "Model" {
         calculateSatisfaction()
     }
     class Cafeteria {
+        foodQuality
+        hygieneRating
         calculateSatisfaction()
     }
     abstract class MapObject {
@@ -76,9 +79,12 @@ Package "View" {
     }
     class AudioPlayer {
         tracks
+        soundEffects
         selectTrack()
     }
     class UILogic {
+        generatePauseScreen()
+        generateMainScreen()
         generateEndScreen()
     }
 }

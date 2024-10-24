@@ -71,15 +71,15 @@ Package "Model" {
     class GameModel {
         gameState
     }
+    class AudioSelector {
+        tracks
+        selectTrack()
+    }
 }
 Package "View" {
     class Main {
         create()
         render()
-    }
-    class AudioPlayer {
-        tracks
-        selectTrack()
     }
     class UILogic {
         generatePauseScreen()
@@ -108,7 +108,6 @@ MapController -- MapGenerator
 MapController -- MapObject
 
 Main -- GameModel
-Main -- AudioPlayer
 
 PlayerInputHandler -- GameModel
 PlayerInputHandler -- Main
@@ -119,6 +118,7 @@ GameModel -- Timer
 GameModel -- ScoreCalculator
 GameModel -- EventManager
 GameModel -- MapController
+GameModel -- AudioSelector
 
 EventManager -- Event
 

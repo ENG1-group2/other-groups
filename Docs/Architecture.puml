@@ -14,9 +14,6 @@ Package "Model" {
         calculateSatisfaction()
     }
     class DecorationObject {
-        constructionGameTime
-        constructionStartedAt
-        isUnderConstruction
         calculateSatisfaction()
     }
     class LeisureBuilding {

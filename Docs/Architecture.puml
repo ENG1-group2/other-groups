@@ -4,34 +4,40 @@ Package "Model" {
         addBuilding(position)
     }
     class MapGenerator {
-        SIZE
+        size
         generate()
     }
-    class NonStackableObject {
+    class Building {
         constructionGameTime
         constructionStartedAt
         isUnderConstruction
         calculateSatisfaction()
     }
-    class StackableObject {
+    class DecorationObject {
         constructionGameTime
         constructionStartedAt
         isUnderConstruction
         calculateSatisfaction()
     }
     class LeisureBuilding {
+
         calculateSatisfaction()
     }
     class AccommodationBuilding {
+        rentPrice
+        commonRooms
         calculateSatisfaction()
     }
     class TeachingBuilding {
         lectureHallCount
         labCount
+        classroomCount
 
         calculateSatisfaction()
     }
     class Cafeteria {
+        foodQuality
+        hygieneRating
         calculateSatisfaction()
     }
     abstract class MapObject {
@@ -39,6 +45,7 @@ Package "Model" {
         sprite
         shape
         capacity
+        isStackable
         calculateSatisfaction()
     }
     class EventManager {
@@ -64,17 +71,19 @@ Package "Model" {
     class GameModel {
         gameState
     }
-    class AudioSelector {
-        tracks
-        selectTrack()
-    }
 }
 Package "View" {
     class Main {
         create()
         render()
     }
+    class AudioPlayer {
+        tracks
+        selectTrack()
+    }
     class UILogic {
+        generatePauseScreen()
+        generateMainScreen()
         generateEndScreen()
     }
 }
@@ -88,19 +97,18 @@ Package "Controller" {
     }
 }
 
-NonStackableObject ..|> MapObject
-StackableObject ..|> MapObject
-LeisureBuilding --|> NonStackableObject
-AccommodationBuilding --|> NonStackableObject
-TeachingBuilding --|> NonStackableObject
-Cafeteria --|> NonStackableObject
+Building ..|> MapObject
+DecorationObject ..|> MapObject
+LeisureBuilding --|> Building
+AccommodationBuilding --|> Building
+TeachingBuilding --|> Building
+Cafeteria --|> Building
 
 MapController -- MapGenerator
 MapController -- MapObject
 
 Main -- GameModel
-
-GameModel -- AudioSelector
+Main -- AudioPlayer
 
 PlayerInputHandler -- GameModel
 PlayerInputHandler -- Main

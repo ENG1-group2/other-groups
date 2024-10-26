@@ -26,4 +26,5 @@ public class TimeManager {
     public boolean isEndOfGame() {
         return currentTime >= timeLimit;
     }
+
 }

@@ -11,6 +11,7 @@ import uk.ac.york.vfc510.unisim.managers.TimeManager;
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all
  * platforms.
  */
+
 // TODO: Create instances for buildings and events
 // TODO: Create UI and map
 // TODO: make inputs effect the game

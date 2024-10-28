@@ -13,7 +13,7 @@ import uk.ac.york.vfc510.unisim.managers.TimeManager;
  */
 
 // TODO: Create instances for buildings and events
-// TODO: Create UI and map
+// TODO: Create UI
 // TODO: make inputs effect the game
 // TODO: create game logic e.g. update methods
 

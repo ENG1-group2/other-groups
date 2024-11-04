@@ -1,5 +1,6 @@
 package io.github.universityTycoon.lwjgl3;
 
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import io.github.universityTycoon.Main;

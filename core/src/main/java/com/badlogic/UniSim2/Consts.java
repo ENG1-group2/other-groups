@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.Color;
  */
 public class Consts {
 
-    public Consts(){}
+    private Consts(){}
 
     /**
      * Size of each cell in pixels, everything scales to the cell size.

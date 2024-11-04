@@ -20,7 +20,6 @@ public class Map {
     private final Grid grid;
 
     private BuildingManager buildings; // Used to control all the buildings in the game
-    private Paths paths; // Contains all the paths used in the game 
     public static Array<Sprite> collidableSprites; // Contains both buildings and paths 
     
     private final StretchViewport viewport;
@@ -36,9 +35,8 @@ public class Map {
         grid = new Grid();
 
         buildings = new BuildingManager();
-        paths = new Paths();
         collidableSprites = new Array<Sprite>();
-        paths.createPaths();
+        Paths.createPaths();
 
         viewport = new StretchViewport(width, height);
         spriteBatch = new SpriteBatch();
@@ -53,7 +51,9 @@ public class Map {
         draw();
     }
 
-    // Handles when a user clicks or applies any input
+    /**
+     * Handles all input.
+     */
     private void input() {
         menu.input();
 

@@ -23,7 +23,7 @@ public class Grid {
     }
     private Status[][] grid; // 2D array to get status at any point (Not used yet)
 
-    private ShapeRenderer shapeRenderer; 
+    private ShapeRenderer shapeRenderer; // Used to draw lines onto the screen.
 
     public Grid() {
         rows = Consts.GRID_ROWS;
@@ -35,7 +35,7 @@ public class Grid {
     }
 
     // Called when a building is placed to update the status of the corresponding grid spaces (Not used yet)
-    public void updateGrid(Building building){
+    private void updateGrid(Building building){
 
         int startCol = building.getCol();
         int endCol = startCol + building.getBuildingWidth();

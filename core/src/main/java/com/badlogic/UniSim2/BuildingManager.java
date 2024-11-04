@@ -6,8 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 /**
- * This class is used to manage all of the placed buildings on the map as well
- * as a single selectedBuilding.
+ * This class is used to manage all of the placed {@link Building buildings} 
+ * on the map as well as a single selectedBuilding.
  */
 public class BuildingManager {
 

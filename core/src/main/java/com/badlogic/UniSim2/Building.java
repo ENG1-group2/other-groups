@@ -136,30 +136,20 @@ public class Building extends Sprite {
         return new Vector2(getX() + width / 2, getY() + height / 2);
     }
 
-    // Returns the colomn of the bottom left square of the building
+    /**
+     * Returns the column of the bottom left square of the building.
+     * @return
+     */
     public int getCol(){
         return (int)(getX() / Consts.CELL_SIZE);
     }
 
-    // Returns the row of the bottom left square of the building
+    /**
+     * Returns the row of the bottom left square of the building.
+     * @return
+     */
     public int getRow(){
         return (int)(Consts.GRID_ROWS - getY() / Consts.CELL_SIZE);
-    }
-
-    public Texture getPlacedTexture(){
-        return placedTexture;
-    }
-
-    public Texture getCollisionTexture(){
-        return collisionTexture;
-    }
-
-    public Texture getDraggingTexture(){
-        return draggingTexture;
-    }
-
-    public void setSelected(boolean setter){
-        isSelected = setter;
     }
 
     public boolean getIsSelected(){

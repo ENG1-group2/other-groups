@@ -40,9 +40,6 @@ public class BuildingMenu {
 
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
 
-        // Initializes each building count to 0
-        accomodationCount = lectureHallCount = libraryCount = courseCount = foodZoneCount = recreationalCount = natureCount = 0;
-
         // Initializes buildingCounts with each building type 
         buildingCounts = new int[]
         {

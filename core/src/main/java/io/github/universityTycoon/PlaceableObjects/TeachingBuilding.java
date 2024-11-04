@@ -1,4 +1,4 @@
-package io.github.universityTycoon;
+package io.github.universityTycoon.PlaceableObjects;
 
 import java.time.LocalDateTime;
 

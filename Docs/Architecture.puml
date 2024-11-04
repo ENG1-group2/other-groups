@@ -61,10 +61,6 @@ Package "Model" {
         currentScore
         currentStudents
     }
-    class Timer {
-        timeSeconds
-        tick()
-    }
     class GameModel {
         gameState
     }
@@ -111,7 +107,6 @@ PlayerInputHandler -- MainScreen
 
 UILogic -- MainScreen
 
-GameModel -- Timer
 GameModel -- ScoreCalculator
 GameModel -- EventManager
 GameModel -- MapController

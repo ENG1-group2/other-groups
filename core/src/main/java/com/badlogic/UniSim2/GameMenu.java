@@ -1,13 +1,11 @@
 package com.badlogic.UniSim2;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 /**
  * This is the game menu that is shown by the {@link GameScreen}. It contains 
@@ -21,15 +19,15 @@ public class GameMenu {
     private Timer timer;
     private Label timerLabel;
     private boolean paused;
-    private Game game;
+    private Main game;
     
-    public GameMenu(StretchViewport viewport, BuildingManager buildings, Game game){
+    public GameMenu(Main game, Timer timer, BuildingManager buildings){
 
         this.game = game;
-        stage = new Stage(viewport);
+        stage = new Stage(game.getViewport());
         skin = new Skin(Gdx.files.internal("ui/uiskin.json")); 
         buildingMenu = new BuildingMenu(stage, buildings);
-        timer = new Timer();
+        this.timer = timer;
         paused = true;
         createMenu();
     }
@@ -78,7 +76,7 @@ public class GameMenu {
             game.setScreen(new StartScreen(game)); // Returns to the start screen
         }
     }
-
+    
     public void input(){
         stage.act(Gdx.graphics.getDeltaTime());
         // Checks if space bar has been pressed

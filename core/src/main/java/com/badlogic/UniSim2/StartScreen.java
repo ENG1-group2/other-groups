@@ -1,6 +1,5 @@
 package com.badlogic.UniSim2;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,14 +18,14 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
  */
 public class StartScreen implements Screen {
 
-    private Game game;
+    private Main game;
     private StretchViewport viewport;
     private Stage stage;
     private ImageButton startButton;
 
-    public StartScreen(Game game){
+    public StartScreen(Main game){
         this.game = game;
-        viewport = new StretchViewport(Consts.WORLD_WIDTH, Consts.WORLD_HEIGHT);
+        viewport = game.getViewport();
         stage = new Stage(viewport);
         Gdx.input.setInputProcessor(stage);
         addStartButton();
@@ -71,8 +70,9 @@ public class StartScreen implements Screen {
 
                 // Play the start sound and start the music with it looping
                 Assets.gameStart.play();
-                Assets.music.play(); 
-                game.setScreen(new GameScreen(game));
+                Assets.music.play();
+                System.out.println("should start game.");
+                game.startGame();
                 dispose();
             }
         });
@@ -94,7 +94,7 @@ public class StartScreen implements Screen {
     @Override
     public void render(float delta) {
         drawBackground();
-        stage.act(Gdx.graphics.getDeltaTime());
+        stage.act(delta);
         stage.draw();
     }
 

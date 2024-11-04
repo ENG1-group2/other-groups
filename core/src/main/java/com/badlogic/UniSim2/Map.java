@@ -1,6 +1,5 @@
 package com.badlogic.UniSim2;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -22,41 +21,34 @@ public class Map {
     private BuildingManager buildings; // Used to control all the buildings in the game
     public static Array<Sprite> collidableSprites; // Contains both buildings and paths 
     
-    private final StretchViewport viewport;
     private final SpriteBatch spriteBatch;
+    private StretchViewport viewport;
 
-    private GameMenu menu; // Used to make and display the game menu
 
-
-    public Map(Game game) {
-
+    public Map(Main game) {
         width = Consts.WORLD_WIDTH;
         height = Consts.WORLD_HEIGHT;
+
         grid = new Grid();
 
         buildings = new BuildingManager();
         collidableSprites = new Array<Sprite>();
         Paths.createPaths();
 
-        viewport = new StretchViewport(width, height);
+        this.viewport = game.getViewport();
+
         spriteBatch = new SpriteBatch();
-        menu = new GameMenu(viewport, buildings, game);
     }
 
-    /**
-     * Handles all inputs and will draw the map.
-     */
-    public void render() {
-        input();
-        draw();
+    public BuildingManager getBuildingManager() {
+        return buildings;
     }
+    
 
     /**
      * Handles all input.
      */
-    private void input() {
-        menu.input();
-
+    public void input() {
         Vector2 mousePos = new Vector2(Gdx.input.getX(), Gdx.input.getY()); // Gets the position of the mouse
         viewport.unproject(mousePos);
         boolean clicked = Gdx.input.justTouched(); // True when the mouse is clicked
@@ -67,13 +59,12 @@ public class Map {
      * Draws the entire map including the background, the grid, the paths,
      * the buildings and then the menu.
      */
-    private void draw() {
+    public void draw() {
         drawSetup();
         drawBackground();
         grid.draw(viewport);
         drawPath();
         buildings.draw(spriteBatch); 
-        menu.draw();
     }
 
     // Required to start drawing 
@@ -91,7 +82,7 @@ public class Map {
         spriteBatch.end();
     }
 
-    public void drawPath(){
+    private void drawPath(){
         spriteBatch.begin();
         spriteBatch.draw(Assets.pathTexture, 0,0, width, height);
         spriteBatch.end();
@@ -108,6 +99,5 @@ public class Map {
     public void dispose(){
         grid.dispose();
         buildings.dispose();
-        menu.dispose();
     }
 }

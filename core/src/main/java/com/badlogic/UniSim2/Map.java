@@ -9,13 +9,17 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
+/**
+ * This class represents the map that the game will take place on. It holds
+ * all {@link Building buildings} and {@link Path paths} that can be placed on the map.
+ */
 public class Map {
 
     private final int width;
     private final int height;
     private final Grid grid;
 
-    private Buildings buildings; // Used to control all the buildings in the game
+    private BuildingManager buildings; // Used to control all the buildings in the game
     private Paths paths; // Contains all the paths used in the game 
     public static Array<Sprite> collidableSprites; // Contains both buildings and paths 
     
@@ -31,7 +35,7 @@ public class Map {
         height = Consts.WORLD_HEIGHT;
         grid = new Grid();
 
-        buildings = new Buildings();
+        buildings = new BuildingManager();
         paths = new Paths();
         collidableSprites = new Array<Sprite>();
         paths.createPaths();
@@ -41,6 +45,9 @@ public class Map {
         menu = new GameMenu(viewport, buildings, game);
     }
 
+    /**
+     * Handles all inputs and will draw the map.
+     */
     public void render() {
         input();
         draw();
@@ -56,6 +63,10 @@ public class Map {
         buildings.input(mousePos, clicked); // Handles input for all buildings in the game
     }
 
+    /**
+     * Draws the entire map including the background, the grid, the paths,
+     * the buildings and then the menu.
+     */
     private void draw() {
         drawSetup();
         drawBackground();

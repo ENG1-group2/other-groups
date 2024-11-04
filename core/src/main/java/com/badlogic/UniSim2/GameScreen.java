@@ -3,6 +3,9 @@ package com.badlogic.UniSim2;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 
+/**
+ * This screen is used when the game is being played. 
+ */
 public class GameScreen implements Screen {
     private Map map;
     public GameScreen(Game game){

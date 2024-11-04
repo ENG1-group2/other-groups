@@ -13,6 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
+/**
+ * This is the screen that shows when the game starts. It holds a start game
+ * button which, when pressed, will start the game.
+ */
 public class StartScreen implements Screen {
 
     private Game game;
@@ -32,7 +36,9 @@ public class StartScreen implements Screen {
     public void show() {
     }
 
-    // Adds the start button to the start menu
+    /**
+     * Adds a start button to the menu.
+     */
     private void addStartButton(){
         setupStartButton(); // Initializes startButton with the correct textures, size, and position
         addStartButtonClick(); // Adds a click listener to start button 
@@ -55,7 +61,9 @@ public class StartScreen implements Screen {
         startButton.setPosition(Consts.START_BUTTON_X, Consts.START_BUTTON_Y);
     }
 
-    // Ensures that when startButton is clicked a game is started
+    /**
+     * Ensures that when the start button is pressed, the game is played.
+     */
     private void addStartButtonClick(){
         startButton.addListener(new ClickListener() {
             @Override

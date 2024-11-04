@@ -4,6 +4,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
+/**
+ * This class is used to simulate the grid structure of the game.
+ * Currently the only method that should be called is {@link #draw(StretchViewport)}.
+ */
 public class Grid {
 
     private final int rows; 
@@ -45,7 +49,10 @@ public class Grid {
         }
     }
 
-    // Draws the grid lines
+    /**
+     * Draws the lines of the grid.
+     * @param viewport
+     */
     public void draw(StretchViewport viewport) {
         setupRenderer(viewport);
         drawHorizontalLines(); 

@@ -1,5 +1,9 @@
 package com.badlogic.UniSim2;
 
+/**
+ * A building which represents student accommodation.
+ * @see Building
+ */
 public class Accomodation extends Building{
 
     public Accomodation(){

@@ -1,5 +1,8 @@
 package com.badlogic.UniSim2;
 
+/**
+ * This class is used to create Paths at the start of the game.
+ */
 public class Paths {
     
     public Paths(){

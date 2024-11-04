@@ -1,5 +1,10 @@
 package com.badlogic.UniSim2;
 
+/**
+ * A building which represents a nature item such as some tree. This does inherit
+ * from {@link Building} which might be an issue.
+ * @see Building
+ */
 public class Nature extends Building{
 
     public Nature(){

@@ -2,6 +2,9 @@ package com.badlogic.UniSim2;
 
 import com.badlogic.gdx.Gdx;
 
+/**
+ * A timer which can 
+ */
 public class Timer {
     private float elapsedTime;
     private final float maxTime;

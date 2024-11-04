@@ -5,6 +5,11 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
+/**
+ * This class is used to store all textures that will be used in the game.
+ * All textures are made public static variable and should not be changed
+ * by another other class.
+ */
 public class Assets {
 
     public static Sound click;
@@ -68,6 +73,11 @@ public class Assets {
 
     private Assets() {};
 
+    /**
+     * This method loads all the textures that might be used.
+     * Note that this method should not be called before libgdx has called the
+     * {@link Main#create()} method. 
+     */
     public static void loadTextures(){
 
         // Sound effects and music

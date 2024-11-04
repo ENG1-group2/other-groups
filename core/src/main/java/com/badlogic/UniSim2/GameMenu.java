@@ -9,6 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
+/**
+ * This is the game menu that is shown by the {@link GameScreen}. It contains 
+ * the {@link Timer timer} for the game and {@link BuildingMenu the building menu}
+ * which can be used to place new buildings. 
+ */
 public class GameMenu {
     private Stage stage;
     private final Skin skin;
@@ -18,7 +23,7 @@ public class GameMenu {
     private boolean paused;
     private Game game;
     
-    public GameMenu(StretchViewport viewport, Buildings buildings, Game game){
+    public GameMenu(StretchViewport viewport, BuildingManager buildings, Game game){
 
         this.game = game;
         stage = new Stage(viewport);

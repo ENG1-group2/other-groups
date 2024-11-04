@@ -74,7 +74,7 @@ Package "Model" {
     }
 }
 Package "View" {
-    class Main {
+    class MainScreen {
         create()
         render()
     }
@@ -104,12 +104,12 @@ Cafeteria --|> Building
 MapController -- MapGenerator
 MapController -- MapObject
 
-Main -- GameModel
+MainScreen -- GameModel
 
 PlayerInputHandler -- GameModel
-PlayerInputHandler -- Main
+PlayerInputHandler -- MainScreen
 
-UILogic -- Main
+UILogic -- MainScreen
 
 GameModel -- Timer
 GameModel -- ScoreCalculator

@@ -1,0 +1,8 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+EventManger -> GameEventListener : Raise event
+GameEventListener -> GameModel : An event has occurred
+GameModel -> EventManger : Handle event
+
+@enduml

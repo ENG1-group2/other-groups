@@ -1,7 +1,5 @@
 package io.github.universityTycoon;
 
-import com.badlogic.gdx.utils.Timer;
-
 import java.time.LocalDateTime;
 
 public class GameModel {
@@ -13,7 +11,6 @@ public class GameModel {
     }
 
     GameState gameState;
-    Timer timer;
     EventManager eventManager;
     GameEventListener eventListener;
     PlayerInputHandler playerInputHandler;
@@ -22,7 +19,6 @@ public class GameModel {
     MapController mapController;
 
     public GameModel(PlayerInputHandler inputHandler) {
-        timer = new Timer();
 
         eventListener = new GameEventListener(this::handleEvent); // If you're confused, look into "Java listener pattern" (I am also confused)
         eventManager = new EventManager(eventListener);

@@ -1,0 +1,18 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+start
+:Initialise 2D array "terrain" of TerrainTypes;
+:Initialise 2D array "objects" of MapObjects;
+while (end of array reached?) is (no)
+    :Set this square of "terrain"\nas a random TerrainType;
+    note left: This can also be\nbased on noise for\nmore realistic \ngeneration
+    if (random > decorationChance?) then (yes)
+        :Set this square of "objects"\nto be a DecorationObject;
+    else (no)
+    endif
+end while (yes)
+
+stop
+
+@enduml

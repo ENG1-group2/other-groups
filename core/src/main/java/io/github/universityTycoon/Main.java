@@ -6,20 +6,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends Game {
+
     public SpriteBatch batch;
     public BitmapFont font;
     public FitViewport viewport;
-    float timeSeconds;
-    String time;
-    PlayerInputHandler playerInputHandler = new PlayerInputHandler();
-    GameModel gameModel = new GameModel(playerInputHandler);
-    UILogic uiLogic = new UILogic();
 
-    @Override
+
     public void create() {
-        setScreen(new FirstScreen());
         batch = new SpriteBatch();
         // use libGDX's default font
         font = new BitmapFont();
@@ -29,18 +23,15 @@ public class Main extends Game {
         font.setUseIntegerPositions(false);
         font.getData().setScale(viewport.getWorldHeight() / Gdx.graphics.getHeight());
 
+        this.setScreen(new MainScreen(this));
     }
 
-
-
-    @Override
     public void render() {
-        timeSeconds = 300;
-        timeSeconds -= Gdx.graphics.getDeltaTime();
-        time = String.valueOf(timeSeconds / 60) + ":" + (String.valueOf(timeSeconds % 60));
-        //All rendering happens between batch.begin() and batch.end()
-        batch.begin();
-        font.draw(batch, time, 1, 1.5f);
-        batch.end();
+        super.render(); // important!
+    }
+
+    public void dispose() {
+        batch.dispose();
+        font.dispose();
     }
 }

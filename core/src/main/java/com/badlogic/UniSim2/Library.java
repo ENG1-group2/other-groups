@@ -1,5 +1,9 @@
 package com.badlogic.UniSim2;
 
+/**
+ * A building which represents a library.
+ * @see Building
+ */
 public class Library extends Building{
 
     public Library(){

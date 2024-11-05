@@ -1,6 +1,5 @@
 package com.badlogic.UniSim2;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -9,60 +8,63 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
+/**
+ * This class represents the map that the game will take place on. It holds
+ * all {@link Building buildings} and {@link Path paths} that can be placed on the map.
+ */
 public class Map {
 
     private final int width;
     private final int height;
     private final Grid grid;
 
-    private Buildings buildings; // Used to control all the buildings in the game
-    private Paths paths; // Contains all the paths used in the game 
+    private BuildingManager buildings; // Used to control all the buildings in the game
     public static Array<Sprite> collidableSprites; // Contains both buildings and paths 
     
-    private final StretchViewport viewport;
     private final SpriteBatch spriteBatch;
+    private StretchViewport viewport;
 
-    private GameMenu menu; // Used to make and display the game menu
 
-
-    public Map(Game game) {
-
+    public Map(Main game) {
         width = Consts.WORLD_WIDTH;
         height = Consts.WORLD_HEIGHT;
+
         grid = new Grid();
 
-        buildings = new Buildings();
-        paths = new Paths();
+        buildings = new BuildingManager();
         collidableSprites = new Array<Sprite>();
-        paths.createPaths();
+        Paths.createPaths();
 
-        viewport = new StretchViewport(width, height);
+        this.viewport = game.getViewport();
+
         spriteBatch = new SpriteBatch();
-        menu = new GameMenu(viewport, buildings, game);
     }
 
-    public void render() {
-        input();
-        draw();
+    public BuildingManager getBuildingManager() {
+        return buildings;
     }
+    
 
-    // Handles when a user clicks or applies any input
-    private void input() {
-        menu.input();
-
+    /**
+     * Handles all input.
+     */
+    public void input() {
         Vector2 mousePos = new Vector2(Gdx.input.getX(), Gdx.input.getY()); // Gets the position of the mouse
         viewport.unproject(mousePos);
         boolean clicked = Gdx.input.justTouched(); // True when the mouse is clicked
         buildings.input(mousePos, clicked); // Handles input for all buildings in the game
     }
 
-    private void draw() {
+    /**
+     * Draws the entire map including the background, the grid, the paths,
+     * the buildings and then the menu.
+     */
+    public void draw() {
         drawSetup();
         drawBackground();
         grid.draw(viewport);
         drawPath();
         buildings.draw(spriteBatch); 
-        menu.draw();
     }
 
     // Required to start drawing 
@@ -80,7 +82,7 @@ public class Map {
         spriteBatch.end();
     }
 
-    public void drawPath(){
+    private void drawPath(){
         spriteBatch.begin();
         spriteBatch.draw(Assets.pathTexture, 0,0, width, height);
         spriteBatch.end();
@@ -97,6 +99,5 @@ public class Map {
     public void dispose(){
         grid.dispose();
         buildings.dispose();
-        menu.dispose();
     }
 }

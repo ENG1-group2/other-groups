@@ -1,6 +1,5 @@
 package com.badlogic.UniSim2;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,26 +12,32 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
+/**
+ * This is the screen that shows when the game starts. It holds a start game
+ * button which, when pressed, will start the game.
+ */
 public class StartScreen implements Screen {
 
-    private Game game;
+    private Main game;
     private StretchViewport viewport;
     private Stage stage;
     private ImageButton startButton;
 
-    public StartScreen(Game game){
+    public StartScreen(Main game){
         this.game = game;
-        viewport = new StretchViewport(Consts.WORLD_WIDTH, Consts.WORLD_HEIGHT);
+        viewport = game.getViewport();
         stage = new Stage(viewport);
-        Gdx.input.setInputProcessor(stage);
         addStartButton();
     }
 
     @Override
     public void show() {
+        Gdx.input.setInputProcessor(stage);
     }
 
-    // Adds the start button to the start menu
+    /**
+     * Adds a start button to the menu.
+     */
     private void addStartButton(){
         setupStartButton(); // Initializes startButton with the correct textures, size, and position
         addStartButtonClick(); // Adds a click listener to start button 
@@ -55,7 +60,9 @@ public class StartScreen implements Screen {
         startButton.setPosition(Consts.START_BUTTON_X, Consts.START_BUTTON_Y);
     }
 
-    // Ensures that when startButton is clicked a game is started
+    /**
+     * Ensures that when the start button is pressed, the game is played.
+     */
     private void addStartButtonClick(){
         startButton.addListener(new ClickListener() {
             @Override
@@ -63,8 +70,8 @@ public class StartScreen implements Screen {
 
                 // Play the start sound and start the music with it looping
                 Assets.gameStart.play();
-                Assets.music.play(); 
-                game.setScreen(new GameScreen(game));
+                Assets.music.play();
+                game.startGame();
                 dispose();
             }
         });
@@ -86,7 +93,7 @@ public class StartScreen implements Screen {
     @Override
     public void render(float delta) {
         drawBackground();
-        stage.act(Gdx.graphics.getDeltaTime());
+        stage.act(delta);
         stage.draw();
     }
 

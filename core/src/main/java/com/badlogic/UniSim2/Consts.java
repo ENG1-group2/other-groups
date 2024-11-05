@@ -2,15 +2,24 @@ package com.badlogic.UniSim2;
 
 import com.badlogic.gdx.graphics.Color;
 
+/**
+ * This class is used to manage all the constants in the game. It allows
+ * easy changes to be made to all constants within it.
+ */
 public class Consts {
 
-    public Consts(){}
+    private Consts(){}
 
-    // Size of each cell in pixels, everything scales to the cell size
-    // Can be used to change how many pixels are used
+    /**
+     * Size of each cell in pixels, everything scales to the cell size.
+     */
     public static final int CELL_SIZE = 20;
 
-    // Scales a value according to the size of the grid cells
+    /**
+     * Scales a value according to the size of each grid cell.
+     * @param value The value to scale.
+     * @return value * {@link #CELL_SIZE}.
+     */
     private static int scaleToCellSize(int value){
         return value * CELL_SIZE;
     }

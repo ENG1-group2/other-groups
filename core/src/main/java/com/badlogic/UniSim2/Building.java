@@ -5,6 +5,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+/**
+ * A class which represents a building that can be placed on the map.
+ * Each building can be stored in the {@link BuildingManager}.
+ */
 public abstract class Building extends Sprite {
 
     // Textures for when a building is placed, colliding, dragged
@@ -44,6 +48,11 @@ public abstract class Building extends Sprite {
         setRegion(placedTexture); // By default a buildings texture is its placed texture
     }
 
+    /**
+     * Updates the position of the building to the specified mousePos. Will
+     * ensure that the building is snapped to the grid.
+     * @param mousePos The position of the mouse in world coords.
+     */
     private void updatePosition(Vector2 mousePos) {
         // Puts the centre of the building where the mouse is
         float x = mousePos.x - getWidth() / 2f;
@@ -56,19 +65,33 @@ public abstract class Building extends Sprite {
         setPosition(snapX, snapY);
     }
 
-    // Used when a building is being dragged
+    /**
+     * Should be called when is building is being dragged. Will update the 
+     * position to the mousePos and will set use the colliding texture
+     * if colliding is set to true.
+     * @param mousePos The mouse position in world coords.
+     * @param colliding true if the building is colliding with something in
+     * {@link Map#collidableSprites} and false otherwise.
+     */
     public void handleDragging(Vector2 mousePos, boolean colliding){
         updatePosition(mousePos); // Sets the position of the building to the mouse position
         setDraggingTexture(colliding); // Sets texture to colliding if true, dragging if false
     }
 
-    // When a building is selected with a button
+    /**
+     * Should be called when this building is selected. Will set
+     * the texture to dragging.
+     */
     public void selectBuilding() {
         isSelected = true;
         setDraggingTexture(false); // Sets the texture to dragging
     }
 
-    // Used when a building is placed, changes isSelected and isPlaced and sets the placed texture
+    /**
+     * Should be called when the building is placed. Will play the build
+     * placing sound, deselect the building and change the texture to the
+     * placed texture.
+     */
     public void placeBuilding() {
         Assets.click.play();
         isSelected = false;
@@ -76,19 +99,31 @@ public abstract class Building extends Sprite {
         setRegion(placedTexture);
     }
 
-    // Sets the texture to collision or dragging depending on if its colliding
+    /**
+     * Sets the texture to collision or dragging dependings on if it is colliding
+     * with another collidable in {@link Map#collidableSprites}.
+     * @param collision true when the building is colliding and false otherwise.
+     */
     private void setDraggingTexture(boolean collision) {
         setRegion(collision ? collisionTexture : draggingTexture);
     }
 
-    // Ensures that the building stays within the boundaries set by MAP_MIN_X_BOUNDARY, MAP_MAX_X_BOUNDARY 
-    // and MAP_MIN_Y_BOUNDARY, MAP_MAX_Y_BOUNDARY
+    /**
+     * Ensures that the building stays within the boundaries set by {@link Consts#MAP_MIN_X_BOUNDARY},
+     * {@link Consts#MAP_MAX_X_BOUNDARY}, {@link Consts#MAP_MIN_Y_BOUNDARY} and 
+     * {@link Consts#MAP_MAX_Y_BOUNDARY}.
+     */
     public void clampPosition() {
         setX(MathUtils.clamp(getX(), Consts.MAP_MIN_X_BOUNDARY, Consts.MAP_MAX_X_BOUNDARY - width));
         setY(MathUtils.clamp(getY(), Consts.MAP_MIN_Y_BOUNDARY, Consts.MAP_MAX_Y_BOUNDARY - height));
     }
 
-    // Gets the path distance from this building to another 
+    /**
+     * Gets the distance from this building to another building. The distance
+     * is defined by the x_distance + y_distance between buildings.
+     * @param building The other building to find the distance between.
+     * @return The distance. Can be rounded both down and up.
+     */
     public int getDistanceFrom(Building building){
     float xDistance = Math.abs(getX() - building.getX());
     float yDistance = Math.abs(getY() - building.getY());
@@ -101,30 +136,20 @@ public abstract class Building extends Sprite {
         return new Vector2(getX() + width / 2, getY() + height / 2);
     }
 
-    // Returns the colomn of the bottom left square of the building
+    /**
+     * Returns the column of the bottom left square of the building.
+     * @return
+     */
     public int getCol(){
         return (int)(getX() / Consts.CELL_SIZE);
     }
 
-    // Returns the row of the bottom left square of the building
+    /**
+     * Returns the row of the bottom left square of the building.
+     * @return
+     */
     public int getRow(){
         return (int)(Consts.GRID_ROWS - getY() / Consts.CELL_SIZE);
-    }
-
-    public Texture getPlacedTexture(){
-        return placedTexture;
-    }
-
-    public Texture getCollisionTexture(){
-        return collisionTexture;
-    }
-
-    public Texture getDraggingTexture(){
-        return draggingTexture;
-    }
-
-    public void setSelected(boolean setter){
-        isSelected = setter;
     }
 
     public boolean getIsSelected(){

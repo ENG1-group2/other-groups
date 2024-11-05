@@ -1,5 +1,10 @@
 package com.badlogic.UniSim2;
 
+/**
+ * A building which represents a recreational building where students can have
+ * fun.
+ * @see Building
+ */
 public class Recreational extends Building{
     
     public Recreational(){

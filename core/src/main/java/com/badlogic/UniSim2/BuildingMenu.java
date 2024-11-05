@@ -13,10 +13,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 
+/**
+ * A menu which can be used to place new buildings onto the map. This menu is
+ * a part of the {@link GameMenu game menu}. It shows all the types of buildings
+ * that can be placed and how many of them are already placed.
+ */
 public class BuildingMenu {
 
     private Stage stage;
-    private Buildings buildings;
+    private BuildingManager buildings;
     private Image menuBar;
 
     private final Skin skin;
@@ -28,15 +33,12 @@ public class BuildingMenu {
     // Holds the labels that display the count of each building
     private Array<Label> countLabels;
     
-    public BuildingMenu(Stage stage, Buildings buildings){
+    public BuildingMenu(Stage stage, BuildingManager buildings){
         this.stage = stage;
         Gdx.input.setInputProcessor(stage);
         this.buildings = buildings;
 
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-
-        // Initializes each building count to 0
-        accomodationCount = lectureHallCount = libraryCount = courseCount = foodZoneCount = recreationalCount = natureCount = 0;
 
         // Initializes buildingCounts with each building type 
         buildingCounts = new int[]
@@ -53,13 +55,21 @@ public class BuildingMenu {
         countLabels = new Array<>();
     }
 
+    /**
+     * Creates a bar to hold all the building buttons, creates the building
+     * buttons and creates the labels which hold the amount of times each
+     * building has been placed.
+     */
     public void createBuildingMenu(){
         createMenuBar();
         createImageButtons();
         createCountLabels();
     }
 
-    // Creates a button for each building type with a gap between them and a count label
+    /**
+     * Creates a button for each building types with a gap between each button and
+     * a count label for each button.
+     */
     private void createImageButtons() {
         int buttonGap = Consts.BUILDING_BUTTON_GAP;
 
@@ -71,6 +81,14 @@ public class BuildingMenu {
         }
     }
 
+    /**
+     * Creates a single image button and adds it to the {@link #stage}.
+     * @param type The building type to create a button for. Defines the texture of
+     * the button.
+     * @param buttonGap The gap from the max y coord a button can be placed defined by
+     * {@link Consts#BUILDING_BUTTON_Y_BOUNDARY} to where the button should be placed.
+     * Will place newly created button at ({@link Consts#BUILDING_BUTTON_Y_BOUNDARY} - buttonGap).
+     */
     private void createImageButton(Building.BuildingTypes type, int buttonGap){
 
         int index = type.ordinal(); // Gets the index of type within BuildingTypes
@@ -79,7 +97,16 @@ public class BuildingMenu {
         stage.addActor(button);
     }
 
-    // Sets the texture, the building type, size and position of the button
+    
+    /**
+     * Sets the texture, size nad position of the button.
+     * @param index The index of the button textures in {@link Assets#buttonUpTextures}
+     * and {@link Assets#buttonDownTextures}.
+     * @param buttonGap The gap from the max y coord a button can be placed defined by 
+     * {@link Consts#BUILDING_BUTTON_Y_BOUNDARY} to where the button should be placed.
+     * Will place newly created button at ({@link Consts#BUILDING_BUTTON_Y_BOUNDARY} - buttonGap).
+     * @return The button.
+     */
     private ImageButton setupImageButton(int index, int buttonGap){
 
         Texture buttonUpTexture = Assets.buttonUpTextures[index]; // Texture when not hovering or clicking
@@ -102,7 +129,15 @@ public class BuildingMenu {
         return button;
     }
 
-    // Adds a click listener so it can handle being clicked
+    
+    /**
+     * Adds a click listener to the button so that it knows what to do when
+     * clicked.
+     * @param button The button to add the listener to.
+     * @param type The type of building that button represents. This building type
+     * will be created when the button is pressed.
+     * @param index The index of the building in the enum {@link Building#BuildingTypes}
+     */
     private void addImageButtonClick(ImageButton button, Building.BuildingTypes type, int index){
         button.addListener(new ClickListener() {
             @Override
@@ -112,13 +147,20 @@ public class BuildingMenu {
                 if(!buildings.getCurrentlySelecting()){
                     Assets.click.play();
                     buildings.handleSelection(type); // Creates a building of whatever type the button pressed is
-                    updateCountLabel(index); // Incriments the building count label by 1 and displays
+                    updateCountLabel(index); // Increments the building count label by 1 and displays
                 }
             }
         });
     }
 
-    // One is created for each button to show how many of each building there are
+    
+    /**
+     * A count label is created for each building button to show how many building
+     * of that type have been placed on the map.
+     * @param index The index of the button textures in {@link Assets#buttonUpTextures}
+     * and {@link Assets#buttonDownTextures}.
+     * @param button The button the count label is for.
+     */
     private void setUpCountLabel(int index, ImageButton button){
 
         int count = buildingCounts[index]; // Gets the count for the type of building using the type index in BuildingTypes
@@ -134,14 +176,19 @@ public class BuildingMenu {
         countLabels.add(countLabel);
     }
 
-    // Incriments a count label by 1 at an index that references a building type
+    /**
+     * Increments the count label for a specified building button label.
+     * @param index The index of the building in the enum {@link Building#BuildingTypes}
+     */
     private void updateCountLabel(int index){
         buildingCounts[index]++;
         int newCount = buildingCounts[index];
         countLabels.get(index).setText(String.valueOf(newCount));
     }
 
-    // Adds the count labels to the stage
+    /**
+     * Adds the count labels to the stage.
+     */
     private void createCountLabels(){
         for(Label countLabel : countLabels){
             stage.addActor(countLabel);
@@ -155,11 +202,8 @@ public class BuildingMenu {
         stage.addActor(menuBar);
     }
 
-    public void render(){
+    public void draw() {
         stage.act(Gdx.graphics.getDeltaTime());
-    }
-
-    public void drawBuildingMenu(){
         stage.draw();
     }
 

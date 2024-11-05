@@ -1,5 +1,9 @@
 package com.badlogic.UniSim2;
 
+/**
+ * A building which represents a course specific building.
+ * @see Building
+ */
 public class Course extends Building{
 
     public Course(){

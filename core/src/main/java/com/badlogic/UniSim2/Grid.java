@@ -4,6 +4,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
+/**
+ * This class is used to simulate the grid structure of the game.
+ * Currently the only method that should be called is {@link #draw(StretchViewport)}.
+ */
 public class Grid {
 
     private final int rows; 
@@ -19,7 +23,7 @@ public class Grid {
     }
     private Status[][] grid; // 2D array to get status at any point (Not used yet)
 
-    private ShapeRenderer shapeRenderer; 
+    private ShapeRenderer shapeRenderer; // Used to draw lines onto the screen.
 
     public Grid() {
         rows = Consts.GRID_ROWS;
@@ -31,7 +35,7 @@ public class Grid {
     }
 
     // Called when a building is placed to update the status of the corresponding grid spaces (Not used yet)
-    public void updateGrid(Building building){
+    private void updateGrid(Building building){
 
         int startCol = building.getCol();
         int endCol = startCol + building.getBuildingWidth();
@@ -45,7 +49,10 @@ public class Grid {
         }
     }
 
-    // Draws the grid lines
+    /**
+     * Draws the lines of the grid.
+     * @param viewport
+     */
     public void draw(StretchViewport viewport) {
         setupRenderer(viewport);
         drawHorizontalLines(); 

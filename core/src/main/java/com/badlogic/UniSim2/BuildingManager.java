@@ -5,7 +5,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
-public class Buildings {
+/**
+ * This class is used to manage all of the placed {@link Building buildings} 
+ * on the map as well as a single selectedBuilding.
+ */
+public class BuildingManager {
 
     private Array<Building> buildings; // Array of all the buildings on the map in order of when placed
 
@@ -13,21 +17,27 @@ public class Buildings {
 
     private boolean currentlySelecting; // True when a building is selected and being being dragged 
 
-    public Buildings() {
+    public BuildingManager() {
         buildings = new Array<>();
         currentBuilding = null;
         currentlySelecting = false;
     }
 
+    /**
+     * Adds currentBuilding to the buildings array and to collidableSprites array.
+     * @param building The building to add.
+     */
     private void addBuilding(Building building){
         buildings.add(building);
         Map.collidableSprites.add(building);
     }
 
-    // Used to determine what to do when the mouse is clicked on a menu button
+    /**
+     * Used to determine what to do when the mouse moves or clicks.
+     * @param mousePos The position of the mouse in world coordinates.
+     * @param clicked true if a click has happened and false if not.
+     */
     public void input(Vector2 mousePos, boolean clicked) {
-
-        // If a click has happened
         if(clicked){
             // If we are currently selecting a building
             if(currentlySelecting){
@@ -40,8 +50,11 @@ public class Buildings {
         }
     }
 
+    /**
+     * Used to place a building in a location. The {@link #currentBuilding} holds
+     * the location where it should be placed.
+     */
     private void handlePlacing(){
-
         // If the current building is not colliding 
         if(!isColliding(currentBuilding)){
             currentBuilding.placeBuilding(); // Place building
@@ -49,8 +62,11 @@ public class Buildings {
         }
     }
 
-    // Called when a building button has been pressed, deals with placing a new building 
-    // corresponding to the button pressed determined with type
+    /**
+     * Called when a building button has been pressed. Deals with placing a new building 
+     * corresponding to the button pressed determined with type
+     * @param type The type of the building which the building button relates to.
+     */
     public void handleSelection(Building.BuildingTypes type){
 
         handleType(type); // Sets current building to the type of building selected
@@ -59,7 +75,10 @@ public class Buildings {
         addBuilding(currentBuilding); // Adds currentBuilding to the buildings array and to collidableSprites array
     }
 
-    // Creates a new building based on type
+    /**
+     * Creates a new building based on the type.
+     * @param type The type of the building to create.
+     */
     private void handleType(Building.BuildingTypes type){
         switch(type){
             case Accomodation:
@@ -88,13 +107,23 @@ public class Buildings {
         }
     }
 
-    // Updates the position of the building to mousePos and changes its texture depending on colliding
+    /**
+     * Updates the position of the currently selected building to the mouse pos and changes
+     * the texture of the building depending on whether it is colliding with
+     * another building.
+     * @param mousPos The position of the mouse if world coords.
+     */
     private void handleDragging(Vector2 mousPos){
         boolean colliding = isColliding(currentBuilding);
         currentBuilding.handleDragging(mousPos, colliding);
     }
 
-
+    /**
+     * Checks whether a building is colliding with anything in
+     * {@link Map#collidableSprites}.
+     * @param building The building to check.
+     * @return true if the building is colliding with something and false otherwise.
+     */
     private boolean isColliding(Building building){
         
         // For all sprites that are collidable
@@ -110,7 +139,12 @@ public class Buildings {
         return false;
     }
 
-    // Draws all buildings in the game and clamps them, ensuring any selected buildings are on top
+    /**
+     * Draws all the buildings and clamps them to ensure they cannot go outside
+     * of the map boundaries. Will also draw the {@link #currentBuilding}
+     * on top of any placed buildings.
+     * @param spriteBatch
+     */
     public void draw(SpriteBatch spriteBatch) {
         spriteBatch.begin();
         for (Building building : buildings) {
@@ -126,6 +160,9 @@ public class Buildings {
         spriteBatch.end();
     }
 
+    /**
+     * @return true if a building is currently being selected and false otherwise.
+     */
     public boolean getCurrentlySelecting(){
         return currentlySelecting;
     }

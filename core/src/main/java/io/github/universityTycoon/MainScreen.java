@@ -1,5 +1,6 @@
 package io.github.universityTycoon;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -23,7 +24,9 @@ public class MainScreen implements Screen {
 
     BitmapFont font;
 
-    public float timeSeconds = 300;
+    final float START_TIME_SECONDS = 300;
+    public float timeRemainingSeconds = START_TIME_SECONDS;
+
     String time;
 
     final Main game;
@@ -80,24 +83,24 @@ public class MainScreen implements Screen {
 
         float delta = Gdx.graphics.getDeltaTime();
 
-        timeSeconds -= delta;
-        time = String.valueOf(floorDiv((int) timeSeconds, 60)) + ":" + (String.valueOf((int) timeSeconds % 60));
+        timeRemainingSeconds -= delta;
+        time = String.valueOf(floorDiv((int) timeRemainingSeconds, 60)) + ":" + (String.valueOf((int) timeRemainingSeconds % 60));
 
     }
 
 
-private void draw() {
-    ScreenUtils.clear(Color.BLACK);
-    viewport.apply();
-    batch.setProjectionMatrix(viewport.getCamera().combined);
-    batch.begin();
+    private void draw() {
+        ScreenUtils.clear(Color.BLACK);
+        viewport.apply();
+        batch.setProjectionMatrix(viewport.getCamera().combined);
+        batch.begin();
 
-    float worldWidth = viewport.getWorldWidth();
-    float worldHeight = viewport.getWorldHeight();
+        float worldWidth = viewport.getWorldWidth();
+        float worldHeight = viewport.getWorldHeight();
 
-    game.font.draw(batch, time, 1, 1.5f);
+        game.font.draw(batch, time, 1, 1.5f);
 
-    batch.end();
+        batch.end();
     }
 
 
@@ -119,6 +122,10 @@ private void draw() {
     @Override
     public void dispose() {
 
+    }
+
+    public float getTimeElapsed() {
+        return START_TIME_SECONDS - timeRemainingSeconds;
     }
 }
 

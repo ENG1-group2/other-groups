@@ -1,6 +1,5 @@
 package io.github.universityTycoon;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -29,8 +28,8 @@ public class MainScreen implements Screen {
 
     String time;
 
-    final Main game;
-    public MainScreen(Main main) {
+    final ScreenManager game;
+    public MainScreen(ScreenManager main) {
         this.game = main;
 
         // Everything that goes in create for an application listener, goes in here

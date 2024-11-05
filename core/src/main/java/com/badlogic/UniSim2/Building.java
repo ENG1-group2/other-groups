@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-public class Building extends Sprite {
+public abstract class Building extends Sprite {
 
     // Textures for when a building is placed, colliding, dragged
     private final Texture placedTexture;

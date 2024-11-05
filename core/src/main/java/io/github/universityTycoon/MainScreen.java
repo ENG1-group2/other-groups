@@ -23,14 +23,22 @@ public class MainScreen implements Screen {
 
     BitmapFont font;
 
-    public float timeSeconds = 300;
+    float timeSeconds;
     String time;
+    boolean isPaused;
 
+    public float getTimeSeconds() {
+        return timeSeconds;
+    }
+
+
+    // Everything that goes in create for an application listener, goes in here
+    // Meaning all asset/variable assignments
     final Main game;
     public MainScreen(Main main) {
         this.game = main;
-
-        // Everything that goes in create for an application listener, goes in here
+        timeSeconds = 300;
+        isPaused = false;
     }
 
 
@@ -57,11 +65,6 @@ public class MainScreen implements Screen {
         viewport.update(width, height, true);
     }
 
-    public void render() {
-        input();
-        logic();
-        draw();
-    }
 
     private void input() {
         float delta = Gdx.graphics.getDeltaTime();
@@ -79,8 +82,18 @@ public class MainScreen implements Screen {
         float worldHeight = viewport.getWorldHeight();
 
         float delta = Gdx.graphics.getDeltaTime();
-
-        timeSeconds -= delta;
+        if (!isPaused) {
+            timeSeconds -= delta;
+        }
+        // This is an example of how the game can be paused
+        // To do so in a different file, use gameScreen.timeSeconds
+        // and gameScreen.getTimeSeconds
+        /*
+        if (timeSeconds < 290) {
+            pause();
+            System.out.println(getTimeSeconds());
+        }
+        */
         time = String.valueOf(floorDiv((int) timeSeconds, 60)) + ":" + (String.valueOf((int) timeSeconds % 60));
 
     }
@@ -95,7 +108,7 @@ private void draw() {
     float worldWidth = viewport.getWorldWidth();
     float worldHeight = viewport.getWorldHeight();
 
-    game.font.draw(batch, time, 1, 1.5f);
+    game.font.draw(batch, time, 1f, 1.5f);
 
     batch.end();
     }
@@ -103,12 +116,12 @@ private void draw() {
 
     @Override
     public void pause() {
-
+        isPaused = true;
     }
 
     @Override
     public void resume() {
-
+        isPaused = false;
     }
 
     @Override

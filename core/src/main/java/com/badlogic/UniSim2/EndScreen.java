@@ -2,6 +2,9 @@ package com.badlogic.UniSim2;
 
 import com.badlogic.gdx.Screen;
 
+/**
+ * This screen should be shown when the game ends.
+ */
 public class EndScreen implements Screen {
     private Main game;
     public EndScreen(Main game){

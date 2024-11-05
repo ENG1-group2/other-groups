@@ -37,7 +37,7 @@ public class Timer {
         return elapsedTime;
     }
 
-    public boolean getReachedMaxTime(){
+    public boolean hasReachedMaxTime(){
         return reachedMaxTime;
     }
 }

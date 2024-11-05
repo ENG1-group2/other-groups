@@ -1,7 +1,6 @@
 package com.badlogic.UniSim2;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -18,18 +17,22 @@ public class GameMenu {
     private BuildingMenu buildingMenu;
     private Timer timer;
     private Label timerLabel;
-    private boolean paused;
-    private Main game;
+    private boolean isPaused;
     
     public GameMenu(Main game, Timer timer, BuildingManager buildings){
-
-        this.game = game;
         stage = new Stage(game.getViewport());
         skin = new Skin(Gdx.files.internal("ui/uiskin.json")); 
         buildingMenu = new BuildingMenu(stage, buildings);
         this.timer = timer;
-        paused = true;
+        isPaused = false;
         createMenu();
+    }
+
+    /**
+     * Activates the input processor needed for the menu to use inputs.
+     */
+    public void activate() {
+        Gdx.input.setInputProcessor(stage);
     }
 
     private void createMenu(){
@@ -62,47 +65,45 @@ public class GameMenu {
         timerLabel.setText(String.format("%02d:%02d", minutes, seconds));
     }
 
-    // Changes paused when the space bar is pressed
-    private void checkPause(){
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
-            paused = !paused;
-        }
+
+    /**
+     * Should be called when the game is paused.
+     */
+    public void pause() {
+        timerLabel.setText("PAUSED");
+        isPaused = true;
     }
 
-    // Checks if the game has ended
-    private void checkEndGame(){
-        boolean gameEnded = timer.getReachedMaxTime();
-        if(gameEnded){
-            game.setScreen(new StartScreen(game)); // Returns to the start screen
-        }
+    /**
+     * Should be called when the game is resumed.
+     */
+    public void resume() {
+        updateTimerLabel();
+        isPaused = false;
     }
     
+    /**
+     * 
+     */
     public void input(){
         stage.act(Gdx.graphics.getDeltaTime());
-        // Checks if space bar has been pressed
-        checkPause();
-        // If unpaused
-        if(!paused){
-            buildingMenu.render();
-            timer.update(); // Update the timer
-            updateTimerLabel(); // Update the timer label to show the time played
-            checkEndGame(); // Check if the game has ended
-        }
-        else{
-            timerLabel.setText("PAUSED");
-        }
     }
 
     public void draw(){
-        buildingMenu.drawBuildingMenu();
+        if (isPaused == false) {
+            updateTimerLabel();    
+        }
+        buildingMenu.draw();
         stage.draw();
     }
 
     public boolean getPaused(){
-        return paused;
+        return isPaused;
     }
 
     public void dispose(){
         buildingMenu.dispose();
+        stage.dispose();
+        skin.dispose();
     }
 }

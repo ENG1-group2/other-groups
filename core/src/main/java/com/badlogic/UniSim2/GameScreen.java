@@ -1,5 +1,7 @@
 package com.badlogic.UniSim2;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
@@ -14,6 +16,8 @@ public class GameScreen implements Screen {
 
     private GameMenu menu; // Used to make and display the game menu
 
+    boolean isPaused = false;
+
     private Map map;
     public GameScreen(Main game){
         this.game = game;
@@ -25,6 +29,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
+        menu.activate();
     }
 
     @Override
@@ -37,15 +42,33 @@ public class GameScreen implements Screen {
     private void input() {
         menu.input();
         map.input();
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+            if (isPaused) {
+                isPaused = false;
+                menu.resume();
+            }
+            else {
+                isPaused = true;
+                menu.pause();
+            }
+        }
+
     }
 
     private void update() {
-        
+        if (isPaused == false) {
+            timer.update();
+            if (timer.hasReachedMaxTime()) {
+                game.endGame();
+            }
+        }
     }
 
     private void draw() {
-        menu.draw();
+        viewport.apply();
         map.draw();
+        menu.draw();
     }
 
 

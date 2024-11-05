@@ -27,12 +27,12 @@ public class StartScreen implements Screen {
         this.game = game;
         viewport = game.getViewport();
         stage = new Stage(viewport);
-        Gdx.input.setInputProcessor(stage);
         addStartButton();
     }
 
     @Override
     public void show() {
+        Gdx.input.setInputProcessor(stage);
     }
 
     /**
@@ -71,7 +71,6 @@ public class StartScreen implements Screen {
                 // Play the start sound and start the music with it looping
                 Assets.gameStart.play();
                 Assets.music.play();
-                System.out.println("should start game.");
                 game.startGame();
                 dispose();
             }

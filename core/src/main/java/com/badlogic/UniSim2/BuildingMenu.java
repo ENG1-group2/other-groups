@@ -202,14 +202,8 @@ public class BuildingMenu {
         stage.addActor(menuBar);
     }
 
-    public void render(){
+    public void draw() {
         stage.act(Gdx.graphics.getDeltaTime());
-    }
-
-    /**
-     * Draws the building menu.
-     */
-    public void drawBuildingMenu(){
         stage.draw();
     }
 

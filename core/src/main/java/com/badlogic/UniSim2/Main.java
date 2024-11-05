@@ -17,10 +17,8 @@ public class Main extends Game {
         Assets.loadTextures();
 
         startScreen = new StartScreen(this);
-        gameScreen = new GameScreen(this);
-        endScreen = new EndScreen(this);
 
-        setScreen(gameScreen);
+        setScreen(startScreen);
     }
 
     public StretchViewport getViewport() {
@@ -37,6 +35,7 @@ public class Main extends Game {
      * called by the {@link StartScreen} when the start button is clicked.
      */
     public void startGame() {
+        gameScreen = new GameScreen(this);
         setScreen(gameScreen);
         startScreen.dispose();
     }
@@ -46,6 +45,7 @@ public class Main extends Game {
      * the {@link GameScreen} when the timer ends.
      */
     public void endGame() {
+        endScreen = new EndScreen(this);
         setScreen(endScreen);
         gameScreen.dispose();
     }

@@ -1,4 +1,4 @@
-package io.github.universityTycoon;
+package io.github.universityTycoon.PlaceableObjects;
 
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 

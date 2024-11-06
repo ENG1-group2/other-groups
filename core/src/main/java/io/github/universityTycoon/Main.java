@@ -12,22 +12,40 @@ public class Main extends Game {
     public BitmapFont font;
     public FitViewport viewport;
 
+    public MainScreen gameScreen;
+    public FirstScreen menuScreen;
 
     public void create() {
+
+        //Create instances of the screens, this allows access to non-static variables
+        gameScreen = new MainScreen(this);
+        menuScreen = new FirstScreen(this);
+
         batch = new SpriteBatch();
+
         // use libGDX's default font
         font = new BitmapFont();
         viewport = new FitViewport(16, 9);
 
         //font has 15pt, but we need to scale it to our viewport by ratio of viewport height to screen height
         font.setUseIntegerPositions(false);
-        font.getData().setScale(viewport.getWorldHeight() / Gdx.graphics.getHeight());
+        // Changing the 1 in the line below can change the font size, though only in
+        // integer increments, so probably better to use a non-default font.
+        font.getData().setScale(1 *(viewport.getWorldHeight() / Gdx.graphics.getHeight()));
 
-        this.setScreen(new MainScreen(this));
+
+        // use these lines to choose which screen is displayed.
+        setScreen(menuScreen);
+        setScreen(gameScreen);
+
+
+
+
+
     }
 
     public void render() {
-        super.render(); // important!
+        super.render();
     }
 
     public void dispose() {

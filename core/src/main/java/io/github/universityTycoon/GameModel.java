@@ -19,16 +19,14 @@ public class GameModel {
     GameState gameState;
     EventManager eventManager;
     GameEventListener eventListener;
-    PlayerInputHandler playerInputHandler;
     ScoreCalculator scoreCalculator;
     AudioSelector audioSelector;
     MapController mapController;
 
-    public GameModel(PlayerInputHandler inputHandler) {
+    public GameModel() {
 
         eventListener = new GameEventListener(this::handleEvent); // If you're confused, look into "Java listener pattern" (I am also confused)
         eventManager = new EventManager(eventListener);
-        playerInputHandler = inputHandler;
         scoreCalculator = new ScoreCalculator();
         audioSelector = new AudioSelector();
         mapController = new MapController();

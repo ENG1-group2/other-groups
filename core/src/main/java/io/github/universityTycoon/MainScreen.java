@@ -108,7 +108,7 @@ private void draw() {
     float worldWidth = viewport.getWorldWidth();
     float worldHeight = viewport.getWorldHeight();
 
-    game.font.draw(batch, time, 1f, 1.5f);
+    game.font.draw(batch, time, 7.6f, 8.5f);
 
     batch.end();
     }

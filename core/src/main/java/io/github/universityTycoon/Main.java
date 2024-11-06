@@ -24,7 +24,9 @@ public class Main extends Game {
         batch = new SpriteBatch();
 
         // use libGDX's default font
-        font = new BitmapFont();
+        font = new BitmapFont(Gdx.files.internal("ui/font.fnt"),
+            Gdx.files.internal("ui/font.png"), false);
+
         viewport = new FitViewport(16, 9);
 
         //font has 15pt, but we need to scale it to our viewport by ratio of viewport height to screen height
@@ -45,6 +47,7 @@ public class Main extends Game {
     }
 
     public void render() {
+        font.getData().setScale(0.003f, 0.003f);
         super.render();
     }
 

@@ -3,6 +3,7 @@ package io.github.universityTycoon;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,8 +16,9 @@ import static java.lang.Math.floorDiv;
 
 public class MainScreen implements Screen {
     SpriteBatch batch;
-
     FitViewport viewport;
+
+    Texture backgroundTexture;
 
     Vector2 touchPos;
     Array<Sprite> dropSprites;
@@ -46,7 +48,9 @@ public class MainScreen implements Screen {
     @Override
     public void show() {
         batch = new SpriteBatch();
-        viewport = new FitViewport(16, 9);
+        viewport = new FitViewport(1920, 1080);
+
+        backgroundTexture = new Texture("images/map.png");
 
         // start the playback of the background music
         // when the screen is shown
@@ -99,18 +103,19 @@ public class MainScreen implements Screen {
     }
 
 
-private void draw() {
-    ScreenUtils.clear(Color.BLACK);
-    viewport.apply();
-    batch.setProjectionMatrix(viewport.getCamera().combined);
-    batch.begin();
+    private void draw() {
+        ScreenUtils.clear(Color.BLACK);
+        viewport.apply();
+        batch.setProjectionMatrix(viewport.getCamera().combined);
+        batch.begin();
 
-    float worldWidth = viewport.getWorldWidth();
-    float worldHeight = viewport.getWorldHeight();
+        float worldWidth = viewport.getWorldWidth();
+        float worldHeight = viewport.getWorldHeight();
 
-    game.font.draw(batch, time, 1f, 1.5f);
+        batch.draw(backgroundTexture, 0, worldHeight - 840, worldWidth, 840);
+        game.font.draw(batch, time, 960, 100);
 
-    batch.end();
+        batch.end();
     }
 
 

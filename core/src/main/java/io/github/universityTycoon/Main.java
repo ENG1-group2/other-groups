@@ -37,11 +37,6 @@ public class Main extends Game {
         // use these lines to choose which screen is displayed.
         setScreen(menuScreen);
         setScreen(gameScreen);
-
-
-
-
-
     }
 
     public void render() {

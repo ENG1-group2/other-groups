@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -16,12 +18,13 @@ import static java.lang.Math.floorDiv;
 
 public class MainScreen implements Screen {
     SpriteBatch batch;
+    ShapeRenderer shapeRenderer;
     FitViewport viewport;
 
     Texture backgroundTexture;
 
-    Vector2 touchPos;
-    Array<Sprite> dropSprites;
+    Vector2 mousePos;
+    boolean mouseDown;
 
     BitmapFont font;
 
@@ -48,7 +51,10 @@ public class MainScreen implements Screen {
     @Override
     public void show() {
         batch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
         viewport = new FitViewport(1920, 1080);
+
+        mousePos = new Vector2(0,0);
 
         backgroundTexture = new Texture("images/map.png");
 
@@ -74,11 +80,10 @@ public class MainScreen implements Screen {
         float delta = Gdx.graphics.getDeltaTime();
 
         if (Gdx.input.isTouched()) {
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY());
-            viewport.unproject(touchPos);
-            // ABuilding.setCenterX(touchPos.x); use this to place a building with the mouse
+            mousePos.set(Gdx.input.getX(), Gdx.input.getY());
+            mouseDown = true;
         }
-
+        else {mouseDown = false;}
     }
 
     private void logic() {
@@ -106,6 +111,7 @@ public class MainScreen implements Screen {
     private void draw() {
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
+
         batch.setProjectionMatrix(viewport.getCamera().combined);
         batch.begin();
 
@@ -114,8 +120,17 @@ public class MainScreen implements Screen {
 
         batch.draw(backgroundTexture, 0, worldHeight - 840, worldWidth, 840);
         game.font.draw(batch, time, 960, 100);
-
         batch.end();
+
+        if (mouseDown) {
+            Rectangle rect = new Rectangle();
+            rect.set(mousePos.x, 1080 - mousePos.y, 10, 10);
+
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(Color.RED);
+            shapeRenderer.rect(rect.x, rect.y, rect.width, rect.height);
+            shapeRenderer.end();
+        }
     }
 
 

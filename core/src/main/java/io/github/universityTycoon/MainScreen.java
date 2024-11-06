@@ -111,7 +111,7 @@ public class MainScreen implements Screen {
             System.out.println(getTimeSeconds());
         }
         */
-        time = String.valueOf(floorDiv((int) timeSeconds, 60)) + ":" + (String.valueOf((int) timeSeconds % 60));
+        time = String.valueOf(floorDiv((int) timeRemainingSeconds, 60)) + ":" + (String.valueOf((int) timeRemainingSeconds % 60));
 
     }
 

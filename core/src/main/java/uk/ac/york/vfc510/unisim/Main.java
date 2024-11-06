@@ -28,7 +28,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        map = new TmxMapLoader().load("C:\\ENG1-UniSim\\assets\\emptyMap.tmx");
+        map = new TmxMapLoader().load("emptyMap.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1280, 720); // Set the camera to your desired viewport size

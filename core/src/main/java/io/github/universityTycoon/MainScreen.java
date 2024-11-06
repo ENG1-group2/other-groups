@@ -14,6 +14,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static java.lang.Math.floorDiv;
 
 public class MainScreen implements Screen {
@@ -22,6 +25,9 @@ public class MainScreen implements Screen {
     FitViewport viewport;
 
     Texture backgroundTexture;
+
+    int tileSize = 30;
+    List<Rectangle> activeTiles;
 
     Vector2 mousePos;
     boolean mouseDown;
@@ -57,6 +63,7 @@ public class MainScreen implements Screen {
         mousePos = new Vector2(0,0);
 
         backgroundTexture = new Texture("images/map.png");
+        activeTiles = new ArrayList<Rectangle>();
 
         // start the playback of the background music
         // when the screen is shown
@@ -122,15 +129,31 @@ public class MainScreen implements Screen {
         game.font.draw(batch, time, 960, 100);
         batch.end();
 
-        if (mouseDown) {
-            Rectangle rect = new Rectangle();
-            rect.set(mousePos.x, 1080 - mousePos.y, 10, 10);
-
+        for (Rectangle tiles : activeTiles) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
             shapeRenderer.setColor(Color.RED);
-            shapeRenderer.rect(rect.x, rect.y, rect.width, rect.height);
+            shapeRenderer.rect(tiles.x, tiles.y, tiles.width, tiles.height);
             shapeRenderer.end();
         }
+
+        if (mouseDown) {
+            createTile();
+        }
+    }
+
+    private void createTile() {
+        int tileLocationX = ((int) mousePos.x / tileSize);
+        int tileLocationY = ((int) mousePos.y / tileSize);
+        Vector2 screenLocation = new Vector2(tileLocationX * tileSize, tileLocationY * tileSize);
+
+        Rectangle rect = new Rectangle();
+        rect.set(screenLocation.x, 1080 - screenLocation.y - tileSize, tileSize, tileSize);
+        activeTiles.add(rect);
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.rect(rect.x, rect.y, rect.width, rect.height);
+        shapeRenderer.end();
     }
 
 

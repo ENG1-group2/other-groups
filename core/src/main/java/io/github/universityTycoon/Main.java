@@ -14,12 +14,14 @@ public class Main extends Game {
 
     public MainScreen gameScreen;
     public FirstScreen menuScreen;
+    public FirstScreen titleScreen;
 
     public void create() {
 
         //Create instances of the screens, this allows access to non-static variables
         gameScreen = new MainScreen(this);
         menuScreen = new FirstScreen(this);
+        titleScreen = new FirstScreen(this);
 
         batch = new SpriteBatch();
 
@@ -35,8 +37,8 @@ public class Main extends Game {
 
 
         // use these lines to choose which screen is displayed.
-        setScreen(menuScreen);
-        setScreen(gameScreen);
+        setScreen(titleScreen);
+
 
 
 

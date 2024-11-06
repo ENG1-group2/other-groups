@@ -146,9 +146,13 @@ public class MainScreen implements Screen {
         int tileLocationY = ((int) mousePos.y / tileSize);
         Vector2 screenLocation = new Vector2(tileLocationX * tileSize, tileLocationY * tileSize);
 
+
+        game.font.draw(batch, time, 800f, 800f);
+
         Rectangle rect = new Rectangle();
         rect.set(screenLocation.x, 1080 - screenLocation.y - tileSize, tileSize, tileSize);
         activeTiles.add(rect);
+
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.RED);

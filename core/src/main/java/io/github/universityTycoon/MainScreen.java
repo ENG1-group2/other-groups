@@ -11,12 +11,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static java.lang.Math.floorDiv;
 
@@ -41,7 +37,7 @@ public class MainScreen implements Screen {
     String time;
     boolean isPaused;
 
-    Music music = Gdx.audio.newMusic(Gdx.files.internal("assets/music/main.mp3"));
+    Music music = Gdx.audio.newMusic(Gdx.files.internal("music/main.mp3"));
 
     public float getTimeSeconds() {
         return timeRemainingSeconds;
@@ -174,11 +170,13 @@ public class MainScreen implements Screen {
     @Override
     public void pause() {
         isPaused = true;
+        music.pause();
     }
 
     @Override
     public void resume() {
         isPaused = false;
+        music.play();
     }
 
     @Override

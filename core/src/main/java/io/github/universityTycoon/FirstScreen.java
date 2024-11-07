@@ -31,8 +31,8 @@ public class FirstScreen implements Screen {
 
     // Everything that goes in create for an application listener, goes in here
     // Meaning all asset/variable assignments
-    final Main game;
-    public FirstScreen(Main main) {
+    final ScreenManager game;
+    public FirstScreen(ScreenManager main) {
         this.game = main;
 
     }

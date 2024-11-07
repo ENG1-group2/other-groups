@@ -70,14 +70,18 @@ Package "Model" {
     }
 }
 Package "View" {
-    class MainScreen {
+    class ScreenManager {
         create()
         render()
     }
-    class UILogic {
-        generatePauseScreen()
-        generateMainScreen()
-        generateEndScreen()
+    class MainScreen {
+        create()
+        render()
+        input()
+    }
+    class MenuScreen {
+        create()
+        render()
     }
 }
 Package "Controller" {
@@ -101,11 +105,11 @@ MapController -- MapGenerator
 MapController -- MapObject
 
 MainScreen -- GameModel
+ScreenManager -- MainScreen
+ScreenManager -- MenuScreen
 
 PlayerInputHandler -- GameModel
 PlayerInputHandler -- MainScreen
-
-UILogic -- MainScreen
 
 GameModel -- ScoreCalculator
 GameModel -- EventManager
@@ -113,5 +117,6 @@ GameModel -- MapController
 GameModel -- AudioSelector
 
 EventManager -- GameEvent
+
 
 @enduml

@@ -7,9 +7,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -66,6 +69,7 @@ public class FirstScreen implements Screen {
         if (Gdx.input.isTouched()) {
             touchPos.set(Gdx.input.getX(), Gdx.input.getY());
             viewport.unproject(touchPos);
+
             // ABuilding.setCenterX(touchPos.x); use this to place a building with the mouse
         }
 
@@ -84,19 +88,19 @@ public class FirstScreen implements Screen {
         ScreenUtils.clear(Color.BLACK);
         Texture background = new Texture(Gdx.files.internal("images/title_page.png"));
         Texture logo = new Texture(Gdx.files.internal("images/logo.png"));
-
+        Texture start = new Texture(Gdx.files.internal("images/start.png"));
 
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
+
+
         batch.begin();
+
         batch.draw(background, 0, 0, worldWidth, worldHeight);
         batch.draw(logo, 6, 4.5f, 4, 4);
-
-
-
-        
+        batch.draw(start, 7.1f, 2.5f, 2, 0.75f);
 
         batch.end();
     }

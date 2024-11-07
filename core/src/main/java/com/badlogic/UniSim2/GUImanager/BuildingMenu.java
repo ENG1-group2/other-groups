@@ -211,7 +211,6 @@ public class BuildingMenu {
     }
 
     public void dispose(){
-        stage.dispose();
     } 
 }
 

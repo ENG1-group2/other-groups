@@ -1,8 +1,10 @@
 package io.github.universityTycoon;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -45,7 +47,7 @@ public class FirstScreen implements Screen {
 
     @Override
     public void render(float v) {
-        input();
+         // is_key_pressed();
         logic();
         draw();
     }
@@ -56,16 +58,11 @@ public class FirstScreen implements Screen {
         viewport.update(width, height, true);
     }
 
-
-    private void input() {
-        float delta = Gdx.graphics.getDeltaTime();
-
-        if (Gdx.input.isTouched()) {
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY());
-            viewport.unproject(touchPos);
-            // ABuilding.setCenterX(touchPos.x); use this to place a building with the mouse
+    // not called by anything yet
+    private void is_key_pressed(int keycode) {
+        if (keycode == Input.Keys.SPACE) {
+            game.switchToMainScreen();
         }
-
     }
 
     private void logic() {
@@ -79,14 +76,21 @@ public class FirstScreen implements Screen {
 
     private void draw() {
         ScreenUtils.clear(Color.BLACK);
-        viewport.apply();
-        batch.setProjectionMatrix(viewport.getCamera().combined);
-        batch.begin();
+        Texture background = new Texture(Gdx.files.internal("images/title_page.png"));
+        Texture logo = new Texture(Gdx.files.internal("images/logo.png"));
+        Texture start = new Texture(Gdx.files.internal("images/start.png"));
 
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
+        viewport.apply();
+        batch.setProjectionMatrix(viewport.getCamera().combined);
 
-        game.font.draw(batch, "Sentence goes here", 1, 1.5f);
+
+        batch.begin();
+
+        batch.draw(background, 0, 0, worldWidth, worldHeight);
+        batch.draw(logo, 6, 4.5f, 4, 4);
+        batch.draw(start, 6.05f, 2.5f, 4, 0.55f);
 
         batch.end();
     }

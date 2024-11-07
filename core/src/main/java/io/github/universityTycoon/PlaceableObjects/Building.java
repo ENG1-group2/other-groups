@@ -31,9 +31,9 @@ public class Building implements MapObject {
     public Texture getTexture() {
         return texture;
     }
-    public PolygonShape getShape() {
-        return shape;
-    }
+    //public PolygonShape getShape() {
+    //    return shape;
+    //}
     public int getCapacity() {
         return capacity;
     }

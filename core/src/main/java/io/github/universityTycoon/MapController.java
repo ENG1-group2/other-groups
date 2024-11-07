@@ -15,7 +15,7 @@ public class MapController {
     public MapController(int tilesWide, int tilesHigh) {
         this.tilesWide = tilesWide;
         this.tilesHigh = tilesHigh;
-        MapObject[][] mapObjects = new MapObject[tilesWide][tilesHigh];
+        this.mapObjects = new MapObject[tilesWide][tilesHigh];
     }
 
     public void addBuilding(Building building, int xPos, int yPos) {

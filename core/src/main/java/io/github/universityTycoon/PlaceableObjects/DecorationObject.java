@@ -1,5 +1,6 @@
 package io.github.universityTycoon.PlaceableObjects;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 public class DecorationObject implements MapObject {
@@ -7,8 +8,8 @@ public class DecorationObject implements MapObject {
     public String getName() {
         return name;
     }
-    public String getSpritePath() {
-        return spritePath;
+    public Texture getTexture() {
+        return texture;
     }
     public PolygonShape getShape() {
         return shape;

@@ -48,7 +48,7 @@ public class GameModel {
         eventManager = new EventManager(eventListener);
         scoreCalculator = new ScoreCalculator();
         audioSelector = new AudioSelector();
-        mapController = new MapController();
+        mapController = new MapController(64, 28);
         viewport = new FitViewport(16, 9);
 
         worldWidth = viewport.getWorldWidth();

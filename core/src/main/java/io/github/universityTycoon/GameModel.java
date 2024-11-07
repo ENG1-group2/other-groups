@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import io.github.universityTycoon.PlaceableObjects.MapObject;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -11,7 +12,6 @@ import java.time.ZoneOffset;
 public class GameModel {
 
     // Game variables
-    static FitViewport viewport;
     private final float YEARS_PER_MINUTE = 1f;
     private final int STARTING_YEAR = 2024; // Don't make this < 1970 I beg
 
@@ -24,13 +24,10 @@ public class GameModel {
     //1 is firstScreen, 2 Mainscreen, update this, functions using this if more screens are added.
     public static int currentScreen;
 
-    public int tileSize = 30;
-    public Rectangle[][] activeTiles;
+    public int tilesWide = 64;
+    public int tilesHigh = 28;
 
     int noBuildingTypes;
-
-    static float worldWidth;
-    static float worldHeight;
 
     public boolean isPaused;
     // Objects
@@ -48,12 +45,7 @@ public class GameModel {
         eventManager = new EventManager(eventListener);
         scoreCalculator = new ScoreCalculator();
         audioSelector = new AudioSelector();
-        mapController = new MapController();
-        viewport = new FitViewport(16, 9);
-
-        worldWidth = viewport.getWorldWidth();
-
-        worldHeight = viewport.getWorldWidth();
+        mapController = new MapController(64, 28);
 
         isPaused = false;
 
@@ -74,7 +66,9 @@ public class GameModel {
     }
 
 
-
+    public MapObject[][] getMapObjects() {
+        return mapController.mapObjects;
+    }
 
     public float getTimeElapsed() {
         return START_TIME_SECONDS - timeRemainingSeconds;
@@ -84,12 +78,12 @@ public class GameModel {
         return timeRemainingSeconds;
     }
 
-    public int getTileSize() {
-        return tileSize;
+    public int getTilesWide() {
+        return tilesWide;
     }
 
-    public Rectangle[][] getActiveTiles() {
-        return activeTiles;
+    public int getTilesHigh() {
+        return tilesHigh;
     }
 
     public boolean getIsPaused() {
@@ -108,14 +102,6 @@ public class GameModel {
         return currentScreen;
     }
 
-    public static float getWorldWidth() {
-        return worldWidth;
-    }
-
-    public static float getWorldHeight() {
-        return worldHeight;
-    }
-
     public int getNoBuildingTypes() {
         return noBuildingTypes;
     }
@@ -126,9 +112,9 @@ public class GameModel {
 
     // Converts the value in the timer to the relative game time (for example, after 2 minutes of real world time, the game year might be 2026)
     // MAKE SURE TO USE TIME ELAPSED, NOT TIME REMAINING
-    public LocalDateTime getGameTimeGMT(float timeElapsedSeconds) {
+    public LocalDateTime getGameTimeGMT() {
         // Not bothering with leap days for now. Only difference will be the game ends an in-game day or two early, but time will still be 5 minutes
-        long inGameSeconds = (long)(timeElapsedSeconds * (365 * 24 * 60) * YEARS_PER_MINUTE);
+        long inGameSeconds = (long)(getTimeElapsed() * (365 * 24 * 60) * YEARS_PER_MINUTE);
         long startOfYearSeconds = LocalDateTime.of(STARTING_YEAR, 1, 1, 0, 0).toEpochSecond(ZoneOffset.UTC);
 
         return LocalDateTime.ofEpochSecond(inGameSeconds + startOfYearSeconds, 0, ZoneOffset.UTC);

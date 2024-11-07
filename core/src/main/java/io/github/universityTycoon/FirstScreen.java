@@ -16,6 +16,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class FirstScreen implements Screen {
     SpriteBatch batch;
+    PlayerInputHandler input;
+    FitViewport viewport;
 
     Vector2 touchPos;
     Array<Sprite> dropSprites;
@@ -31,14 +33,15 @@ public class FirstScreen implements Screen {
     @Override
     public void show() {
         batch = new SpriteBatch();
-        GameModel.viewport = new FitViewport(16, 9);
+        viewport = new FitViewport(16, 9);
+        input = new PlayerInputHandler();
 
 
     }
 
     @Override
     public void render(float v) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+        if (input.getKeyJustPressed(Input.Keys.SPACE)) {
             game.switchToMainScreen();  // Switch to MainScreen
         }
         logic();
@@ -48,7 +51,7 @@ public class FirstScreen implements Screen {
     @Override
     public void resize(int width, int height) {
 
-        GameModel.viewport.update(width, height, true);
+        viewport.update(width, height, true);
     }
 
 
@@ -69,13 +72,13 @@ public class FirstScreen implements Screen {
         Texture start = new Texture(Gdx.files.internal("images/start.png"));
 
 
-        GameModel.viewport.apply();
-        batch.setProjectionMatrix(GameModel.viewport.getCamera().combined);
+        viewport.apply();
+        batch.setProjectionMatrix(viewport.getCamera().combined);
 
 
 
 
-        batch.draw(background, 0, 0, GameModel.getWorldHeight(), GameModel.getWorldHeight());
+        batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
         batch.draw(logo, 6, 4.5f, 4, 4);
         batch.draw(start, 6.05f, 2.5f, 4, 0.55f);
 

@@ -1,5 +1,6 @@
 package io.github.universityTycoon.PlaceableObjects;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 import java.time.Duration;
@@ -9,6 +10,7 @@ public class Building implements MapObject {
 
     public Duration constructionGameTime = Duration.ofDays(365);
     public LocalDateTime finishDate;
+    public boolean isUnderConstruction = true;
 
     LocalDateTime constructionStartedAt; // IN-GAME TIME
 
@@ -17,15 +19,21 @@ public class Building implements MapObject {
         finishDate = constructionStartedAt.plus(constructionGameTime);
     }
 
+    public Building(LocalDateTime constructionStartedAt, Duration constructionGameTime) {
+        this.constructionStartedAt = constructionStartedAt;
+        this.constructionGameTime = constructionGameTime;
+        finishDate = constructionStartedAt.plus(constructionGameTime);
+    }
+
     public String getName() {
         return name;
     }
-    public String getSpritePath() {
-        return spritePath;
+    public Texture getTexture() {
+        return texture;
     }
-    public PolygonShape getShape() {
-        return shape;
-    }
+    //public PolygonShape getShape() {
+    //    return shape;
+    //}
     public int getCapacity() {
         return capacity;
     }
@@ -38,7 +46,9 @@ public class Building implements MapObject {
         return 1f;
     }
 
-    public boolean isUnderConstruction(LocalDateTime currentGameTime) {
-        return currentGameTime.isBefore(finishDate);
+    public void update(LocalDateTime currentGameTime) {
+        if (currentGameTime.isAfter(finishDate)) {
+            isUnderConstruction = false;
+        }
     }
 }

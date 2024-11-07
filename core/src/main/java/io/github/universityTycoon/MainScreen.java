@@ -90,6 +90,14 @@ public class MainScreen implements Screen {
     private void input() {
         float delta = Gdx.graphics.getDeltaTime();
 
+        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.P)) {
+            if (isPaused) {
+                resume();
+            } else {
+                pause();
+            }  // Toggle the pause state
+        }
+
         if (Gdx.input.isTouched()) {
             mousePos.set(Gdx.input.getX(), Gdx.input.getY());
             mouseDown = true;
@@ -174,11 +182,13 @@ public class MainScreen implements Screen {
     @Override
     public void pause() {
         isPaused = true;
+        music.pause();
     }
 
     @Override
     public void resume() {
         isPaused = false;
+        music.play();
     }
 
     @Override

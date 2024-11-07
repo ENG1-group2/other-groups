@@ -19,9 +19,7 @@ public class Main extends Game {
     @Override
     public void create() {
         Assets.loadTextures();
-
         startScreen = new StartScreen(this);
-
         setScreen(startScreen);
     }
 

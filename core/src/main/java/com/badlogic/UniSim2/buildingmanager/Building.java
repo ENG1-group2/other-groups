@@ -95,7 +95,6 @@ public abstract class Building extends Sprite {
      * placed texture.
      */
     public void placeBuilding() {
-        Assets.click.play();
         isSelected = false;
         isPlaced = true;
         setRegion(placedTexture);
@@ -174,7 +173,6 @@ public abstract class Building extends Sprite {
         return type;
     }
 
-    public void dispose(){
-        dispose();
+    public void dispose() {
     }
 }

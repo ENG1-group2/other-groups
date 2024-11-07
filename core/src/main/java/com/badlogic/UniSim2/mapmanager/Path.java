@@ -1,4 +1,4 @@
-package com.badlogic.UniSim2;
+package com.badlogic.UniSim2.mapmanager;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 

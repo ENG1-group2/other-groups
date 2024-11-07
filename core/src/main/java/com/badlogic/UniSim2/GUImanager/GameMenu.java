@@ -1,5 +1,9 @@
-package com.badlogic.UniSim2;
+package com.badlogic.UniSim2.GUI;
 
+import com.badlogic.UniSim2.Consts;
+import com.badlogic.UniSim2.GameScreen;
+import com.badlogic.UniSim2.Main;
+import com.badlogic.UniSim2.buildings.BuildingManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;

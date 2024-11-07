@@ -1,4 +1,7 @@
-package com.badlogic.UniSim2;
+package com.badlogic.UniSim2.buildings;
+
+import com.badlogic.UniSim2.Assets;
+import com.badlogic.UniSim2.Consts;
 
 /**
  * A building which represents a place where students can eat food.

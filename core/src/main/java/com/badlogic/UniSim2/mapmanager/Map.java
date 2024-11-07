@@ -1,5 +1,10 @@
-package com.badlogic.UniSim2;
+package com.badlogic.UniSim2.mapmanager;
 
+import com.badlogic.UniSim2.Assets;
+import com.badlogic.UniSim2.Consts;
+import com.badlogic.UniSim2.Main;
+import com.badlogic.UniSim2.buildings.Building;
+import com.badlogic.UniSim2.buildings.BuildingManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

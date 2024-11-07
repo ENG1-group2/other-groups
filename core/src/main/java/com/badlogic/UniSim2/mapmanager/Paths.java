@@ -1,4 +1,6 @@
-package com.badlogic.UniSim2;
+package com.badlogic.UniSim2.mapmanager;
+
+import com.badlogic.UniSim2.Consts;
 
 /**
  * This class is used to create Paths at the start of the game.

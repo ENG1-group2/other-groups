@@ -27,7 +27,7 @@ public class MainScreen implements Screen {
     Texture backgroundTexture;
 
     int tileSize = 30;
-    List<Rectangle> activeTiles;
+    Rectangle[][] activeTiles;
 
     Vector2 mousePos;
     boolean mouseDown;
@@ -63,7 +63,7 @@ public class MainScreen implements Screen {
         mousePos = new Vector2(0,0);
 
         backgroundTexture = new Texture("images/map.png");
-        activeTiles = new ArrayList<Rectangle>();
+        activeTiles = new Rectangle[1920 / tileSize][840 / tileSize];
 
         // start the playback of the background music
         // when the screen is shown
@@ -129,11 +129,15 @@ public class MainScreen implements Screen {
         game.font.draw(batch, time, 960, 100);
         batch.end();
 
-        for (Rectangle tiles : activeTiles) {
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(Color.RED);
-            shapeRenderer.rect(tiles.x, tiles.y, tiles.width, tiles.height);
-            shapeRenderer.end();
+        for (Rectangle[] activeTile : activeTiles) {
+            for (Rectangle tile : activeTile) {
+                if (tile != null) {
+                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                    shapeRenderer.setColor(Color.RED);
+                    shapeRenderer.rect(tile.x, tile.y, tile.width, tile.height);
+                    shapeRenderer.end();
+                }
+            }
         }
 
         if (mouseDown) {
@@ -151,7 +155,7 @@ public class MainScreen implements Screen {
 
         Rectangle rect = new Rectangle();
         rect.set(screenLocation.x, 1080 - screenLocation.y - tileSize, tileSize, tileSize);
-        activeTiles.add(rect);
+        activeTiles[tileLocationX][tileLocationY] = rect;
 
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

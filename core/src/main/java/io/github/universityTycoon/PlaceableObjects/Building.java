@@ -9,11 +9,18 @@ public class Building implements MapObject {
 
     public Duration constructionGameTime = Duration.ofDays(365);
     public LocalDateTime finishDate;
+    public boolean isUnderConstruction = true;
 
     LocalDateTime constructionStartedAt; // IN-GAME TIME
 
     public Building(LocalDateTime constructionStartedAt) {
         this.constructionStartedAt = constructionStartedAt;
+        finishDate = constructionStartedAt.plus(constructionGameTime);
+    }
+
+    public Building(LocalDateTime constructionStartedAt, Duration constructionGameTime) {
+        this.constructionStartedAt = constructionStartedAt;
+        this.constructionGameTime = constructionGameTime;
         finishDate = constructionStartedAt.plus(constructionGameTime);
     }
 
@@ -38,7 +45,9 @@ public class Building implements MapObject {
         return 1f;
     }
 
-    public boolean isUnderConstruction(LocalDateTime currentGameTime) {
-        return currentGameTime.isBefore(finishDate);
+    public void update(LocalDateTime currentGameTime) {
+        if (currentGameTime.isAfter(finishDate)) {
+            isUnderConstruction = false;
+        }
     }
 }

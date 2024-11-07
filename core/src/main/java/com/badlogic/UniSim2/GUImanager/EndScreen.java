@@ -1,6 +1,7 @@
 package com.badlogic.UniSim2.GUImanager;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.UniSim2.Main;
 import com.badlogic.UniSim2.buildingmanager.Building;
 import com.badlogic.UniSim2.buildingmanager.BuildingManager;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.Align;
@@ -32,7 +34,7 @@ public class EndScreen implements Screen {
     private final Skin skin;
     private int score;
 
-
+    SpriteBatch spriteBatch = new SpriteBatch();
 
     public EndScreen(Main game, int score){
         this.game = game;
@@ -65,15 +67,27 @@ public class EndScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
     }
 
+    // Draws the background of the start menu
+    private void drawBackground(){
+        spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
+        spriteBatch.begin();
+        spriteBatch.draw(Assets.startBackgroundTexture, 0, 0, Consts.WORLD_WIDTH, Consts.WORLD_HEIGHT);
+        spriteBatch.end();
+        
+    }
+
     @Override
     public void render(float delta) {
         viewport.apply();
+        ScreenUtils.clear(Consts.BACKGROUND_COLOR);
+        drawBackground();
         stage.act(delta);
         stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
+        viewport.update(width, height, true);
     }
 
     @Override

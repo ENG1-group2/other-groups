@@ -2,9 +2,11 @@ package com.badlogic.UniSim2.GUImanager;
 
 import com.badlogic.UniSim2.Main;
 import com.badlogic.UniSim2.mapmanager.Map;
+import com.badlogic.UniSim2.resources.Consts;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 /**
@@ -19,6 +21,8 @@ public class GameScreen implements Screen {
     private GameMenu menu; // Used to make and display the game menu
 
     boolean isPaused = false;
+
+    boolean hasEnded = false;
 
     private Map map;
     public GameScreen(Main game){
@@ -38,6 +42,7 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         input();
         update();
+        if (hasEnded == true) return;
         draw();
     }
 
@@ -63,12 +68,14 @@ public class GameScreen implements Screen {
             timer.update();
             if (timer.hasReachedMaxTime()) {
                 game.endGame();
+                hasEnded = true;
             }
         }
     }
 
     private void draw() {
         viewport.apply();
+        ScreenUtils.clear(Consts.BACKGROUND_COLOR);
         map.draw();
         menu.draw();
     }

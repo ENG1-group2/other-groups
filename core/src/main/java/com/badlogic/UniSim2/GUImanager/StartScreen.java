@@ -94,6 +94,7 @@ public class StartScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        ScreenUtils.clear(Consts.BACKGROUND_COLOR);
         drawBackground();
         stage.act(delta);
         stage.draw();

@@ -174,7 +174,6 @@ public abstract class Building extends Sprite {
         return type;
     }
 
-    public void dispose(){
-        dispose();
+    public void dispose() {
     }
 }

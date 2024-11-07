@@ -22,11 +22,7 @@ public class FirstScreen implements Screen {
     Vector2 touchPos;
     Array<Sprite> dropSprites;
 
-    BitmapFont font;
 
-
-    // Everything that goes in create for an application listener, goes in here
-    // Meaning all asset/variable assignments
     final ScreenManager game;
     public FirstScreen(ScreenManager main) {
         this.game = main;
@@ -37,12 +33,10 @@ public class FirstScreen implements Screen {
     @Override
     public void show() {
         batch = new SpriteBatch();
-        viewport = new FitViewport(16, 9);
+        GameModel.viewport = new FitViewport(16, 9);
         input = new PlayerInputHandler();
 
-        // start the playback of the background music
-        // when the screen is shown
-        // music.play();
+
     }
 
     @Override
@@ -57,16 +51,12 @@ public class FirstScreen implements Screen {
     @Override
     public void resize(int width, int height) {
 
-        viewport.update(width, height, true);
+        GameModel.viewport.update(width, height, true);
     }
 
 
 
     private void logic() {
-        float worldWidth = viewport.getWorldWidth();
-        float worldHeight = viewport.getWorldHeight();
-
-        float delta = Gdx.graphics.getDeltaTime();
 
     }
 
@@ -74,20 +64,21 @@ public class FirstScreen implements Screen {
 
 
     private void draw() {
+        batch.begin();
+
         ScreenUtils.clear(Color.BLACK);
         Texture background = new Texture(Gdx.files.internal("images/title_page.png"));
         Texture logo = new Texture(Gdx.files.internal("images/logo.png"));
         Texture start = new Texture(Gdx.files.internal("images/start.png"));
 
-        float worldWidth = viewport.getWorldWidth();
-        float worldHeight = viewport.getWorldHeight();
-        viewport.apply();
-        batch.setProjectionMatrix(viewport.getCamera().combined);
+
+        GameModel.viewport.apply();
+        batch.setProjectionMatrix(GameModel.viewport.getCamera().combined);
 
 
-        batch.begin();
 
-        batch.draw(background, 0, 0, worldWidth, worldHeight);
+
+        batch.draw(background, 0, 0, GameModel.getWorldHeight(), GameModel.getWorldHeight());
         batch.draw(logo, 6, 4.5f, 4, 4);
         batch.draw(start, 6.05f, 2.5f, 4, 0.55f);
 

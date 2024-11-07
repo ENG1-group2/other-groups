@@ -5,7 +5,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -17,56 +16,46 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import static java.lang.Math.floorDiv;
 
 public class MainScreen implements Screen {
+
+    GameModel gameModel;
     SpriteBatch batch;
     ShapeRenderer shapeRenderer;
-    FitViewport viewport;
 
     Texture backgroundTexture;
 
     Rectangle[] buildingButtons;
-    int noBuildingTypes = 4;
 
-    int tileSize = 30;
-    Rectangle[][] activeTiles;
 
     Vector2 mousePos;
     boolean mouseDown;
     PlayerInputHandler playerInputHandler;
 
-    BitmapFont font;
-
-    final float START_TIME_SECONDS = 300;
-    public float timeRemainingSeconds = START_TIME_SECONDS;
 
     String time;
-    boolean isPaused;
 
     Music music = Gdx.audio.newMusic(Gdx.files.internal("music/main.mp3"));
 
-    public float getTimeSeconds() {
-        return timeRemainingSeconds;
-    }
 
     // Everything that goes in create for an application listener, goes in here
     // Meaning all asset/variable assignments
     final ScreenManager game;
     public MainScreen(ScreenManager main) {
         this.game = main;
-        isPaused = false;
+        gameModel = new GameModel();
     }
 
     @Override
     public void show() {
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
-        viewport = new FitViewport(16, 9);
+        GameModel.viewport = new FitViewport(16, 9);
 
         mousePos = new Vector2(0,0);
         playerInputHandler = new PlayerInputHandler();
 
         backgroundTexture = new Texture("images/map.png");
-        buildingButtons = new Rectangle[noBuildingTypes];
-        activeTiles = new Rectangle[1920 / tileSize][840 / tileSize];
+        buildingButtons = new Rectangle[gameModel.getNoBuildingTypes()];
+        gameModel.activeTiles = new Rectangle[1920 / gameModel.getTileSize()][840 / gameModel.getTileSize()];
 
         // start the playback of the background music when the screen is shown
         music.setVolume(0.5f);
@@ -78,22 +67,19 @@ public class MainScreen implements Screen {
     public void render(float v) {
         input();
         logic();
-        batch.begin();
         draw();
-        batch.end();
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height, true);
+        GameModel.viewport.update(width, height, true);
     }
 
 
     private void input() {
-        float delta = Gdx.graphics.getDeltaTime();
 
-        if (playerInputHandler.getIsPauseJustPressed()) {
-            if (isPaused) {
+        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.P)) {
+            if (gameModel.getIsPaused()) {
                 resume();
             } else {
                 pause();
@@ -108,44 +94,32 @@ public class MainScreen implements Screen {
     }
 
     private void logic() {
-        float worldWidth = viewport.getWorldWidth();
-        float worldHeight = viewport.getWorldHeight();
 
-        float delta = Gdx.graphics.getDeltaTime();
-        if (!isPaused) {
-            timeRemainingSeconds -= delta;
+        if (!gameModel.getIsPaused()) {
+            gameModel.timeRemainingSeconds -= Gdx.graphics.getDeltaTime();
         }
-        // This is an example of how the game can be paused
-        // To do so in a Main, use gameScreen.timeSeconds
-        // and gameScreen.getTimeSeconds
-        /*
-        if (timeSeconds < 290) {
-            pause();
-            System.out.println(getTimeSeconds());
-        }
-        */
-        time = String.valueOf(floorDiv((int) timeRemainingSeconds, 60)) + ":" + (String.valueOf((int) timeRemainingSeconds % 60));
+        time = String.valueOf(floorDiv((int) gameModel.getTimeRemainingSeconds(), 60))
+            + ":" + String.format("%02d", (int) gameModel.getTimeRemainingSeconds() % 60);
 
     }
 
 
     private void draw() {
+
+        batch.begin();
+
         ScreenUtils.clear(Color.BLACK);
-        viewport.apply();
-
-        float worldWidth = viewport.getWorldWidth();
-        float worldHeight = viewport.getWorldHeight();
-
-
-        batch.setProjectionMatrix(viewport.getCamera().combined);
+        GameModel.viewport.apply();
+        batch.setProjectionMatrix(GameModel.viewport.getCamera().combined);
 
 
         batch.draw(backgroundTexture, 0, 2, 16, 7);
         game.font.draw(batch, time, 7.6f, 8.5f);
+
         drawBuildingMenu();
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        for (Rectangle[] activeTile : activeTiles) {
+        for (Rectangle[] activeTile : gameModel.getActiveTiles()) {
             for (Rectangle tile : activeTile) {
                 if (tile != null) {
                     shapeRenderer.setColor(Color.RED);
@@ -158,16 +132,19 @@ public class MainScreen implements Screen {
         if (mouseDown && mousePos.y < 810) {
             createTile();
         }
+
+        batch.end();
     }
 
     private void createTile() {
-        int tileLocationX = ((int) mousePos.x / tileSize);
-        int tileLocationY = ((int) mousePos.y / tileSize);
-        Vector2 screenLocation = new Vector2(tileLocationX * tileSize, tileLocationY * tileSize);
+        int tileLocationX = ((int) mousePos.x / gameModel.getTileSize());
+        int tileLocationY = ((int) mousePos.y / gameModel.getTileSize());
+        Vector2 screenLocation = new Vector2(tileLocationX * gameModel.getTileSize(), tileLocationY * gameModel.getTileSize());
 
         Rectangle rect = new Rectangle();
-        rect.set(screenLocation.x, 1080 - screenLocation.y - tileSize, tileSize, tileSize);
-        activeTiles[tileLocationX][tileLocationY] = rect;
+        rect.set(screenLocation.x, 1080 - screenLocation.y - gameModel.getTileSize(),
+            gameModel.getTileSize(), gameModel.getTileSize());
+        gameModel.activeTiles[tileLocationX][tileLocationY] = rect;
 
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -178,7 +155,7 @@ public class MainScreen implements Screen {
 
     private void drawBuildingMenu() {
         Rectangle background = new Rectangle();
-        background.set(0, 0, viewport.getScreenWidth(), 244);
+        background.set(0, 0, GameModel.viewport.getScreenWidth(), 244);
 
         Rectangle buildingButton1 = new Rectangle();
         buildingButton1.set(22, 22, 200, 200);
@@ -201,16 +178,15 @@ public class MainScreen implements Screen {
     }
 
 
-
     @Override
     public void pause() {
-        isPaused = true;
+        gameModel.isPaused = true;
         music.pause();
     }
 
     @Override
     public void resume() {
-        isPaused = false;
+        gameModel.isPaused = false;
         music.play();
     }
 
@@ -222,10 +198,6 @@ public class MainScreen implements Screen {
     @Override
     public void dispose() {
 
-    }
-
-    public float getTimeElapsed() {
-        return START_TIME_SECONDS - timeRemainingSeconds;
     }
 }
 

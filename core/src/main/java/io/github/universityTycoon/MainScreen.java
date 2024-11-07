@@ -27,7 +27,7 @@ public class MainScreen implements Screen {
     Texture backgroundTexture;
 
     int tileSize = 30;
-    List<Rectangle> activeTiles;
+    Rectangle[][] activeTiles;
 
     Vector2 mousePos;
     boolean mouseDown;
@@ -59,12 +59,12 @@ public class MainScreen implements Screen {
     public void show() {
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
-        viewport = new FitViewport(1920, 1080);
+        viewport = new FitViewport(16, 9);
 
         mousePos = new Vector2(0,0);
 
         backgroundTexture = new Texture("images/map.png");
-        activeTiles = new ArrayList<Rectangle>();
+        activeTiles = new Rectangle[1920 / tileSize][840 / tileSize];
 
         // start the playback of the background music
         // when the screen is shown
@@ -75,7 +75,9 @@ public class MainScreen implements Screen {
     public void render(float v) {
         input();
         logic();
+        batch.begin();
         draw();
+        batch.end();
     }
 
     @Override
@@ -103,7 +105,7 @@ public class MainScreen implements Screen {
             timeRemainingSeconds -= delta;
         }
         // This is an example of how the game can be paused
-        // To do so in a different file, use gameScreen.timeSeconds
+        // To do so in a Main, use gameScreen.timeSeconds
         // and gameScreen.getTimeSeconds
         /*
         if (timeSeconds < 290) {
@@ -120,21 +122,27 @@ public class MainScreen implements Screen {
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
 
-        batch.setProjectionMatrix(viewport.getCamera().combined);
-        batch.begin();
-
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
 
-        batch.draw(backgroundTexture, 0, worldHeight - 840, worldWidth, 840);
-        game.font.draw(batch, time, 960, 100);
-        batch.end();
 
-        for (Rectangle tiles : activeTiles) {
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(Color.RED);
-            shapeRenderer.rect(tiles.x, tiles.y, tiles.width, tiles.height);
-            shapeRenderer.end();
+        batch.setProjectionMatrix(viewport.getCamera().combined);
+
+
+        batch.draw(backgroundTexture, 0, 2, 16, 7);
+        game.font.draw(batch, time, 7.6f, 8.5f);
+
+
+
+        for (Rectangle[] activeTile : activeTiles) {
+            for (Rectangle tile : activeTile) {
+                if (tile != null) {
+                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                    shapeRenderer.setColor(Color.RED);
+                    shapeRenderer.rect(tile.x, tile.y, tile.width, tile.height);
+                    shapeRenderer.end();
+                }
+            }
         }
 
         if (mouseDown) {
@@ -152,7 +160,7 @@ public class MainScreen implements Screen {
 
         Rectangle rect = new Rectangle();
         rect.set(screenLocation.x, 1080 - screenLocation.y - tileSize, tileSize, tileSize);
-        activeTiles.add(rect);
+        activeTiles[tileLocationX][tileLocationY] = rect;
 
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

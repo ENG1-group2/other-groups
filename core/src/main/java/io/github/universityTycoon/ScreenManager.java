@@ -2,6 +2,8 @@ package io.github.universityTycoon;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -15,6 +17,8 @@ public class ScreenManager extends Game {
     public MainScreen gameScreen;
     public FirstScreen menuScreen;
 
+    public Boolean fullScreen;
+
     public void create() {
 
         //Create instances of the screens, this allows access to non-static variables
@@ -22,6 +26,8 @@ public class ScreenManager extends Game {
         menuScreen = new FirstScreen(this);
 
         batch = new SpriteBatch();
+
+        fullScreen = false;
 
         // use libGDX's default font
         font = new BitmapFont(Gdx.files.internal("ui/font.fnt"),
@@ -42,6 +48,14 @@ public class ScreenManager extends Game {
     }
 
     public void render() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F11)){
+            fullScreen = Gdx.graphics.isFullscreen();
+            Graphics.DisplayMode currentMode = Gdx.graphics.getDisplayMode();
+            if (fullScreen)
+                Gdx.graphics.setWindowedMode(currentMode.width, currentMode.height);
+            else
+                Gdx.graphics.setFullscreenMode(currentMode);
+        }
         font.getData().setScale(0.003f, 0.003f);
         super.render();
     }

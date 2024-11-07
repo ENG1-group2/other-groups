@@ -3,6 +3,7 @@ package io.github.universityTycoon;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -22,11 +23,11 @@ public class FirstScreen implements Screen {
     Vector2 touchPos;
     Array<Sprite> dropSprites;
 
+    Music music = Gdx.audio.newMusic(Gdx.files.internal("music/title.mp3"));
 
     final ScreenManager game;
     public FirstScreen(ScreenManager main) {
         this.game = main;
-
     }
 
 
@@ -36,12 +37,15 @@ public class FirstScreen implements Screen {
         viewport = new FitViewport(16, 9);
         input = new PlayerInputHandler();
 
-
+        music.setVolume(0.3f);
+        music.setLooping(true);
+        music.play();
     }
 
     @Override
     public void render(float v) {
         if (input.getKeyJustPressed(Input.Keys.SPACE)) {
+            music.stop();
             game.switchToMainScreen();  // Switch to MainScreen
         }
         logic();

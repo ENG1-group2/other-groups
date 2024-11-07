@@ -1,4 +1,4 @@
-package com.badlogic.UniSim2;
+package com.badlogic.UniSim2.resources;
 
 import com.badlogic.gdx.graphics.Color;
 

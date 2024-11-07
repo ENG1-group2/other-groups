@@ -1,7 +1,6 @@
-package com.badlogic.UniSim2;
+package com.badlogic.UniSim2.GUImanager;
 
-import com.badlogic.UniSim2.GUImanager.GameMenu;
-import com.badlogic.UniSim2.GUImanager.Timer;
+import com.badlogic.UniSim2.Main;
 import com.badlogic.UniSim2.mapmanager.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

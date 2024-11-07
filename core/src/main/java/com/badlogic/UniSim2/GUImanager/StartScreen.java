@@ -1,5 +1,7 @@
-package com.badlogic.UniSim2;
+package com.badlogic.UniSim2.GUImanager;
 
+import com.badlogic.UniSim2.Main;
+import com.badlogic.UniSim2.resources.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;

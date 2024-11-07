@@ -1,5 +1,6 @@
-package com.badlogic.UniSim2;
+package com.badlogic.UniSim2.resources;
 
+import com.badlogic.UniSim2.Main;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;

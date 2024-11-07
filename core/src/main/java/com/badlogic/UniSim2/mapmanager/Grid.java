@@ -1,7 +1,7 @@
 package com.badlogic.UniSim2.mapmanager;
 
-import com.badlogic.UniSim2.Consts;
 import com.badlogic.UniSim2.buildingmanager.Building;
+import com.badlogic.UniSim2.resources.Consts;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.StretchViewport;

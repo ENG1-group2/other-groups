@@ -1,7 +1,6 @@
 package com.badlogic.UniSim2.buildingmanager;
 
-import com.badlogic.UniSim2.Assets;
-import com.badlogic.UniSim2.Consts;
+import com.badlogic.UniSim2.resources.*;
 
 /**
  * A building which represents student accommodation.

@@ -1,5 +1,9 @@
 package com.badlogic.UniSim2;
 
+import com.badlogic.UniSim2.GUImanager.EndScreen;
+import com.badlogic.UniSim2.GUImanager.GameScreen;
+import com.badlogic.UniSim2.GUImanager.StartScreen;
+import com.badlogic.UniSim2.resources.*;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 

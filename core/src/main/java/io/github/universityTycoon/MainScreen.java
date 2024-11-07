@@ -2,6 +2,7 @@ package io.github.universityTycoon;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -40,10 +41,11 @@ public class MainScreen implements Screen {
     String time;
     boolean isPaused;
 
+    Music music = Gdx.audio.newMusic(Gdx.files.internal("assets/music/main.mp3"));
+
     public float getTimeSeconds() {
         return timeRemainingSeconds;
     }
-
 
     // Everything that goes in create for an application listener, goes in here
     // Meaning all asset/variable assignments
@@ -52,8 +54,6 @@ public class MainScreen implements Screen {
         this.game = main;
         isPaused = false;
     }
-
-
 
     @Override
     public void show() {
@@ -66,9 +66,10 @@ public class MainScreen implements Screen {
         backgroundTexture = new Texture("images/map.png");
         activeTiles = new Rectangle[1920 / tileSize][840 / tileSize];
 
-        // start the playback of the background music
-        // when the screen is shown
-        // music.play();
+        // start the playback of the background music when the screen is shown
+        music.setVolume(0.5f);
+        music.setLooping(true);
+        music.play();
     }
 
     @Override

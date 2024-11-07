@@ -1,4 +1,4 @@
-package com.badlogic.UniSim2.buildings;
+package com.badlogic.UniSim2.buildingmanager;
 
 import com.badlogic.UniSim2.Assets;
 import com.badlogic.UniSim2.Consts;

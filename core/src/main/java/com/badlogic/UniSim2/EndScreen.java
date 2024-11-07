@@ -1,6 +1,24 @@
 package com.badlogic.UniSim2;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.UniSim2.Assets;
+import com.badlogic.UniSim2.Consts;
+import com.badlogic.UniSim2.buildingmanager.Building;
+import com.badlogic.UniSim2.buildingmanager.BuildingManager;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.Align;
 
 /**
  * This screen should be shown when the game ends.

@@ -1,18 +1,14 @@
 package io.github.universityTycoon;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -51,7 +47,7 @@ public class FirstScreen implements Screen {
 
     @Override
     public void render(float v) {
-        input();
+         // is_key_pressed();
         logic();
         draw();
     }
@@ -62,17 +58,11 @@ public class FirstScreen implements Screen {
         viewport.update(width, height, true);
     }
 
-
-    private void input() {
-        float delta = Gdx.graphics.getDeltaTime();
-
-        if (Gdx.input.isTouched()) {
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY());
-            viewport.unproject(touchPos);
-
-            // ABuilding.setCenterX(touchPos.x); use this to place a building with the mouse
+    // not called by anything yet
+    private void is_key_pressed(int keycode) {
+        if (keycode == Input.Keys.SPACE) {
+            game.switchToMainScreen();
         }
-
     }
 
     private void logic() {
@@ -100,7 +90,7 @@ public class FirstScreen implements Screen {
 
         batch.draw(background, 0, 0, worldWidth, worldHeight);
         batch.draw(logo, 6, 4.5f, 4, 4);
-        batch.draw(start, 7.1f, 2.5f, 2, 0.75f);
+        batch.draw(start, 6.05f, 2.5f, 4, 0.55f);
 
         batch.end();
     }

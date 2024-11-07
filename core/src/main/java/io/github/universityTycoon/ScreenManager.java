@@ -45,8 +45,7 @@ public class ScreenManager extends Game {
 
 
         // use these lines to choose which screen is displayed.
-        setScreen(menuScreen);
-        setScreen(gameScreen);
+        setScreen(titleScreen);
     }
 
     public void render() {
@@ -65,5 +64,9 @@ public class ScreenManager extends Game {
     public void dispose() {
         batch.dispose();
         font.dispose();
+    }
+
+    public void switchToMainScreen() {
+        setScreen(gameScreen);
     }
 }

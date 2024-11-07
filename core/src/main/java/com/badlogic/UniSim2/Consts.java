@@ -82,6 +82,13 @@ public class Consts {
     public static final Color TIMER_COLOR = new Color(Color.BLACK);
     public static final int MAX_TIME = 300;
 
+    public static final int SCORE_LABEL_WIDTH = scaleToCellSize(6);
+    public static final int SCORE_LABEL_HEIGHT = scaleToCellSize(2);
+    public static final int SCORE_LABEL_X = (WORLD_WIDTH/2) - scaleToCellSize(4);
+    public static final int SCORE_LABEL_Y = (WORLD_HEIGHT/2) - scaleToCellSize(4);
+
+
+
     public static final Color COUNT_COLOR = new Color(Color.BLACK);
     public static final int COUNT_SIZE = 2;
 

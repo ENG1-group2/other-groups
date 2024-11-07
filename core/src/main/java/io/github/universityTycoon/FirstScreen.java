@@ -34,7 +34,6 @@ public class FirstScreen implements Screen {
     }
 
 
-
     @Override
     public void show() {
         batch = new SpriteBatch();
@@ -47,7 +46,9 @@ public class FirstScreen implements Screen {
 
     @Override
     public void render(float v) {
-         // is_key_pressed();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            game.switchToMainScreen();  // Switch to MainScreen
+        }
         logic();
         draw();
     }
@@ -58,12 +59,7 @@ public class FirstScreen implements Screen {
         viewport.update(width, height, true);
     }
 
-    // not called by anything yet
-    private void is_key_pressed(int keycode) {
-        if (keycode == Input.Keys.SPACE) {
-            game.switchToMainScreen();
-        }
-    }
+
 
     private void logic() {
         float worldWidth = viewport.getWorldWidth();
@@ -72,6 +68,8 @@ public class FirstScreen implements Screen {
         float delta = Gdx.graphics.getDeltaTime();
 
     }
+
+
 
 
     private void draw() {

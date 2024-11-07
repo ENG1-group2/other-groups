@@ -34,21 +34,22 @@ public class MainScreen implements Screen {
 
     BitmapFont font;
 
-    float timeSeconds;
+    final float START_TIME_SECONDS = 300;
+    public float timeRemainingSeconds = START_TIME_SECONDS;
+
     String time;
     boolean isPaused;
 
     public float getTimeSeconds() {
-        return timeSeconds;
+        return timeRemainingSeconds;
     }
 
 
     // Everything that goes in create for an application listener, goes in here
     // Meaning all asset/variable assignments
-    final Main game;
-    public MainScreen(Main main) {
+    final ScreenManager game;
+    public MainScreen(ScreenManager main) {
         this.game = main;
-        timeSeconds = 300;
         isPaused = false;
     }
 
@@ -101,7 +102,7 @@ public class MainScreen implements Screen {
 
         float delta = Gdx.graphics.getDeltaTime();
         if (!isPaused) {
-            timeSeconds -= delta;
+            timeRemainingSeconds -= delta;
         }
         // This is an example of how the game can be paused
         // To do so in a Main, use gameScreen.timeSeconds
@@ -112,7 +113,7 @@ public class MainScreen implements Screen {
             System.out.println(getTimeSeconds());
         }
         */
-        time = String.valueOf(floorDiv((int) timeSeconds, 60)) + ":" + (String.valueOf((int) timeSeconds % 60));
+        time = String.valueOf(floorDiv((int) timeRemainingSeconds, 60)) + ":" + (String.valueOf((int) timeRemainingSeconds % 60));
 
     }
 
@@ -187,6 +188,10 @@ public class MainScreen implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    public float getTimeElapsed() {
+        return START_TIME_SECONDS - timeRemainingSeconds;
     }
 }
 

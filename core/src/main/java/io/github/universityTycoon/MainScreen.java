@@ -23,6 +23,9 @@ public class MainScreen implements Screen {
 
     Texture backgroundTexture;
 
+    Rectangle[] buildingButtons;
+    int noBuildingTypes = 4;
+
     int tileSize = 30;
     Rectangle[][] activeTiles;
 
@@ -60,6 +63,7 @@ public class MainScreen implements Screen {
         mousePos = new Vector2(0,0);
 
         backgroundTexture = new Texture("images/map.png");
+        buildingButtons = new Rectangle[noBuildingTypes];
         activeTiles = new Rectangle[1920 / tileSize][840 / tileSize];
 
         // start the playback of the background music when the screen is shown
@@ -128,21 +132,20 @@ public class MainScreen implements Screen {
 
         batch.draw(backgroundTexture, 0, 2, 16, 7);
         game.font.draw(batch, time, 7.6f, 8.5f);
+        drawBuildingMenu();
 
-
-
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         for (Rectangle[] activeTile : activeTiles) {
             for (Rectangle tile : activeTile) {
                 if (tile != null) {
-                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                     shapeRenderer.setColor(Color.RED);
                     shapeRenderer.rect(tile.x, tile.y, tile.width, tile.height);
-                    shapeRenderer.end();
                 }
             }
         }
+        shapeRenderer.end();
 
-        if (mouseDown) {
+        if (mouseDown && mousePos.y < 810) {
             createTile();
         }
     }
@@ -151,9 +154,6 @@ public class MainScreen implements Screen {
         int tileLocationX = ((int) mousePos.x / tileSize);
         int tileLocationY = ((int) mousePos.y / tileSize);
         Vector2 screenLocation = new Vector2(tileLocationX * tileSize, tileLocationY * tileSize);
-
-
-        game.font.draw(batch, time, 800f, 800f);
 
         Rectangle rect = new Rectangle();
         rect.set(screenLocation.x, 1080 - screenLocation.y - tileSize, tileSize, tileSize);
@@ -165,6 +165,31 @@ public class MainScreen implements Screen {
         shapeRenderer.rect(rect.x, rect.y, rect.width, rect.height);
         shapeRenderer.end();
     }
+
+    private void drawBuildingMenu() {
+        Rectangle background = new Rectangle();
+        background.set(0, 0, viewport.getScreenWidth(), 244);
+
+        Rectangle buildingButton1 = new Rectangle();
+        buildingButton1.set(22, 22, 200, 200);
+
+        Rectangle buildingButton2 = new Rectangle();
+        buildingButton2.set(45 + buildingButton1.width, 22, 200, 200);
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+        shapeRenderer.setColor((float) 79 / 255, (float) 79 / 255, (float) 79 / 255, 1);
+        shapeRenderer.rect(background.x, background.y, background.width, background.height);
+
+        shapeRenderer.setColor((float) 120 / 255, (float) 120 / 255, (float) 120 / 255, 1);
+        shapeRenderer.rect(buildingButton1.x, buildingButton1.y, buildingButton1.width, buildingButton1.height);
+
+        shapeRenderer.setColor((float) 120 / 255, (float) 120 / 255, (float) 120 / 255, 1);
+        shapeRenderer.rect(buildingButton2.x, buildingButton2.y, buildingButton2.width, buildingButton2.height);
+
+        shapeRenderer.end();
+    }
+
 
 
     @Override

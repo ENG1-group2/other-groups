@@ -148,7 +148,6 @@ public class BuildingMenu {
 
                 // Prevents clicking a button while already selecting a building
                 if(!buildings.getCurrentlySelecting()){
-                    Assets.click.play();
                     buildings.handleSelection(type); // Creates a building of whatever type the button pressed is
                     updateCountLabel(index); // Increments the building count label by 1 and displays
                 }

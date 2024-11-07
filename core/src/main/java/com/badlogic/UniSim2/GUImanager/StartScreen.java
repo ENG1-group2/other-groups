@@ -69,10 +69,6 @@ public class StartScreen implements Screen {
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y){
-
-                // Play the start sound and start the music with it looping
-                Assets.gameStart.play();
-                Assets.music.play();
                 game.startGame();
                 dispose();
             }

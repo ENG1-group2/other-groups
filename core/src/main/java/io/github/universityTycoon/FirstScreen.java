@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class FirstScreen implements Screen {
     SpriteBatch batch;
-
+    PlayerInputHandler input;
     FitViewport viewport;
 
     Vector2 touchPos;
@@ -38,6 +38,7 @@ public class FirstScreen implements Screen {
     public void show() {
         batch = new SpriteBatch();
         viewport = new FitViewport(16, 9);
+        input = new PlayerInputHandler();
 
         // start the playback of the background music
         // when the screen is shown
@@ -46,7 +47,7 @@ public class FirstScreen implements Screen {
 
     @Override
     public void render(float v) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+        if (input.getKeyJustPressed(Input.Keys.SPACE)) {
             game.switchToMainScreen();  // Switch to MainScreen
         }
         logic();

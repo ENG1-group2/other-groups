@@ -31,6 +31,7 @@ public class MainScreen implements Screen {
 
     Vector2 mousePos;
     boolean mouseDown;
+    PlayerInputHandler playerInputHandler;
 
     BitmapFont font;
 
@@ -61,6 +62,7 @@ public class MainScreen implements Screen {
         viewport = new FitViewport(16, 9);
 
         mousePos = new Vector2(0,0);
+        playerInputHandler = new PlayerInputHandler();
 
         backgroundTexture = new Texture("images/map.png");
         buildingButtons = new Rectangle[noBuildingTypes];
@@ -90,7 +92,7 @@ public class MainScreen implements Screen {
     private void input() {
         float delta = Gdx.graphics.getDeltaTime();
 
-        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.P)) {
+        if (playerInputHandler.getIsPauseJustPressed()) {
             if (isPaused) {
                 resume();
             } else {
@@ -98,8 +100,8 @@ public class MainScreen implements Screen {
             }  // Toggle the pause state
         }
 
-        if (Gdx.input.isTouched()) {
-            mousePos.set(Gdx.input.getX(), Gdx.input.getY());
+        if (playerInputHandler.getIsMouseDown()) {
+            mousePos = playerInputHandler.getMousePos();
             mouseDown = true;
         }
         else {mouseDown = false;}

@@ -137,11 +137,16 @@ public class MainScreen implements Screen {
     }
 
     private void placeBuilding() {
-        int tileLocationX = (int)(gameModel.getTilesWide() * mousePos.x / viewport.getScreenWidth());
-        int tileLocationY = (int)(gameModel.getTilesHigh() * mousePos.y / viewport.getScreenHeight());
+        // Not sure why, but this if statement is needed to prevent attempting to place a building,
+        // off to the left of the screen.
+        if ((mousePos.x >= 30))  {
+            int tileLocationX = (int)(-2 +gameModel.getTilesWide() * mousePos.x / viewport.getScreenWidth() );
+            int tileLocationY = (int)(2 +gameModel.getTilesHigh() * mousePos.y / viewport.getScreenHeight());
 
-        // Defaulting to accommodation building for now
-        gameModel.mapController.addBuilding(new AccommodationBuilding(gameModel.getGameTimeGMT()), tileLocationX, tileLocationY);
+            // Defaulting to accommodation building for now
+            gameModel.mapController.addBuilding(new AccommodationBuilding(gameModel.getGameTimeGMT()), tileLocationX, tileLocationY);
+        }
+
     }
 
     private void drawMapObjects() {

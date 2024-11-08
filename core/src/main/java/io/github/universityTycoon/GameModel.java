@@ -64,9 +64,9 @@ public class GameModel {
 
     // Everything that should be executed every frame
     public void runGame(float delta) {
-        mapController.updateBuildings(getGameTimeGMT());
         if (!getIsPaused()) {
             timeRemainingSeconds -= Gdx.graphics.getDeltaTime();
+            mapController.updateBuildings(getGameTimeGMT());
         }
     }
 

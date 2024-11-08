@@ -31,6 +31,7 @@ public class MainScreen implements Screen {
     HashMap<String, Texture> mapObjTextures; // Maintain a dict of paths -> Textures for map objects so that they are only loaded once
 
     Texture backgroundTexture;
+    Texture constructionTexture;
 
     Rectangle[] buildingButtons;
 
@@ -64,6 +65,7 @@ public class MainScreen implements Screen {
         playerInputHandler = new PlayerInputHandler();
 
         backgroundTexture = new Texture("images/map.png");
+        constructionTexture = new Texture("images/scaffold.png");
         mapObjTextures = new HashMap<>();
         buildingButtons = new Rectangle[gameModel.getNoBuildingTypes()];
 
@@ -159,6 +161,7 @@ public class MainScreen implements Screen {
                     // Construction visualisation
                     Building building = (Building)mapObjects[i][j];
                     if (building.isUnderConstruction) {
+                        batch.draw(constructionTexture, screenPos.x, screenPos.y, 1, 1);
                         game.font.draw(batch, building.getConstructionPercent(gameModel.getGameTimeGMT()), screenPos.x, screenPos.y);
                     }
                 }

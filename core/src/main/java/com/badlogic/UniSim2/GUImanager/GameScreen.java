@@ -2,7 +2,9 @@ package com.badlogic.UniSim2.GUImanager;
 
 import com.badlogic.UniSim2.Main;
 import com.badlogic.UniSim2.mapmanager.Map;
+import com.badlogic.UniSim2.resources.Assets;
 import com.badlogic.UniSim2.resources.Consts;
+import com.badlogic.UniSim2.resources.SoundManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -31,6 +33,8 @@ public class GameScreen implements Screen {
         timer = new Timer();
         map = new Map(game);
         menu = new GameMenu(game, timer, map.getBuildingManager());
+        SoundManager.playMusic();
+        
     }
 
     @Override

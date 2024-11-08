@@ -98,6 +98,7 @@ public abstract class Building extends Sprite {
         isSelected = false;
         isPlaced = true;
         setRegion(placedTexture);
+        SoundManager.playClick();
     }
 
     /**

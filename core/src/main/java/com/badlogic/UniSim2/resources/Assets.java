@@ -13,6 +13,9 @@ import com.badlogic.gdx.graphics.Texture;
  */
 public class Assets {
 
+    public static Music music;
+    public static Sound click;
+
     public static Texture startBackgroundTexture;
     public static Texture startButtonUpTexture;
     public static Texture startButtonDownTexture;
@@ -76,6 +79,12 @@ public class Assets {
      * {@link Main#create()} method. 
      */
     public static void loadTextures(){
+
+        // Music 
+        music =                     Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
+        click =                     Gdx.audio.newSound(Gdx.files.internal("sounds/click.mp3"));
+
+        // Click sound effect
 
         // Start menu textures
         startBackgroundTexture =    new Texture("startBackground.png");

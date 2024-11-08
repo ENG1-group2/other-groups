@@ -69,6 +69,7 @@ public class MainScreen implements Screen {
 
     @Override
     public void render(float v) {
+        gameModel.runGame(v);
         input();
         logic();
         draw();
@@ -100,9 +101,6 @@ public class MainScreen implements Screen {
     private void logic() {
         if (mouseDown && mousePos.y < 810) {
             placeBuilding();
-        }
-        if (!gameModel.getIsPaused()) {
-            gameModel.timeRemainingSeconds -= Gdx.graphics.getDeltaTime();
         }
         time = String.valueOf(floorDiv((int) gameModel.getTimeRemainingSeconds(), 60))
             + ":" + String.format("%02d", (int) gameModel.getTimeRemainingSeconds() % 60);

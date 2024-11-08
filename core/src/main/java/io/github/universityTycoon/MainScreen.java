@@ -16,6 +16,8 @@ import io.github.universityTycoon.PlaceableObjects.AccommodationBuilding;
 import io.github.universityTycoon.PlaceableObjects.Building;
 import io.github.universityTycoon.PlaceableObjects.MapObject;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.HashMap;
 
 import static java.lang.Math.floorDiv;
@@ -39,6 +41,7 @@ public class MainScreen implements Screen {
 
 
     String time;
+    String dateTimeString;
 
     Music music = Gdx.audio.newMusic(Gdx.files.internal("music/main.mp3"));
 
@@ -107,7 +110,7 @@ public class MainScreen implements Screen {
         }
         time = String.valueOf(floorDiv((int) gameModel.getTimeRemainingSeconds(), 60))
             + ":" + String.format("%02d", (int) gameModel.getTimeRemainingSeconds() % 60);
-
+        dateTimeString = gameModel.getGameTimeGMT().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
     }
 
 
@@ -122,6 +125,7 @@ public class MainScreen implements Screen {
 
         batch.draw(backgroundTexture, 0, 2, 16, 7);
         game.font.draw(batch, time, 7.6f, 8.5f);
+        game.font.draw(batch, dateTimeString, 0.2f, 8.8f);
 
         drawMapObjects();
 

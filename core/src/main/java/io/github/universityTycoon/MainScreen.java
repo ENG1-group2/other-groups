@@ -16,6 +16,8 @@ import io.github.universityTycoon.PlaceableObjects.AccommodationBuilding;
 import io.github.universityTycoon.PlaceableObjects.Building;
 import io.github.universityTycoon.PlaceableObjects.MapObject;
 
+import java.util.HashMap;
+
 import static java.lang.Math.floorDiv;
 
 public class MainScreen implements Screen {
@@ -24,9 +26,9 @@ public class MainScreen implements Screen {
     SpriteBatch batch;
     ShapeRenderer shapeRenderer;
     Viewport viewport;
+    HashMap<String, Texture> mapObjTextures; // Maintain a dict of paths -> Textures for map objects so that they are only loaded once
 
     Texture backgroundTexture;
-    Texture testBuildingTexture;
 
     Rectangle[] buildingButtons;
 
@@ -59,7 +61,7 @@ public class MainScreen implements Screen {
         playerInputHandler = new PlayerInputHandler();
 
         backgroundTexture = new Texture("images/map.png");
-        testBuildingTexture = new Texture("images/new_uni_style_assets.png");
+        mapObjTextures = new HashMap<>();
         buildingButtons = new Rectangle[gameModel.getNoBuildingTypes()];
 
         // start the playback of the background music when the screen is shown
@@ -141,8 +143,14 @@ public class MainScreen implements Screen {
         for (int i = 0; i < mapObjects.length; i++) {
             for (int j = 0; j < mapObjects[i].length; j++) {
                 if (mapObjects[i][j] != null) {
+                    // Find where to draw the building
                     Vector2 screenPos = new Vector2((float) i / gameModel.getTilesWide() * viewport.getWorldWidth(), viewport.getWorldHeight() - (float) j / gameModel.getTilesHigh() * viewport.getWorldHeight());
-                    batch.draw(testBuildingTexture, screenPos.x, screenPos.y, 1, 1);
+                    // Get the texture for the object
+                    String texturePath = mapObjects[i][j].getTexturePath();
+                    if (!mapObjTextures.containsKey(texturePath))
+                        mapObjTextures.put(texturePath, new Texture(texturePath));
+
+                    batch.draw(mapObjTextures.get(texturePath), screenPos.x, screenPos.y, 1, 1);
 
                     // Construction visualisation
                     Building building = (Building)mapObjects[i][j];

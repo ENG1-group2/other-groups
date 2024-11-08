@@ -8,7 +8,7 @@ public class TeachingBuilding extends Building {
     int classroomCount;
 
     public TeachingBuilding(LocalDateTime constructionStartedAt) {
-        super(constructionStartedAt);
+        super(constructionStartedAt, "images/library_building.png");
     }
 
     @Override

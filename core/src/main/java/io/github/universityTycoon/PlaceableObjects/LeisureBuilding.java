@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class LeisureBuilding extends Building {
 
     public LeisureBuilding(LocalDateTime constructionStartedAt) {
-        super(constructionStartedAt);
+        super(constructionStartedAt, "images/fun_building.png");
     }
 
     @Override

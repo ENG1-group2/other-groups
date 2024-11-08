@@ -7,10 +7,9 @@ import java.time.LocalDateTime;
 public class AccommodationBuilding extends Building {
     int rentPricePPM;
     int commonRoomsCount;
-    Texture texture = new Texture("images/new_uni_style_assets.png");
 
     public AccommodationBuilding(LocalDateTime constructionStartedAt) {
-        super(constructionStartedAt);
+        super(constructionStartedAt, "images/sleep_building.png");
     }
 
     @Override

@@ -1,13 +1,11 @@
 package io.github.universityTycoon.PlaceableObjects;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class Building implements MapObject {
+public class Building extends MapObject {
 
     public Duration constructionGameTime = Duration.ofDays(365);
     public LocalDateTime finishDate;
@@ -15,12 +13,13 @@ public class Building implements MapObject {
 
     LocalDateTime constructionStartedAt; // IN-GAME TIME
 
-    public Building(LocalDateTime constructionStartedAt) {
+    public Building(LocalDateTime constructionStartedAt, String texturePath) {
         this.constructionStartedAt = constructionStartedAt;
         finishDate = constructionStartedAt.plus(constructionGameTime);
+        this.texturePath = texturePath;
     }
 
-    public Building(LocalDateTime constructionStartedAt, Duration constructionGameTime) {
+    public Building(LocalDateTime constructionStartedAt, String texturePath, Duration constructionGameTime) {
         this.constructionStartedAt = constructionStartedAt;
         this.constructionGameTime = constructionGameTime;
         finishDate = constructionStartedAt.plus(constructionGameTime);
@@ -29,8 +28,8 @@ public class Building implements MapObject {
     public String getName() {
         return name;
     }
-    public Texture getTexture() {
-        return texture;
+    public String getTexturePath() {
+        return texturePath;
     }
     //public PolygonShape getShape() {
     //    return shape;

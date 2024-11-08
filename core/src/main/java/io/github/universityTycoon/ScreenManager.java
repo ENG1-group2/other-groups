@@ -67,8 +67,6 @@ public class ScreenManager extends Game {
     }
 
     public void switchToMainScreen() {
-
         setScreen(gameScreen);
-        GameModel.currentScreen = 2;
     }
 }

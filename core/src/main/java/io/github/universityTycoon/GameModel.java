@@ -21,9 +21,6 @@ public class GameModel {
 
     public BitmapFont font;
 
-    //1 is firstScreen, 2 Mainscreen, update this, functions using this if more screens are added.
-    public static int currentScreen;
-
     public int tilesWide = 64;
     public int tilesHigh = 28;
 
@@ -40,7 +37,6 @@ public class GameModel {
 
     public GameModel() {
 
-        currentScreen = 0;
         eventListener = new GameEventListener(this::handleEvent); // If you're confused, look into "Java listener pattern" (I am also confused)
         eventManager = new EventManager(eventListener);
         scoreCalculator = new ScoreCalculator();
@@ -98,9 +94,6 @@ public class GameModel {
         return 0;
     }
 
-    public static int getCurrentScreen() {
-        return currentScreen;
-    }
 
     public int getNoBuildingTypes() {
         return noBuildingTypes;

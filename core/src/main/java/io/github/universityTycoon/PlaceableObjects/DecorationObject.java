@@ -1,15 +1,12 @@
 package io.github.universityTycoon.PlaceableObjects;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-
-public class DecorationObject implements MapObject {
+public class DecorationObject extends MapObject {
 
     public String getName() {
         return name;
     }
-    public Texture getTexture() {
-        return texture;
+    public String getTexturePath() {
+        return texturePath;
     }
     //public PolygonShape getShape() {
     //    return shape;

@@ -13,7 +13,12 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.universityTycoon.PlaceableObjects.AccommodationBuilding;
+import io.github.universityTycoon.PlaceableObjects.Building;
 import io.github.universityTycoon.PlaceableObjects.MapObject;
+
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.HashMap;
 
 import static java.lang.Math.floorDiv;
 
@@ -23,9 +28,10 @@ public class MainScreen implements Screen {
     SpriteBatch batch;
     ShapeRenderer shapeRenderer;
     Viewport viewport;
+    HashMap<String, Texture> mapObjTextures; // Maintain a dict of paths -> Textures for map objects so that they are only loaded once
 
     Texture backgroundTexture;
-    Texture testBuildingTexture;
+    Texture constructionTexture;
 
     Rectangle[] buildingButtons;
 
@@ -36,6 +42,7 @@ public class MainScreen implements Screen {
 
 
     String time;
+    String dateTimeString;
 
     Music music = Gdx.audio.newMusic(Gdx.files.internal("music/main.mp3"));
 
@@ -58,7 +65,8 @@ public class MainScreen implements Screen {
         playerInputHandler = new PlayerInputHandler();
 
         backgroundTexture = new Texture("images/map.png");
-        testBuildingTexture = new Texture("images/new_uni_style_assets.png");
+        constructionTexture = new Texture("images/scaffold.png");
+        mapObjTextures = new HashMap<>();
         buildingButtons = new Rectangle[gameModel.getNoBuildingTypes()];
 
         // start the playback of the background music when the screen is shown
@@ -69,6 +77,7 @@ public class MainScreen implements Screen {
 
     @Override
     public void render(float v) {
+        gameModel.runGame(v);
         input();
         logic();
         draw();
@@ -101,12 +110,9 @@ public class MainScreen implements Screen {
         if (mouseDown && mousePos.y < 810) {
             placeBuilding();
         }
-        if (!gameModel.getIsPaused()) {
-            gameModel.timeRemainingSeconds -= Gdx.graphics.getDeltaTime();
-        }
         time = String.valueOf(floorDiv((int) gameModel.getTimeRemainingSeconds(), 60))
             + ":" + String.format("%02d", (int) gameModel.getTimeRemainingSeconds() % 60);
-
+        dateTimeString = gameModel.getGameTimeGMT().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
     }
 
 
@@ -121,6 +127,7 @@ public class MainScreen implements Screen {
 
         batch.draw(backgroundTexture, 0, 2, 16, 7);
         game.font.draw(batch, time, 7.6f, 8.5f);
+        game.font.draw(batch, dateTimeString, 0.2f, 8.8f);
 
         drawMapObjects();
 
@@ -142,8 +149,21 @@ public class MainScreen implements Screen {
         for (int i = 0; i < mapObjects.length; i++) {
             for (int j = 0; j < mapObjects[i].length; j++) {
                 if (mapObjects[i][j] != null) {
+                    // Find where to draw the building
                     Vector2 screenPos = new Vector2((float) i / gameModel.getTilesWide() * viewport.getWorldWidth(), viewport.getWorldHeight() - (float) j / gameModel.getTilesHigh() * viewport.getWorldHeight());
-                    batch.draw(testBuildingTexture, screenPos.x, screenPos.y, 1, 1);
+                    // Get the texture for the object
+                    String texturePath = mapObjects[i][j].getTexturePath();
+                    if (!mapObjTextures.containsKey(texturePath))
+                        mapObjTextures.put(texturePath, new Texture(texturePath));
+
+                    batch.draw(mapObjTextures.get(texturePath), screenPos.x, screenPos.y, 1, 1);
+
+                    // Construction visualisation
+                    Building building = (Building)mapObjects[i][j];
+                    if (building.isUnderConstruction) {
+                        batch.draw(constructionTexture, screenPos.x, screenPos.y, 1, 1);
+                        game.font.draw(batch, building.getConstructionPercent(gameModel.getGameTimeGMT()), screenPos.x, screenPos.y);
+                    }
                 }
             }
         }

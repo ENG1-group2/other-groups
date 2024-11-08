@@ -1,20 +1,17 @@
 package io.github.universityTycoon.PlaceableObjects;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-
-public interface MapObject {
+public abstract class MapObject {
     String name = "";
-    Texture texture = null;
+    String texturePath = "";
     //PolygonShape shape = new PolygonShape(); // Possibly not the type we need
     int capacity = 0;
     boolean isStackable = false;
 
-    public float calculateSatisfaction(); // As a percentage
+    public abstract float calculateSatisfaction(); // As a percentage
 
-    public String getName();
-    public Texture getTexture();
+    public abstract String getName();
+    public abstract String getTexturePath();
     //public PolygonShape getShape();
-    public int getCapacity();
-    public boolean getIsStackable();
+    public abstract int getCapacity();
+    public abstract boolean getIsStackable();
 }

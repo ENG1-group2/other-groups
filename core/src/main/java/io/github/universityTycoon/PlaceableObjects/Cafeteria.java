@@ -8,7 +8,7 @@ public class Cafeteria extends Building {
     int hygieneRating;
 
     public Cafeteria(LocalDateTime constructionStartedAt) {
-        super(constructionStartedAt);
+        super(constructionStartedAt, "images/rec_building.png");
     }
 
     @Override

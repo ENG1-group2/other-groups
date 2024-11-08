@@ -21,9 +21,6 @@ public class GameModel {
 
     public BitmapFont font;
 
-    //1 is firstScreen, 2 Mainscreen, update this, functions using this if more screens are added.
-    public static int currentScreen;
-
     public int tilesWide = 64;
     public int tilesHigh = 28;
 
@@ -38,9 +35,15 @@ public class GameModel {
     AudioSelector audioSelector;
     MapController mapController;
 
+    public enum GameState {
+        inProgress,
+        paused,
+        inMenu,
+        // ... extend as necessary
+    }
+
     public GameModel() {
 
-        currentScreen = 0;
         eventListener = new GameEventListener(this::handleEvent); // If you're confused, look into "Java listener pattern" (I am also confused)
         eventManager = new EventManager(eventListener);
         scoreCalculator = new ScoreCalculator();
@@ -58,13 +61,14 @@ public class GameModel {
         font.setUseIntegerPositions(false);
         font.getData().setScale(0.003f, 0.003f);
     }
-    public enum GameState {
-        inProgress,
-        paused,
-        inMenu,
-        // ... extend as necessary
-    }
 
+    // Everything that should be executed every frame
+    public void runGame(float delta) {
+        if (!getIsPaused()) {
+            timeRemainingSeconds -= Gdx.graphics.getDeltaTime();
+            mapController.updateBuildings(getGameTimeGMT());
+        }
+    }
 
     public MapObject[][] getMapObjects() {
         return mapController.mapObjects;
@@ -94,14 +98,6 @@ public class GameModel {
         return gameState;
     }
 
-    public int getTimeSeconds() {
-        return 0;
-    }
-
-    public static int getCurrentScreen() {
-        return currentScreen;
-    }
-
     public int getNoBuildingTypes() {
         return noBuildingTypes;
     }
@@ -111,7 +107,6 @@ public class GameModel {
     }
 
     // Converts the value in the timer to the relative game time (for example, after 2 minutes of real world time, the game year might be 2026)
-    // MAKE SURE TO USE TIME ELAPSED, NOT TIME REMAINING
     public LocalDateTime getGameTimeGMT() {
         // Not bothering with leap days for now. Only difference will be the game ends an in-game day or two early, but time will still be 5 minutes
         long inGameSeconds = (long)(getTimeElapsed() * (365 * 24 * 60) * YEARS_PER_MINUTE);

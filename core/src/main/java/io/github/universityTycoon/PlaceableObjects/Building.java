@@ -1,12 +1,11 @@
 package io.github.universityTycoon.PlaceableObjects;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.math.MathUtils;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class Building implements MapObject {
+public class Building extends MapObject {
 
     public Duration constructionGameTime = Duration.ofDays(365);
     public LocalDateTime finishDate;
@@ -14,12 +13,13 @@ public class Building implements MapObject {
 
     LocalDateTime constructionStartedAt; // IN-GAME TIME
 
-    public Building(LocalDateTime constructionStartedAt) {
+    public Building(LocalDateTime constructionStartedAt, String texturePath) {
         this.constructionStartedAt = constructionStartedAt;
         finishDate = constructionStartedAt.plus(constructionGameTime);
+        this.texturePath = texturePath;
     }
 
-    public Building(LocalDateTime constructionStartedAt, Duration constructionGameTime) {
+    public Building(LocalDateTime constructionStartedAt, String texturePath, Duration constructionGameTime) {
         this.constructionStartedAt = constructionStartedAt;
         this.constructionGameTime = constructionGameTime;
         finishDate = constructionStartedAt.plus(constructionGameTime);
@@ -28,8 +28,8 @@ public class Building implements MapObject {
     public String getName() {
         return name;
     }
-    public Texture getTexture() {
-        return texture;
+    public String getTexturePath() {
+        return texturePath;
     }
     //public PolygonShape getShape() {
     //    return shape;
@@ -50,5 +50,11 @@ public class Building implements MapObject {
         if (currentGameTime.isAfter(finishDate)) {
             isUnderConstruction = false;
         }
+    }
+
+    public String getConstructionPercent(LocalDateTime currentGameTime) {
+        Duration timePassed = Duration.between(constructionStartedAt, currentGameTime);
+        float percent = MathUtils.clamp((float)timePassed.getSeconds() / (float)constructionGameTime.getSeconds(), 0, 1);
+        return String.format("%.0f%%", percent * 100);
     }
 }

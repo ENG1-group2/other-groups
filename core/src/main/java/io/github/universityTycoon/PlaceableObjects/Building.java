@@ -1,6 +1,7 @@
 package io.github.universityTycoon.PlaceableObjects;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 
 import java.time.Duration;
@@ -50,5 +51,11 @@ public class Building implements MapObject {
         if (currentGameTime.isAfter(finishDate)) {
             isUnderConstruction = false;
         }
+    }
+
+    public String getConstructionPercent(LocalDateTime currentGameTime) {
+        Duration timePassed = Duration.between(constructionStartedAt, currentGameTime);
+        float percent = MathUtils.clamp((float)timePassed.getSeconds() / (float)constructionGameTime.getSeconds(), 0, 1);
+        return String.format("%.0f%%", percent * 100);
     }
 }

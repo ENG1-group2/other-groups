@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.universityTycoon.PlaceableObjects.AccommodationBuilding;
+import io.github.universityTycoon.PlaceableObjects.Building;
 import io.github.universityTycoon.PlaceableObjects.MapObject;
 
 import static java.lang.Math.floorDiv;
@@ -142,6 +143,12 @@ public class MainScreen implements Screen {
                 if (mapObjects[i][j] != null) {
                     Vector2 screenPos = new Vector2((float) i / gameModel.getTilesWide() * viewport.getWorldWidth(), viewport.getWorldHeight() - (float) j / gameModel.getTilesHigh() * viewport.getWorldHeight());
                     batch.draw(testBuildingTexture, screenPos.x, screenPos.y, 1, 1);
+
+                    // Construction visualisation
+                    Building building = (Building)mapObjects[i][j];
+                    if (building.isUnderConstruction) {
+                        game.font.draw(batch, building.getConstructionPercent(gameModel.getGameTimeGMT()), screenPos.x, screenPos.y);
+                    }
                 }
             }
         }

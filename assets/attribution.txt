@@ -1,1 +1,6 @@
-Grass.png - https://opengameart.org/content/grass-1
+All assets listed are published by the author with the Public Domain (CC0) license
+
+grass.png - https://opengameart.org/content/grass-1
+dirt*.png - https://opengameart.org/content/tileable-dirt-textures
+water.png - https://opengameart.org/content/3-live-proceduraly-generated-tiling-water-textures-512px-running-brushes
+cobble.png - https://opengameart.org/content/cobble-path-texture

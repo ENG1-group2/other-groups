@@ -178,13 +178,20 @@ public class Main extends ApplicationAdapter {
     }
 
     private void placeSelectedBuilding(float worldX, float worldY) {
-        if (selectedBuilding != null && player.getFunds() >= selectedBuilding.getCost()) {
-            if (buildingManager.placeBuilding(selectedBuilding, worldX, worldY)) {
-                player.placeBuilding(selectedBuilding);
-                university.addBuilding(selectedBuilding);
-                isPlacingBuilding = false;
-                inputManager.setPlacingBuilding(false);
-                selectedBuilding = null;
+        if (selectedBuilding != null) {
+            if (player.getFunds() >= selectedBuilding.getCost()) {
+                if (buildingManager.placeBuilding(selectedBuilding, worldX, worldY)) {
+                    player.placeBuilding(selectedBuilding);
+                    university.addBuilding(selectedBuilding);
+                    isPlacingBuilding = false;
+                    inputManager.setPlacingBuilding(false);
+                    selectedBuilding = null;
+                }
+            } else {
+                // show insufficient funds message for 2 seconds
+                String message = "Insufficient funds! Need $" + selectedBuilding.getCost() +
+                    " (Current: $" + player.getFunds() + ")";
+                uiManager.showNotification(message);
             }
         }
     }

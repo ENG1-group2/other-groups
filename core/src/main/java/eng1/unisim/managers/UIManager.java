@@ -32,6 +32,9 @@ public class UIManager {
     private HashMap<String, Label> buildingCounters = new HashMap<>();
     private HashMap<String, Integer> buildingCounts = new HashMap<>();
     private static final String[] BUILDING_TYPES = {"Accommodation", "Learning", "Food", "Recreation"};
+    private Label notificationLabel;
+    private float notificationTimer = 0;
+    private static final float NOTIFICATION_DURATION = 2f; // show messages for 2 seconds
 
     public interface BuildingSelectionCallback {
         void onBuildingSelected(Building building);
@@ -54,6 +57,7 @@ public class UIManager {
         createHUD();
         createBuildingInventory();
         createEndGameWindow();
+        createNotificationSystem();
     }
 
     private void createHUD() {
@@ -161,6 +165,35 @@ public class UIManager {
     public void incrementBuildingCount(String buildingType) {
         int currentCount = buildingCounts.getOrDefault(buildingType, 0);
         updateBuildingCount(buildingType, currentCount + 1);
+    }
+
+    private void createNotificationSystem() {
+        Label.LabelStyle style = new Label.LabelStyle(font, Color.RED);
+        notificationLabel = new Label("", style);
+        notificationLabel.setVisible(false);
+
+        // notification positioned at top of screen
+        Table notificationTable = new Table();
+        notificationTable.setFillParent(true);
+        notificationTable.top().padTop(50);
+        notificationTable.add(notificationLabel);
+
+        stage.addActor(notificationTable);
+    }
+
+    public void showNotification(String message) {
+        notificationLabel.setText(message);
+        notificationLabel.setVisible(true);
+        notificationTimer = NOTIFICATION_DURATION;
+    }
+
+    private void updateNotifications(float delta) {
+        if (notificationTimer > 0) {
+            notificationTimer -= delta;
+            if (notificationTimer <= 0) {
+                notificationLabel.setVisible(false);
+            }
+        }
     }
 
     private void createEndGameWindow() {
@@ -272,11 +305,14 @@ public class UIManager {
     }
 
     public void render() {
-        stage.act(Gdx.graphics.getDeltaTime());
+        float delta = Gdx.graphics.getDeltaTime();
+        updateNotifications(delta);
+
+        stage.act(delta);
         stage.draw();
 
         if (endGameWindow.isVisible()) {
-            endGameStage.act(Gdx.graphics.getDeltaTime());
+            endGameStage.act(delta);
             endGameStage.draw();
         }
     }

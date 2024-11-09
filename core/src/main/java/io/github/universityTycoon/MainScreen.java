@@ -20,7 +20,10 @@ import io.github.universityTycoon.PlaceableObjects.MapObject;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import static java.lang.Math.floorDiv;
 
@@ -31,8 +34,10 @@ public class MainScreen implements Screen {
     ShapeRenderer shapeRenderer;
     Viewport viewport;
     HashMap<String, Texture> mapObjTextures; // Maintain a dict of paths -> Textures for map objects so that they are only loaded once
-
+    List<int[]> mapObjUnderConstruction;
     Texture backgroundTexture;
+    Texture pauseTexture;
+    Texture playTexture;
     Texture constructionTexture;
     Texture squareTexture;
 
@@ -56,6 +61,7 @@ public class MainScreen implements Screen {
     public MainScreen(ScreenManager main) {
         this.game = main;
         gameModel = new GameModel();
+        mapObjUnderConstruction = new ArrayList<>();
     }
 
     @Override
@@ -68,6 +74,8 @@ public class MainScreen implements Screen {
         playerInputHandler = new PlayerInputHandler();
 
         backgroundTexture = new Texture("images/map.png");
+        pauseTexture = new Texture("ui/pause.png");
+        playTexture = new Texture("ui/play.png");
         constructionTexture = new Texture("images/scaffold.png");
         squareTexture = new Texture("images/Gridsquare.png");
         mapObjTextures = new HashMap<>();
@@ -130,11 +138,17 @@ public class MainScreen implements Screen {
 
 
         batch.draw(backgroundTexture, 0, 2, 16, 7);
-
+        if (gameModel.isPaused) {
+            batch.draw(playTexture, -0.5f, 8.1f, 1.5f, 0.75f);
+        }
+        else {
+            batch.draw(pauseTexture, -0.5f, 8.1f, 1.5f, 0.75f);
+        }
         drawMapObjects();
 
         GameModel.font.draw(batch, time, 7.6f, 8.5f);
-        GameModel.font.draw(batch, dateTimeString, 0.2f, 8.8f);
+        GameModel.font.draw(batch,"Satisfaction score: " + Float.toString(gameModel.getSatisfactionScore()) + "%", 5.8f, 8.9f);
+        GameModel.smaller_font.draw(batch, dateTimeString, 0.05f, 8.95f);
 
 
 
@@ -143,11 +157,21 @@ public class MainScreen implements Screen {
         GameModel.smaller_font.draw(batch, "Cafeteria Buildings: " + gameModel.getCafeteriaBuildingCount(), 13.15f, 8.5f);
         GameModel.smaller_font.draw(batch, "Accommodation Buildings: " + gameModel.getAccommodationBuildingCount(), 13.15f, 8.3f);
 
-
-
-
-
-
+        List<int[]> found = new ArrayList<>();
+        for (int[] entry : mapObjUnderConstruction) {
+            MapObject[][] mapObjects = gameModel.getMapObjects();
+            if (mapObjects[entry[0]][entry[1]] instanceof Building building) {
+                if (building.isUnderConstruction) {
+                    float tileSizeOnScreen = viewport.getWorldWidth() / gameModel.getTilesWide();
+                    Vector2 screenPos = new Vector2((float) entry[0] * tileSizeOnScreen, viewport.getWorldHeight() - ((float) (entry[1] + 1) * tileSizeOnScreen));
+                    GameModel.black_font.draw(batch, String.format("%.0f%%", building.getConstructionPercent(gameModel.getGameTimeGMT())), screenPos.x + 0.29f, screenPos.y + 0.61f);
+                }
+                else {
+                    found.add(entry);
+                }
+            }
+        }
+        mapObjUnderConstruction.removeAll(found);
         batch.end();
         // Can't do a batch and ShapeRenderer that overlap, you have to begin and end one before beginning the other
         // So batch.end() must go before anything with ShapeRenderer
@@ -181,16 +205,17 @@ public class MainScreen implements Screen {
                 if (mapObjects[i][j] instanceof Building building) {
                     // Get the texture for the object
                     String texturePath = mapObjects[i][j].getTexturePath();
-                    if (!mapObjTextures.containsKey(texturePath))
+                    if (!mapObjTextures.containsKey(texturePath)) {
                         mapObjTextures.put(texturePath, new Texture(texturePath));
-
-                    batch.draw(mapObjTextures.get(texturePath), screenPos.x, screenPos.y, tileSizeOnScreen * building.getSize(), tileSizeOnScreen * building.getSize());
-
-                    // Construction visualisation
-                    if (building.isUnderConstruction) {
-                        batch.draw(constructionTexture, screenPos.x, screenPos.y, tileSizeOnScreen * building.getSize(), tileSizeOnScreen * building.getSize());
-                        GameModel.black_font.draw(batch, building.getConstructionPercent(gameModel.getGameTimeGMT()), screenPos.x, screenPos.y );
                     }
+                    batch.draw(mapObjTextures.get(texturePath), screenPos.x, screenPos.y, tileSizeOnScreen * building.getSize(), tileSizeOnScreen * building.getSize());
+                    if (building.isUnderConstruction) {
+                        int[] position = new int[]{i, j};
+                        mapObjUnderConstruction.add(position);
+                        batch.draw(constructionTexture, screenPos.x, screenPos.y, tileSizeOnScreen * building.getSize(), tileSizeOnScreen * building.getSize());
+                    }
+
+
                 }
             }
         }

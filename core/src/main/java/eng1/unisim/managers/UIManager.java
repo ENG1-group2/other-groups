@@ -69,6 +69,8 @@ public class UIManager {
         stage.addActor(hudTable);
     }
 
+
+
     private void createBuildingInventory() {
         // vertical button display for buildings
         Table buildingTable = new Table();
@@ -80,16 +82,25 @@ public class UIManager {
         Texture accommodationTexture = new Texture(Gdx.files.internal("buildings/accommodation.png"));
         ImageButton.ImageButtonStyle accommodationStyle = new ImageButton.ImageButtonStyle();
         accommodationStyle.imageUp = new TextureRegionDrawable(new TextureRegion(accommodationTexture));
+        accommodationStyle.imageChecked = new TextureRegionDrawable(new TextureRegion(accommodationTexture));
+        accommodationStyle.imageChecked.setMinWidth(90);  // Slightly smaller when selected
+        accommodationStyle.imageChecked.setMinHeight(90);
 
         ImageButton accommodationButton = new ImageButton(accommodationStyle);
         accommodationButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // set price of building, satisfaction logic needs tweaking
                 Building accommodation = new Building("Accommodation", 50000, 10, 5000);
                 buildingSelectionCallback.onBuildingSelected(accommodation);
+                accommodationButton.setChecked(true);
             }
         });
+
+        // Add placement instruction label (not shown)
+        // TODO: change cursor pointer on buttons, and to crosshair on move building
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+        Label placementLabel = new Label("Click to place building", labelStyle);
+        placementLabel.setVisible(false);
 
         // buttons for other buildings
         // TODO add other buildings (one place to learn, one place to eat, one recreational activity)
@@ -97,6 +108,7 @@ public class UIManager {
         for (int i = 0; i < 4; i++) {
             if (i == 0) {
                 buildingTable.add(accommodationButton).size(100, 100).pad(5).row();
+                buildingTable.add(placementLabel).padLeft(10).row();
             } else {
                 Button emptyButton = new Button(emptyStyle);
                 buildingTable.add(emptyButton).size(100, 100).pad(5).row();

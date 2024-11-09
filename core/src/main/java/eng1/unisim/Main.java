@@ -10,6 +10,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.InputMultiplexer;
 
@@ -17,7 +18,6 @@ import eng1.unisim.managers.BuildingManager;
 import eng1.unisim.managers.InputManager;
 import eng1.unisim.managers.TimeManager;
 import eng1.unisim.managers.UIManager;
-import eng1.unisim.managers.*;
 
 public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
@@ -47,12 +47,15 @@ public class Main extends ApplicationAdapter {
     private boolean isPlacingBuilding = false;
     private final Vector2 targetPosition = new Vector2();
 
+    private Vector3 cursorPosition;
+
     @Override
     public void create() {
         initializeGame();
         setupCamera();
         setupManagers();
         setupInput();
+        cursorPosition = new Vector3();
     }
 
     private void initializeGame() {
@@ -175,12 +178,6 @@ public class Main extends ApplicationAdapter {
         setupInput();
     }
 
-    public void setSelectedBuilding(Building building) {
-        this.selectedBuilding = building;
-        this.isPlacingBuilding = true;
-        inputManager.setPlacingBuilding(true);
-    }
-
     private void placeSelectedBuilding(float worldX, float worldY) {
         if (selectedBuilding != null && player.getFunds() >= selectedBuilding.getCost()) {
             if (buildingManager.placeBuilding(selectedBuilding, worldX, worldY)) {
@@ -193,16 +190,32 @@ public class Main extends ApplicationAdapter {
         }
     }
 
+    public void setSelectedBuilding(Building building) {
+        this.selectedBuilding = building;
+        this.isPlacingBuilding = true;
+        inputManager.setPlacingBuilding(true);
+        buildingManager.setSelectedBuilding(building);
+    }
+
+    private void updateCursorPosition() {
+        if (isPlacingBuilding) {
+            float screenX = Gdx.input.getX();
+            float screenY = Gdx.input.getY();
+            cursorPosition = camera.unproject(new Vector3(screenX, screenY, 0));
+        }
+    }
+
     @Override
     public void render() {
         updateTime();
         updateCamera();
+        updateCursorPosition();
 
-        // ui update
+        // Update UI
         int timeLeft = timeManager.getTimeLimit() - TimeManager.getCurrentTime();
         uiManager.updateHUD(timeLeft);
 
-        // render game
+        // Render game
         ScreenUtils.clear(0, 0, 0, 1);
         camera.update();
 
@@ -211,10 +224,10 @@ public class Main extends ApplicationAdapter {
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        buildingManager.render(batch);
+        buildingManager.render(batch, cursorPosition);
         batch.end();
 
-        // ui render
+        // Render UI
         uiManager.render();
     }
 

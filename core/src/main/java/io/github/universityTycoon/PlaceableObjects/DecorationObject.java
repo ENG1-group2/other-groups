@@ -21,4 +21,8 @@ public class DecorationObject extends MapObject {
     public float calculateSatisfaction() { // As a percentage
         return 0f;
     }
+
+    public int getSize() {
+        return size;
+    }
 }

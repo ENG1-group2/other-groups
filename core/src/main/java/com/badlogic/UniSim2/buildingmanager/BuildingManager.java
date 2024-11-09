@@ -39,15 +39,15 @@ public class BuildingManager {
      * @param clicked true if a click has happened and false if not.
      */
     public void input(Vector2 mousePos, boolean clicked) {
-        if(clicked){
-            // If we are currently selecting a building
-            if(currentlySelecting){
+
+        // If we're currently selecting a building
+        if(currentlySelecting){
+            if(clicked){
                 handlePlacing(); // Place the building in the location of the click
             }
-        }
-        // Otherwise continue dragging the building
-        if(currentlySelecting){
-            handleDragging(mousePos);
+            else{
+                handleDragging(mousePos); // Otherwise continue dragging the building
+            }
         }
     }
 

@@ -4,3 +4,6 @@ grass.png - https://opengameart.org/content/grass-1
 dirt*.png - https://opengameart.org/content/tileable-dirt-textures
 water.png - https://opengameart.org/content/3-live-proceduraly-generated-tiling-water-textures-512px-running-brushes
 cobble.png - https://opengameart.org/content/cobble-path-texture
+
+Buildings
+accommodation.png - https://opengameart.org/content/building-tileset-0

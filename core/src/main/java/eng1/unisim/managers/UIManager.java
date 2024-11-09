@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import eng1.unisim.Player;
+import eng1.unisim.Building;
 
 public class UIManager {
     private Stage stage;
@@ -26,10 +27,16 @@ public class UIManager {
     private final Player player;
     private Table backgroundTable;
     private Runnable onRestartGame;
+    private BuildingSelectionCallback buildingSelectionCallback;
 
-    public UIManager(Player player, Runnable onRestartGame) {
+    public interface BuildingSelectionCallback {
+        void onBuildingSelected(Building building);
+    }
+
+    public UIManager(Player player, Runnable onRestartGame, BuildingSelectionCallback buildingCallback) {
         this.player = player;
         this.onRestartGame = onRestartGame;
+        this.buildingSelectionCallback = buildingCallback;
         setupUI();
     }
 
@@ -41,6 +48,7 @@ public class UIManager {
         font.getData().setScale(1.5f);
 
         createHUD();
+        createBuildingInventory();
         createEndGameWindow();
     }
 
@@ -59,6 +67,43 @@ public class UIManager {
         hudTable.add(fundsLabel);
 
         stage.addActor(hudTable);
+    }
+
+    private void createBuildingInventory() {
+        // vertical button display for buildings
+        Table buildingTable = new Table();
+        buildingTable.top().left();
+        buildingTable.setFillParent(true);
+        buildingTable.pad(10);
+
+        // accommodation building button
+        Texture accommodationTexture = new Texture(Gdx.files.internal("buildings/accommodation.png"));
+        ImageButton.ImageButtonStyle accommodationStyle = new ImageButton.ImageButtonStyle();
+        accommodationStyle.imageUp = new TextureRegionDrawable(new TextureRegion(accommodationTexture));
+
+        ImageButton accommodationButton = new ImageButton(accommodationStyle);
+        accommodationButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // set price of building, satisfaction logic needs tweaking
+                Building accommodation = new Building("Accommodation", 50000, 10, 5000);
+                buildingSelectionCallback.onBuildingSelected(accommodation);
+            }
+        });
+
+        // buttons for other buildings
+        // TODO add other buildings (one place to learn, one place to eat, one recreational activity)
+        Button.ButtonStyle emptyStyle = new Button.ButtonStyle();
+        for (int i = 0; i < 4; i++) {
+            if (i == 0) {
+                buildingTable.add(accommodationButton).size(100, 100).pad(5).row();
+            } else {
+                Button emptyButton = new Button(emptyStyle);
+                buildingTable.add(emptyButton).size(100, 100).pad(5).row();
+            }
+        }
+
+        stage.addActor(buildingTable);
     }
 
     private void createEndGameWindow() {

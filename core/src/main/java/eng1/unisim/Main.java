@@ -88,7 +88,8 @@ public class Main extends ApplicationAdapter {
     }
 
     private void setupManagers() {
-        uiManager = new UIManager(player, this::restartGame);
+        buildingManager = new BuildingManager();
+        uiManager = new UIManager(player, this::restartGame, this::setSelectedBuilding);
         inputManager = new InputManager(camera, this::placeSelectedBuilding, targetPosition, maxZoom);
     }
 
@@ -170,7 +171,7 @@ public class Main extends ApplicationAdapter {
         timeManager = new TimeManager(1, 0);
         player = new Player();
         university = new University();
-        uiManager = new UIManager(player, this::restartGame);
+        uiManager = new UIManager(player, this::restartGame, this::setSelectedBuilding);
         setupInput();
     }
 
@@ -228,5 +229,6 @@ public class Main extends ApplicationAdapter {
         map.dispose();
         mapRenderer.dispose();
         uiManager.dispose();
+        buildingManager.dispose();
     }
 }

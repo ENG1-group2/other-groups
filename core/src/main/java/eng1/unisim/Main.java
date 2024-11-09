@@ -3,6 +3,7 @@ package eng1.unisim;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -12,7 +13,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.InputMultiplexer;
 
 import eng1.unisim.managers.BuildingManager;
 import eng1.unisim.managers.InputManager;
@@ -46,6 +46,7 @@ public class Main extends ApplicationAdapter {
     private Building selectedBuilding = null;
     private boolean isPlacingBuilding = false;
     private final Vector2 targetPosition = new Vector2();
+    private boolean isPaused = true; // Start the game in a paused state
 
     private Vector3 cursorPosition;
 
@@ -56,6 +57,18 @@ public class Main extends ApplicationAdapter {
         setupManagers();
         setupInput();
         cursorPosition = new Vector3();
+        centerCameraOnMap();
+    }
+
+    private void centerCameraOnMap() {
+        // Retrieve the map dimensions
+        float mapWidth = map.getProperties().get("width", Integer.class) * map.getProperties().get("tilewidth", Integer.class);
+        float mapHeight = map.getProperties().get("height", Integer.class) * map.getProperties().get("tileheight", Integer.class);
+
+        // Set the camera's position to the center of the map
+        camera.position.set(mapWidth / 2, mapHeight / 2, 0);
+        targetPosition.set(mapWidth / 2, mapHeight / 2); // Set targetPosition to the center as well
+        camera.update();
     }
 
     private void initializeGame() {
@@ -70,27 +83,33 @@ public class Main extends ApplicationAdapter {
     private void setupCamera() {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1280, 720);
-        targetPosition.set(camera.position.x, camera.position.y);
 
-        // calc maximum zoom level based on map size and screen size
-        float mapAspect = MAP_WIDTH / MAP_HEIGHT;
-        float screenAspect = Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight();
+        // Calculate the center of the map
+        float mapWidth = MAP_WIDTH;
+        float mapHeight = MAP_HEIGHT;
+        float centerX = mapWidth / 2f;
+        float centerY = mapHeight / 2f;
+
+        // Set the camera's position to the center of the map
+        camera.position.set(centerX, centerY, 0);
+        targetPosition.set(centerX, centerY);
+
+        // Calculate maximum zoom level based on map size and screen size
+        float mapAspect = mapWidth / mapHeight;
+        float screenAspect = Gdx.graphics.getWidth() / (float) Gdx.graphics.getHeight();
 
         if (mapAspect > screenAspect) {
-            // try and fit to width (might not work)
-            maxZoom = MAP_WIDTH / camera.viewportWidth;
+            // Fit to width
+            maxZoom = mapWidth / camera.viewportWidth;
         } else {
-            // try and fit to height (might not work)
-            maxZoom = MAP_HEIGHT / camera.viewportHeight;
+            // Fit to height
+            maxZoom = mapHeight / camera.viewportHeight;
         }
-
-        // initial map position
-        camera.position.set(MAP_WIDTH / 2f, MAP_HEIGHT / 2f, 0);
-        targetPosition.set(camera.position.x, camera.position.y);
+        camera.update();
     }
 
     private void setupManagers() {
-        uiManager = new UIManager(player, this::restartGame, this::setSelectedBuilding);
+        uiManager = new UIManager(player, this::restartGame, this::setSelectedBuilding, this::togglePause);
         buildingManager = new BuildingManager(uiManager);
         inputManager = new InputManager(camera, this::placeSelectedBuilding, targetPosition, maxZoom);
     }
@@ -156,15 +175,17 @@ public class Main extends ApplicationAdapter {
     }
 
     private void updateTime() {
-        accumulator += Gdx.graphics.getDeltaTime();
+        if (!isPaused) {
+            accumulator += Gdx.graphics.getDeltaTime();
 
-        while (accumulator >= TIME_STEP) {
-            timeManager.incrementTime();
-            updateGameState();
-            accumulator -= TIME_STEP;
+            while (accumulator >= TIME_STEP) {
+                timeManager.incrementTime();
+                updateGameState();
+                accumulator -= TIME_STEP;
 
-            if (timeManager.isEndOfGame()) {
-                uiManager.showEndGameScreen();
+                if (timeManager.isEndOfGame()) {
+                    uiManager.showEndGameScreen();
+                }
             }
         }
     }
@@ -175,6 +196,7 @@ public class Main extends ApplicationAdapter {
         university = new University();
         setupManagers();
         setupInput();
+        isPaused = true; // Pause the game when restarting
     }
 
     private void placeSelectedBuilding(float worldX, float worldY) {
@@ -190,7 +212,7 @@ public class Main extends ApplicationAdapter {
             } else {
                 // show insufficient funds message for 2 seconds
                 String message = "Insufficient funds! Need $" + selectedBuilding.getCost() +
-                    " (Current: $" + player.getFunds() + ")";
+                        " (Current: $" + player.getFunds() + ")";
                 uiManager.showNotification(message);
             }
         }
@@ -209,6 +231,10 @@ public class Main extends ApplicationAdapter {
             float screenY = Gdx.input.getY();
             cursorPosition = camera.unproject(new Vector3(screenX, screenY, 0));
         }
+    }
+
+    public void togglePause() {
+        isPaused = !isPaused;
     }
 
     @Override

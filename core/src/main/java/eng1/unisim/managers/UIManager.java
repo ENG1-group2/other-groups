@@ -1,5 +1,7 @@
 package eng1.unisim.managers;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -9,13 +11,17 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import eng1.unisim.Player;
+
 import eng1.unisim.Building;
-import java.util.HashMap;
+import eng1.unisim.Player;
 
 public class UIManager {
     private Stage stage;
@@ -29,9 +35,10 @@ public class UIManager {
     private Table backgroundTable;
     private Runnable onRestartGame;
     private BuildingSelectionCallback buildingSelectionCallback;
+    private Runnable onPauseToggle;
     private HashMap<String, Label> buildingCounters = new HashMap<>();
     private HashMap<String, Integer> buildingCounts = new HashMap<>();
-    private static final String[] BUILDING_TYPES = {"Accommodation", "Learning", "Food", "Recreation"};
+    private static final String[] BUILDING_TYPES = { "Accommodation", "Learning", "Food", "Recreation" };
     private Label notificationLabel;
     private float notificationTimer = 0;
     private static final float NOTIFICATION_DURATION = 2f; // show messages for 2 seconds
@@ -40,10 +47,12 @@ public class UIManager {
         void onBuildingSelected(Building building);
     }
 
-    public UIManager(Player player, Runnable onRestartGame, BuildingSelectionCallback buildingCallback) {
+    public UIManager(Player player, Runnable onRestartGame, BuildingSelectionCallback buildingCallback,
+            Runnable onPauseToggle) {
         this.player = player;
         this.onRestartGame = onRestartGame;
         this.buildingSelectionCallback = buildingCallback;
+        this.onPauseToggle = onPauseToggle;
         setupUI();
     }
 
@@ -58,6 +67,7 @@ public class UIManager {
         createBuildingInventory();
         createEndGameWindow();
         createNotificationSystem();
+        createPauseButton();
     }
 
     private void createHUD() {
@@ -77,7 +87,30 @@ public class UIManager {
         stage.addActor(hudTable);
     }
 
+    // TODO improve look of pause button
+    private void createPauseButton() {
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = font;
+        buttonStyle.fontColor = Color.WHITE;
+        buttonStyle.downFontColor = Color.LIGHT_GRAY;
 
+        TextButton pauseButton = new TextButton("Resume", buttonStyle);
+        pauseButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                onPauseToggle.run();
+                pauseButton.setText(pauseButton.getText().toString().equals("Pause") ? "Resume" : "Pause");
+            }
+        });
+
+        Table pauseTable = new Table();
+        pauseTable.top().left();
+        pauseTable.setFillParent(true);
+        pauseTable.pad(10);
+        pauseTable.add(pauseButton).padBottom(5).row();
+
+        stage.addActor(pauseTable);
+    }
 
     private void createBuildingInventory() {
         // start building counts from 0
@@ -96,7 +129,7 @@ public class UIManager {
         ImageButton.ImageButtonStyle accommodationStyle = new ImageButton.ImageButtonStyle();
         accommodationStyle.imageUp = new TextureRegionDrawable(new TextureRegion(accommodationTexture));
         accommodationStyle.imageChecked = new TextureRegionDrawable(new TextureRegion(accommodationTexture));
-        accommodationStyle.imageChecked.setMinWidth(90);  // Slightly smaller when selected
+        accommodationStyle.imageChecked.setMinWidth(90); // Slightly smaller when selected
         accommodationStyle.imageChecked.setMinHeight(90);
 
         ImageButton accommodationButton = new ImageButton(accommodationStyle);
@@ -109,6 +142,63 @@ public class UIManager {
             }
         });
 
+        // dining building button
+        Texture diningTexture = new Texture(Gdx.files.internal("buildings/diningPlaceholder.png"));
+        ImageButton.ImageButtonStyle diningStyle = new ImageButton.ImageButtonStyle();
+        diningStyle.imageUp = new TextureRegionDrawable(new TextureRegion(diningTexture));
+        diningStyle.imageChecked = new TextureRegionDrawable(new TextureRegion(diningTexture));
+        diningStyle.imageChecked.setMinWidth(90); // Slightly smaller when selected
+        diningStyle.imageChecked.setMinHeight(90);
+
+        ImageButton diningButton = new ImageButton(diningStyle);
+
+        diningButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Building dining = new Building("Dining", 50000, 10, 5000);
+                buildingSelectionCallback.onBuildingSelected(dining);
+                diningButton.setChecked(true);
+            }
+        });
+
+        // learning building button
+        Texture learningTexture = new Texture(Gdx.files.internal("buildings/learningPlaceholder.png"));
+        ImageButton.ImageButtonStyle learningStyle = new ImageButton.ImageButtonStyle();
+        learningStyle.imageUp = new TextureRegionDrawable(new TextureRegion(learningTexture));
+        learningStyle.imageChecked = new TextureRegionDrawable(new TextureRegion(learningTexture));
+        learningStyle.imageChecked.setMinWidth(90); // Slightly smaller when selected
+        learningStyle.imageChecked.setMinHeight(90);
+
+        ImageButton learningButton = new ImageButton(learningStyle);
+
+        learningButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Building learning = new Building("Learning", 50000, 10, 5000);
+                buildingSelectionCallback.onBuildingSelected(learning);
+                learningButton.setChecked(true);
+            }
+        });
+
+        // recreation building button
+        Texture recreationTexture = new Texture(Gdx.files.internal("buildings/recreationPlaceholder.png"));
+        ImageButton.ImageButtonStyle recreationStyle = new ImageButton.ImageButtonStyle();
+        recreationStyle.imageUp = new TextureRegionDrawable(new TextureRegion(recreationTexture));
+        recreationStyle.imageChecked = new TextureRegionDrawable(new TextureRegion(recreationTexture));
+        recreationStyle.imageChecked.setMinWidth(90); // Slightly smaller when selected
+        recreationStyle.imageChecked.setMinHeight(90);
+
+        ImageButton recreationButton = new ImageButton(recreationStyle);
+
+        recreationButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Building recreation = new Building("Recreation", 50000, 10, 5000);
+                buildingSelectionCallback.onBuildingSelected(recreation);
+                recreationButton.setChecked(true);
+            }
+        });
+
         // Add placement instruction label (not shown)
         // TODO: change cursor pointer on buttons, and to crosshair on move building
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
@@ -116,43 +206,31 @@ public class UIManager {
         placementLabel.setVisible(false);
 
         // counters
-        Button.ButtonStyle emptyStyle = new Button.ButtonStyle();
+        // counters
         Label.LabelStyle counterStyle = new Label.LabelStyle(font, Color.WHITE);
-        for (int i = 0; i < BUILDING_TYPES.length; i++) {
-            Table buttonContainer = new Table();
-            String buildingType = BUILDING_TYPES[i];
+        Label accommodationCounter = new Label("0", counterStyle);
+        Label diningCounter = new Label("0", counterStyle);
+        Label learningCounter = new Label("0", counterStyle);
+        Label recreationCounter = new Label("0", counterStyle);
 
-            // label the counters
-            Label counter = new Label("0", counterStyle);
-            buildingCounters.put(buildingType, counter);
+        buildingCounters.put("Accommodation", accommodationCounter);
+        buildingCounters.put("Dining", diningCounter);
+        buildingCounters.put("Learning", learningCounter);
+        buildingCounters.put("Recreation", recreationCounter);
 
-            // position counter over button
-            Stack stack = new Stack();
-
-            // button container
-            Table buttonTable = new Table();
-            if (i == 0) {
-                buttonTable.add(accommodationButton).size(100, 100);
-            } else {
-                Button emptyButton = new Button(emptyStyle);
-                buttonTable.add(emptyButton).size(100, 100);
-            }
-
-            // counter container
-            Table counterTable = new Table();
-            counterTable.top().right();
-            counterTable.add(counter).pad(5);
-
-            stack.add(buttonTable);
-            stack.add(counterTable);
-
-            buttonContainer.add(stack).pad(5);
-
-            buildingTable.add(buttonContainer).row();
-        }
+        // Add buttons and counters to the table
+        buildingTable.add(accommodationButton).size(100, 100).pad(5);
+        buildingTable.add(accommodationCounter).pad(5).row();
+        buildingTable.add(diningButton).size(100, 100).pad(5);
+        buildingTable.add(diningCounter).pad(5).row();
+        buildingTable.add(learningButton).size(100, 100).pad(5);
+        buildingTable.add(learningCounter).pad(5).row();
+        buildingTable.add(recreationButton).size(100, 100).pad(5);
+        buildingTable.add(recreationCounter).pad(5).row();
 
         stage.addActor(buildingTable);
     }
+
 
     public void updateBuildingCount(String buildingType, int count) {
         buildingCounts.put(buildingType, count);
@@ -207,7 +285,8 @@ public class UIManager {
 
         backgroundTable = new Table();
         backgroundTable.setFillParent(true);
-        backgroundTable.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(Pixmap.createFromFrameBuffer(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())))));
+        backgroundTable.setBackground(new TextureRegionDrawable(new TextureRegion(
+                new Texture(Pixmap.createFromFrameBuffer(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())))));
         backgroundTable.setColor(0, 0, 0, 0.7f);
         endGameStage.addActor(backgroundTable);
         backgroundTable.setVisible(false);
@@ -271,9 +350,8 @@ public class UIManager {
 
     private void centerWindow() {
         endGameWindow.setPosition(
-            (Gdx.graphics.getWidth() - endGameWindow.getWidth()) / 2,
-            (Gdx.graphics.getHeight() - endGameWindow.getHeight()) / 2
-        );
+                (Gdx.graphics.getWidth() - endGameWindow.getWidth()) / 2,
+                (Gdx.graphics.getHeight() - endGameWindow.getHeight()) / 2);
     }
 
     public void showEndGameScreen() {

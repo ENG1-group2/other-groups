@@ -27,6 +27,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import uk.ac.york.vfc510.unisim.managers.TimeManager;
 import uk.ac.york.vfc510.unisim.managers.BuildingManager;
@@ -77,7 +80,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        map = new TmxMapLoader().load("emptyMap.tmx");
+        map = new TmxMapLoader().load("emptyMap2.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1280, 720);
@@ -132,29 +135,36 @@ public class Main extends ApplicationAdapter {
     }
 
     private void createEndGameWindow() {
-        // Create a simple style for the window
         Window.WindowStyle windowStyle = new Window.WindowStyle();
         windowStyle.titleFont = font;
         windowStyle.titleFontColor = Color.WHITE;
 
-        // Create the window with custom style
+        // window styles
         endGameWindow = new Window("Game Over!", new Window.WindowStyle(font, Color.WHITE, null));
         endGameWindow.setMovable(false);
-        endGameWindow.setModal(true);
+        endGameWindow.setModal(false);  // prevent automatic darkening
 
-        // Set window background color
+        // cover screen with background table
+        Table backgroundTable = new Table();
+        backgroundTable.setFillParent(true);
+        backgroundTable.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(Pixmap.createFromFrameBuffer(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())))));
+        backgroundTable.setColor(0, 0, 0, 0.7f);  // Adjust alpha here for transparency
+        endGameStage.addActor(backgroundTable);
+        backgroundTable.setVisible(false);
+
+        // game visible in background with semi-opacity
         endGameWindow.setColor(0, 0, 0, 0.8f);
 
-        // Create content table
+        // end game info table
         Table content = new Table();
         content.pad(20);
 
-        // Create labels for final stats with custom style
+        // stat labels and styles
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
         Label finalScoreLabel = new Label("Satisfaction Score: " + player.getSatisfaction(), labelStyle);
         content.add(finalScoreLabel).pad(10).row();
 
-        // Create buttons with custom style
+        // game end action buttons (restart/exit)
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font;
         buttonStyle.fontColor = Color.WHITE;
@@ -165,6 +175,7 @@ public class Main extends ApplicationAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 restartGame();
+                backgroundTable.setVisible(false);  // Hide background on restart
             }
         });
 
@@ -176,26 +187,26 @@ public class Main extends ApplicationAdapter {
             }
         });
 
-        // Add buttons to window
+        // add buttons
         Table buttonTable = new Table();
         buttonTable.add(restartButton).pad(10).width(100);
         buttonTable.add(exitButton).pad(10).width(100);
         content.add(buttonTable);
 
-        // Add content to window
+        // add content
         endGameWindow.add(content);
         endGameWindow.pack();
 
-        // Make window slightly larger for better appearance
+        // enlarge window for a better look
         endGameWindow.setSize(endGameWindow.getWidth() + 40, endGameWindow.getHeight() + 40);
 
-        // Position window in center of screen
+        // center content
         endGameWindow.setPosition(
             (Gdx.graphics.getWidth() - endGameWindow.getWidth()) / 2,
             (Gdx.graphics.getHeight() - endGameWindow.getHeight()) / 2
         );
 
-        // Add to end game stage but hide initially
+        // hide until needed
         endGameStage.addActor(endGameWindow);
         endGameWindow.setVisible(false);
     }
@@ -266,10 +277,16 @@ public class Main extends ApplicationAdapter {
     }
 
     private void showEndGameScreen() {
-        gameEnded = true;
+        gameEnded = false;  // Changed to false so the game continues to render
         endGameWindow.setVisible(true);
+        // show table for stats
+        for (Actor actor : endGameStage.getActors()) {
+            if (actor instanceof Table && actor != endGameWindow) {
+                actor.setVisible(true);
+            }
+        }
 
-        // Update final score in window
+        // final score update
         Label finalScoreLabel = endGameWindow.findActor("finalScoreLabel");
         if (finalScoreLabel != null) {
             finalScoreLabel.setText("Final Satisfaction Score: " + player.getSatisfaction());
@@ -344,27 +361,28 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
-        if (!gameEnded) {
-            updateTime();
-            handleInput();
-            updateCamera();
-            updateUI();
+        // Always render the game
+        updateTime();
+        handleInput();
+        updateCamera();
+        updateUI();
 
-            ScreenUtils.clear(0, 0, 0, 1);
-            camera.update();
+        ScreenUtils.clear(0, 0, 0, 1);
+        camera.update();
 
-            mapRenderer.setView(camera);
-            mapRenderer.render();
+        mapRenderer.setView(camera);
+        mapRenderer.render();
 
-            batch.setProjectionMatrix(camera.combined);
-            batch.begin();
-            buildingManager.render(batch);
-            batch.end();
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        buildingManager.render(batch);
+        batch.end();
 
-            stage.act(Gdx.graphics.getDeltaTime());
-            stage.draw();
-        } else {
-            ScreenUtils.clear(0, 0, 0, 0.8f);
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
+
+        // If the game is ended, render the end game stage on top
+        if (endGameWindow.isVisible()) {
             endGameStage.act(Gdx.graphics.getDeltaTime());
             endGameStage.draw();
         }

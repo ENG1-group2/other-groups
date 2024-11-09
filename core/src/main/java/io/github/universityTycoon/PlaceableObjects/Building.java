@@ -1,13 +1,14 @@
 package io.github.universityTycoon.PlaceableObjects;
 
 import com.badlogic.gdx.math.MathUtils;
+import io.github.universityTycoon.BuildingTypes;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Building extends MapObject {
 
-    public Duration constructionGameTime = Duration.ofDays(90);
+    public Duration constructionGameTime = Duration.ofDays(30);
     public LocalDateTime finishDate;
     public boolean isUnderConstruction = true;
 
@@ -60,5 +61,16 @@ public class Building extends MapObject {
 
     public int getSize() {
         return size;
+    }
+
+
+    public static <T extends Building> T getObjectFromEnum(BuildingTypes type, LocalDateTime time) {
+        return switch (type) {
+            case Accommodation -> (T) new AccommodationBuilding(time);
+            case Leisure -> (T) new LeisureBuilding(time);
+            case Cafeteria -> (T) new Cafeteria(time);
+            case Teaching -> (T) new TeachingBuilding(time);
+            default -> null;
+        };
     }
 }

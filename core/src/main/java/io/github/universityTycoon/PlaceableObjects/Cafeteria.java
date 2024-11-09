@@ -9,6 +9,7 @@ public class Cafeteria extends Building {
 
     public Cafeteria(LocalDateTime constructionStartedAt) {
         super(constructionStartedAt, "images/rec_building.png");
+        size = 2;
     }
 
     @Override

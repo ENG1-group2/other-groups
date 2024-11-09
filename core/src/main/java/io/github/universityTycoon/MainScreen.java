@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -40,12 +41,18 @@ public class MainScreen implements Screen {
     Texture playTexture;
     Texture constructionTexture;
     Texture squareTexture;
+    Texture rightArrowTexture;
+    Texture leftArrowTexture;
 
-    Rectangle[] buildingButtons;
-
+    BuildingTypes currentBuilding;
+    Rectangle buildingIcon;
+    Rectangle rightButton;
+    Rectangle leftButton;
 
     Vector2 mousePos;
     boolean mouseDown;
+    boolean placeMode;
+    float buttonCooldownTimer;
     PlayerInputHandler playerInputHandler;
 
 
@@ -67,7 +74,6 @@ public class MainScreen implements Screen {
     @Override
     public void show() {
         batch = new SpriteBatch();
-        shapeRenderer = new ShapeRenderer();
         viewport = new FitViewport(16, 9);
 
         mousePos = new Vector2(0,0);
@@ -78,8 +84,16 @@ public class MainScreen implements Screen {
         playTexture = new Texture("ui/play.png");
         constructionTexture = new Texture("images/scaffold.png");
         squareTexture = new Texture("images/Gridsquare.png");
+        rightArrowTexture = new Texture("ui/right-arrow.png");
+        leftArrowTexture = new Texture("ui/left-arrow.png");
         mapObjTextures = new HashMap<>();
-        buildingButtons = new Rectangle[gameModel.getNoBuildingTypes()];
+
+        currentBuilding = gameModel.DEFAULT_SELECTED_BUILDING_TYPE;
+        buildingIcon = new Rectangle();
+        rightButton = new Rectangle();
+        leftButton = new Rectangle();
+
+        buttonCooldownTimer = 0f;
 
         // start the playback of the background music when the screen is shown
         music.setVolume(0.5f);
@@ -119,9 +133,40 @@ public class MainScreen implements Screen {
     }
 
     private void logic() {
-        if (mouseDown) {
+        Vector3 touch = new Vector3(mousePos.x, mousePos.y, 0);
+        viewport.getCamera().unproject(touch);
+
+        buttonCooldownTimer -= Gdx.graphics.getDeltaTime();
+        if (buttonCooldownTimer <= 0f) {
+            buttonCooldownTimer = 0f;
+        }
+
+        // Checks to see if the building icon has been clicked
+        if (mouseDown && buildingIcon.contains(touch.x, touch.y)) {
+            placeMode = true;
+        }
+        // Places the building when the user has stopped dragging the mouse in place mode (ABOVE the Menu Bar)
+        else if (!mouseDown && placeMode && mousePos.y < 810) {
             placeBuilding();
         }
+        // Cancels place mode if the user lets go of the mouse in the Menu Bar
+        else if (!mouseDown && placeMode) {
+            placeMode = false;
+        }
+
+        // Increments the current building value if the right arrow is clicked
+        if (mouseDown && rightButton.contains(touch.x, touch.y) && buttonCooldownTimer == 0f) {
+            if (currentBuilding.ordinal() + 1 > BuildingTypes.values().length - 1) {currentBuilding = BuildingTypes.values()[0];}
+            else {currentBuilding = BuildingTypes.values()[currentBuilding.ordinal() + 1];}
+            buttonCooldownTimer = gameModel.BUTTON_COOLDOWN_TIMER;
+        }
+        // Decrements the current building value if the left arrow is clicked
+        else if (mouseDown && leftButton.contains(touch.x, touch.y) && buttonCooldownTimer == 0f) {
+            if (currentBuilding.ordinal() - 1 < 0) {currentBuilding = BuildingTypes.values()[BuildingTypes.values().length - 1];}
+            else {currentBuilding = BuildingTypes.values()[currentBuilding.ordinal() - 1];}
+            buttonCooldownTimer = gameModel.BUTTON_COOLDOWN_TIMER;
+        }
+
         time = String.valueOf(floorDiv((int) gameModel.getTimeRemainingSeconds(), 60))
             + ":" + String.format("%02d", (int) gameModel.getTimeRemainingSeconds() % 60);
         dateTimeString = gameModel.getGameTimeGMT().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG));
@@ -189,8 +234,9 @@ public class MainScreen implements Screen {
         Vector2 mouseWorldPos = viewport.unproject(new Vector2(mousePos.x, viewport.getScreenHeight() - mousePos.y));
         int tileLocationX = (int)(gameModel.getTilesWide() * mouseWorldPos.x / viewport.getWorldWidth());
         int tileLocationY = (int)(gameModel.getTilesHigh() * mouseWorldPos.y / (viewport.getWorldHeight() - 2)); // Subtract 2 since the map is 2 world units up
-        // Defaulting to accommodation building for now
-        gameModel.mapController.addBuilding(new AccommodationBuilding(gameModel.getGameTimeGMT()), tileLocationX, tileLocationY);
+
+        gameModel.mapController.addBuilding(Building.getObjectFromEnum(currentBuilding, gameModel.getGameTimeGMT()), tileLocationX, tileLocationY);
+        placeMode = false;
     }
 
     private void drawMapObjects() {
@@ -199,8 +245,10 @@ public class MainScreen implements Screen {
             for (int j = 0; j < mapObjects[i].length; j++) {
                 float tileSizeOnScreen = viewport.getWorldWidth() / gameModel.getTilesWide() ;
                 Vector2 screenPos = new Vector2((float) i * tileSizeOnScreen, viewport.getWorldHeight() - ((float) (j + 1) * tileSizeOnScreen));
-                // Optional line to show the grid (mainly for testing)
-                //batch.draw(squareTexture, screenPos.x, screenPos.y, tileSizeOnScreen, tileSizeOnScreen);
+                // Show the grids (when in place mode)
+                if (placeMode && mouseDown) {
+                    batch.draw(squareTexture, screenPos.x, screenPos.y, tileSizeOnScreen, tileSizeOnScreen);
+                }
                 // Could make this a more general MapObject for decoration object implementation
                 if (mapObjects[i][j] instanceof Building building) {
                     // Get the texture for the object
@@ -214,36 +262,51 @@ public class MainScreen implements Screen {
                         mapObjUnderConstruction.add(position);
                         batch.draw(constructionTexture, screenPos.x, screenPos.y, tileSizeOnScreen * building.getSize(), tileSizeOnScreen * building.getSize());
                     }
-
-
                 }
             }
         }
     }
 
     private void drawBuildingMenu() {
+        // All positions are based on the bottom left of the rectangle
+
         Rectangle background = new Rectangle();
-        background.set(0, 0, viewport.getScreenWidth(), 244);
+        background.set(0, 0, viewport.getScreenWidth(), 2);
 
-        Rectangle buildingButton1 = new Rectangle();
-        buildingButton1.set(22, 22, 200, 200);
+        buildingIcon = new Rectangle();
+        buildingIcon.set(7.1f, 0.1f, 1.8f, 1.8f);
 
-        Rectangle buildingButton2 = new Rectangle();
-        buildingButton2.set(45 + buildingButton1.width, 22, 200, 200);
+        rightButton = new Rectangle();
+        rightButton.set(9, 0.5f, 0.5f, 1);
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        leftButton = new Rectangle();
+        leftButton.set(6.5f, 0.5f, 0.5f, 1);
 
-        shapeRenderer.setColor((float) 79 / 255, (float) 79 / 255, (float) 79 / 255, 1);
-        // when not in full screen, the +45 is needed to make the grey background go far enough to the right
-        shapeRenderer.rect(background.x, background.y, background.width +45, background.height);
 
-        shapeRenderer.setColor((float) 120 / 255, (float) 120 / 255, (float) 120 / 255, 1);
-        shapeRenderer.rect(buildingButton1.x, buildingButton1.y, buildingButton1.width, buildingButton1.height);
+        ShapeRenderer sr = new ShapeRenderer();
+        sr.setProjectionMatrix(viewport.getCamera().combined);
+        sr.begin(ShapeRenderer.ShapeType.Filled);
 
-        shapeRenderer.setColor((float) 120 / 255, (float) 120 / 255, (float) 120 / 255, 1);
-        shapeRenderer.rect(buildingButton2.x, buildingButton2.y, buildingButton2.width, buildingButton2.height);
+        sr.setColor((float) 84 / 255, (float) 120 / 255, (float) 125 / 255, 1);
+        sr.rect(background.x, background.y, background.width, background.height);
 
-        shapeRenderer.end();
+        sr.setColor((float) 107 / 255, (float) 153 / 255, (float) 151 / 255, 1);
+        sr.rect(buildingIcon.x, buildingIcon.y, buildingIcon.width, buildingIcon.height);
+
+        sr.setColor((float) 138 / 255, (float) 168 / 255, (float) 184 / 255, 1);
+        sr.rect(rightButton.x, rightButton.y, rightButton.width, rightButton.height);
+        sr.setColor((float) 138 / 255, (float) 168 / 255, (float) 184 / 255, 1);
+        sr.rect(leftButton.x, leftButton.y, leftButton.width, leftButton.height);
+
+        sr.end();
+
+        // Renders the building texture and arrow textures on the buttons
+        String currentBuildingTP = Building.getObjectFromEnum(currentBuilding, gameModel.getGameTimeGMT()).getTexturePath();
+        batch.begin();
+        batch.draw(new Texture(currentBuildingTP), buildingIcon.x, buildingIcon.y, buildingIcon.width, buildingIcon.height);
+        batch.draw(rightArrowTexture, rightButton.x, 0.75f, rightButton.width, 0.5f);
+        batch.draw(leftArrowTexture, leftButton.x, 0.75f, leftButton.width, 0.5f);
+        batch.end();
     }
 
 

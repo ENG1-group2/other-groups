@@ -6,6 +6,7 @@ public class LeisureBuilding extends Building {
 
     public LeisureBuilding(LocalDateTime constructionStartedAt) {
         super(constructionStartedAt, "images/fun_building.png");
+        size = 2;
     }
 
     @Override

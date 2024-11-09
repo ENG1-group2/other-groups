@@ -1,14 +1,21 @@
 package eng1.unisim.managers;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
+
 import eng1.unisim.Building;
-import java.util.HashMap;
 
 public class BuildingManager {
+    private Array<MapObject> buildingAreaObjects;
     private final HashMap<Vector2, Building> placedBuildings;
     private final HashMap<Vector2, Texture> buildingTextures;
     private final HashMap<String, Texture> buildingTypeTextures;
@@ -26,6 +33,7 @@ public class BuildingManager {
         buildingTypeTextures = new HashMap<>();
         buildingCounts = new HashMap<>();
         loadTextures();
+        loadBuildingAreaObjects();
     }
 
     private void loadTextures() {
@@ -33,11 +41,28 @@ public class BuildingManager {
             new Texture(Gdx.files.internal("buildings/accommodation.png")));
     }
 
+    private void loadBuildingAreaObjects(){
+        TiledMap tileMap = new TmxMapLoader().load("assets\\emptyGroundMap.tmx");
+        buildingAreaObjects = tileMap.getLayers().get("BuildingAreas").getObjects().getByType(MapObject.class);
+    }
+
     public boolean placeBuilding(Building building, float worldX, float worldY) {
         Vector2 position = new Vector2(worldX, worldY);
 
-        // check land not occupied (doesn't work..)
-        if (placedBuildings.containsKey(position)) {
+        boolean isWithinBuildingArea = false;
+        for (MapObject buildingAreaObject : buildingAreaObjects) {
+            float x = (float) buildingAreaObject.getProperties().get("x");
+            float y = (float) buildingAreaObject.getProperties().get("y");
+            float width = (float) buildingAreaObject.getProperties().get("width");
+            float height = (float) buildingAreaObject.getProperties().get("height");
+
+            if (position.x >= x && position.x <= x + width && position.y >= y && position.y <= y + height) {
+                isWithinBuildingArea = true;
+                break;
+            }
+        }
+        // check land not occupied or within possible building area(doesn't work..)
+        if (placedBuildings.containsKey(position) || !isWithinBuildingArea) {
             return false;
         }
 

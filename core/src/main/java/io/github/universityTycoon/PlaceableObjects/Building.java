@@ -8,15 +8,16 @@ import java.time.LocalDateTime;
 
 public class Building extends MapObject {
 
-    public Duration constructionGameTime = Duration.ofDays(30);
+    public Duration constructionGameTime;
     public LocalDateTime finishDate;
     public boolean isUnderConstruction = true;
+
+    public float satisfactionBonus = 0;
 
     LocalDateTime constructionStartedAt; // IN-GAME TIME
 
     public Building(LocalDateTime constructionStartedAt, String texturePath) {
         this.constructionStartedAt = constructionStartedAt;
-        finishDate = constructionStartedAt.plus(constructionGameTime);
         this.texturePath = texturePath;
     }
 
@@ -63,6 +64,9 @@ public class Building extends MapObject {
         return size;
     }
 
+    public float getSatisfactionBonus() {
+        return satisfactionBonus;
+    }
 
     public static <T extends Building> T getObjectFromEnum(BuildingTypes type, LocalDateTime time) {
         return switch (type) {

@@ -45,6 +45,7 @@ public class MainScreen implements Screen {
     Texture leftArrowTexture;
 
     BuildingTypes currentBuilding;
+    Rectangle pausePlayBox;
     Rectangle buildingIcon;
     Rectangle rightButton;
     Rectangle leftButton;
@@ -92,6 +93,7 @@ public class MainScreen implements Screen {
         buildingIcon = new Rectangle();
         rightButton = new Rectangle();
         leftButton = new Rectangle();
+        pausePlayBox = new Rectangle();
 
         buttonCooldownTimer = 0f;
 
@@ -153,7 +155,6 @@ public class MainScreen implements Screen {
         else if (!mouseDown && placeMode) {
             placeMode = false;
         }
-
         // Increments the current building value if the right arrow is clicked
         if (mouseDown && rightButton.contains(touch.x, touch.y) && buttonCooldownTimer == 0f) {
             if (currentBuilding.ordinal() + 1 > BuildingTypes.values().length - 1) {currentBuilding = BuildingTypes.values()[0];}
@@ -166,6 +167,15 @@ public class MainScreen implements Screen {
             else {currentBuilding = BuildingTypes.values()[currentBuilding.ordinal() - 1];}
             buttonCooldownTimer = gameModel.BUTTON_COOLDOWN_TIMER;
         }
+
+        if (mouseDown && pausePlayBox.contains(touch.x, touch.y) && buttonCooldownTimer == 0f) {
+            if (gameModel.getIsPaused()) {
+                resume();
+            } else {
+                pause();
+            }
+        }
+
 
         time = String.valueOf(floorDiv((int) gameModel.getTimeRemainingSeconds(), 60))
             + ":" + String.format("%02d", (int) gameModel.getTimeRemainingSeconds() % 60);
@@ -181,18 +191,20 @@ public class MainScreen implements Screen {
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
 
-
+        pausePlayBox.set(-0.5f, 8.1f, 1.5f, 0.75f);
         batch.draw(backgroundTexture, 0, 2, 16, 7);
-        if (gameModel.isPaused) {
-            batch.draw(playTexture, -0.5f, 8.1f, 1.5f, 0.75f);
-        }
-        else {
+        if (!gameModel.isPaused) {
             batch.draw(pauseTexture, -0.5f, 8.1f, 1.5f, 0.75f);
         }
+        else {
+            batch.draw(playTexture, -0.5f, 8.1f, 1.5f, 0.75f);
+        }
+
+
         drawMapObjects();
 
         GameModel.font.draw(batch, time, 7.6f, 8.5f);
-        GameModel.font.draw(batch,"Satisfaction score: " + Float.toString(gameModel.getSatisfactionScore()) + "%", 5.8f, 8.9f);
+        GameModel.font.draw(batch,"Satisfaction score: " + String.format("%.2f%%", gameModel.getSatisfactionScore()), 5.8f, 8.9f);
         GameModel.smaller_font.draw(batch, dateTimeString, 0.05f, 8.95f);
 
 
@@ -235,7 +247,11 @@ public class MainScreen implements Screen {
         int tileLocationX = (int)(gameModel.getTilesWide() * mouseWorldPos.x / viewport.getWorldWidth());
         int tileLocationY = (int)(gameModel.getTilesHigh() * mouseWorldPos.y / (viewport.getWorldHeight() - 2)); // Subtract 2 since the map is 2 world units up
 
-        gameModel.mapController.addBuilding(Building.getObjectFromEnum(currentBuilding, gameModel.getGameTimeGMT()), tileLocationX, tileLocationY);
+
+        Building buildingToAdd = Building.getObjectFromEnum(currentBuilding, gameModel.getGameTimeGMT());
+        if (gameModel.mapController.addBuilding(buildingToAdd, tileLocationX, tileLocationY)) {
+            gameModel.satisfactionScore += buildingToAdd.getSatisfactionBonus();
+        }
         placeMode = false;
     }
 

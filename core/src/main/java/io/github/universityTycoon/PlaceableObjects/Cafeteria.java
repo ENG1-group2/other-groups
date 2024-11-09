@@ -1,5 +1,6 @@
 package io.github.universityTycoon.PlaceableObjects;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Cafeteria extends Building {
@@ -10,6 +11,9 @@ public class Cafeteria extends Building {
     public Cafeteria(LocalDateTime constructionStartedAt) {
         super(constructionStartedAt, "images/rec_building.png");
         size = 2;
+        satisfactionBonus = 2;
+        constructionGameTime = Duration.ofDays(10);
+        finishDate = constructionStartedAt.plus(constructionGameTime);
     }
 
     @Override

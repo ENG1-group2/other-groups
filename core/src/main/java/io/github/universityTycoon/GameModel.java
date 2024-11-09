@@ -34,6 +34,8 @@ public class GameModel {
     public int leisureBuildingCount;
     public int teachingBuildingCount;
 
+    public float satisfactionScore;
+
     public boolean isPaused;
     // Objects
     GameState gameState;
@@ -79,7 +81,7 @@ public class GameModel {
         smaller_font.getData().setScale(0.0015f, 0.0015f);
 
         black_font.setUseIntegerPositions(false);
-        black_font.getData().setScale(0.0015f, 0.0015f);
+        black_font.getData().setScale(0.002f, 0.002f);
     }
 
     // Everything that should be executed every frame
@@ -128,6 +130,10 @@ public class GameModel {
 
     public int getTeachingBuildingCount() {
         return teachingBuildingCount;
+    }
+
+    public float getSatisfactionScore() {
+        return satisfactionScore;
     }
 
     public GameState getGameState() {

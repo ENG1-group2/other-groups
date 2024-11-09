@@ -21,7 +21,10 @@ import io.github.universityTycoon.PlaceableObjects.MapObject;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import static java.lang.Math.floorDiv;
 
@@ -29,10 +32,13 @@ public class MainScreen implements Screen {
 
     GameModel gameModel;
     SpriteBatch batch;
+    ShapeRenderer shapeRenderer;
     Viewport viewport;
     HashMap<String, Texture> mapObjTextures; // Maintain a dict of paths -> Textures for map objects so that they are only loaded once
-
+    List<int[]> mapObjUnderConstruction;
     Texture backgroundTexture;
+    Texture pauseTexture;
+    Texture playTexture;
     Texture constructionTexture;
     Texture squareTexture;
     Texture rightArrowTexture;
@@ -62,6 +68,7 @@ public class MainScreen implements Screen {
     public MainScreen(ScreenManager main) {
         this.game = main;
         gameModel = new GameModel();
+        mapObjUnderConstruction = new ArrayList<>();
     }
 
     @Override
@@ -73,6 +80,8 @@ public class MainScreen implements Screen {
         playerInputHandler = new PlayerInputHandler();
 
         backgroundTexture = new Texture("images/map.png");
+        pauseTexture = new Texture("ui/pause.png");
+        playTexture = new Texture("ui/play.png");
         constructionTexture = new Texture("images/scaffold.png");
         squareTexture = new Texture("images/Gridsquare.png");
         rightArrowTexture = new Texture("ui/right-arrow.png");
@@ -174,11 +183,17 @@ public class MainScreen implements Screen {
 
 
         batch.draw(backgroundTexture, 0, 2, 16, 7);
-
+        if (gameModel.isPaused) {
+            batch.draw(playTexture, -0.5f, 8.1f, 1.5f, 0.75f);
+        }
+        else {
+            batch.draw(pauseTexture, -0.5f, 8.1f, 1.5f, 0.75f);
+        }
         drawMapObjects();
 
         GameModel.font.draw(batch, time, 7.6f, 8.5f);
-        GameModel.font.draw(batch, dateTimeString, 0.2f, 8.8f);
+        GameModel.font.draw(batch,"Satisfaction score: " + Float.toString(gameModel.getSatisfactionScore()) + "%", 5.8f, 8.9f);
+        GameModel.smaller_font.draw(batch, dateTimeString, 0.05f, 8.95f);
 
 
 
@@ -187,11 +202,21 @@ public class MainScreen implements Screen {
         GameModel.smaller_font.draw(batch, "Cafeteria Buildings: " + gameModel.getCafeteriaBuildingCount(), 13.15f, 8.5f);
         GameModel.smaller_font.draw(batch, "Accommodation Buildings: " + gameModel.getAccommodationBuildingCount(), 13.15f, 8.3f);
 
-
-
-
-
-
+        List<int[]> found = new ArrayList<>();
+        for (int[] entry : mapObjUnderConstruction) {
+            MapObject[][] mapObjects = gameModel.getMapObjects();
+            if (mapObjects[entry[0]][entry[1]] instanceof Building building) {
+                if (building.isUnderConstruction) {
+                    float tileSizeOnScreen = viewport.getWorldWidth() / gameModel.getTilesWide();
+                    Vector2 screenPos = new Vector2((float) entry[0] * tileSizeOnScreen, viewport.getWorldHeight() - ((float) (entry[1] + 1) * tileSizeOnScreen));
+                    GameModel.black_font.draw(batch, String.format("%.0f%%", building.getConstructionPercent(gameModel.getGameTimeGMT())), screenPos.x + 0.29f, screenPos.y + 0.61f);
+                }
+                else {
+                    found.add(entry);
+                }
+            }
+        }
+        mapObjUnderConstruction.removeAll(found);
         batch.end();
         // Can't do a batch and ShapeRenderer that overlap, you have to begin and end one before beginning the other
         // So batch.end() must go before anything with ShapeRenderer
@@ -206,17 +231,12 @@ public class MainScreen implements Screen {
     }
 
     private void placeBuilding() {
-        int tileLocationX = (int)(gameModel.getTilesWide() * mousePos.x / viewport.getScreenWidth() );
-        int tileLocationY = (int)(gameModel.getTilesHigh() * mousePos.y /(viewport.getScreenHeight() * 7f/9f)); // Multiply by 7/9 because the map covers 7/9ths of the screen
+        Vector2 mouseWorldPos = viewport.unproject(new Vector2(mousePos.x, viewport.getScreenHeight() - mousePos.y));
+        int tileLocationX = (int)(gameModel.getTilesWide() * mouseWorldPos.x / viewport.getWorldWidth());
+        int tileLocationY = (int)(gameModel.getTilesHigh() * mouseWorldPos.y / (viewport.getWorldHeight() - 2)); // Subtract 2 since the map is 2 world units up
 
-        // if statement prevents placing buildings on the top 2 tiles, this keeps text visible
-        if (tileLocationY > 2) {
-            gameModel.mapController.addBuilding(Building.getObjectFromEnum(currentBuilding, gameModel.getGameTimeGMT()), tileLocationX, tileLocationY);
-        }
-
+        gameModel.mapController.addBuilding(Building.getObjectFromEnum(currentBuilding, gameModel.getGameTimeGMT()), tileLocationX, tileLocationY);
         placeMode = false;
-
-        System.out.println(tileLocationX + " " + tileLocationY);
     }
 
     private void drawMapObjects() {
@@ -233,15 +253,14 @@ public class MainScreen implements Screen {
                 if (mapObjects[i][j] instanceof Building building) {
                     // Get the texture for the object
                     String texturePath = mapObjects[i][j].getTexturePath();
-                    if (!mapObjTextures.containsKey(texturePath))
+                    if (!mapObjTextures.containsKey(texturePath)) {
                         mapObjTextures.put(texturePath, new Texture(texturePath));
-
+                    }
                     batch.draw(mapObjTextures.get(texturePath), screenPos.x, screenPos.y, tileSizeOnScreen * building.getSize(), tileSizeOnScreen * building.getSize());
-
-                    // Construction visualisation
                     if (building.isUnderConstruction) {
+                        int[] position = new int[]{i, j};
+                        mapObjUnderConstruction.add(position);
                         batch.draw(constructionTexture, screenPos.x, screenPos.y, tileSizeOnScreen * building.getSize(), tileSizeOnScreen * building.getSize());
-                        GameModel.black_font.draw(batch, building.getConstructionPercent(gameModel.getGameTimeGMT()), screenPos.x, screenPos.y );
                     }
                 }
             }

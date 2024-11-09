@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -14,6 +15,18 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputAdapter;
 
 import uk.ac.york.vfc510.unisim.managers.TimeManager;
 import uk.ac.york.vfc510.unisim.managers.BuildingManager;
@@ -30,7 +43,7 @@ public class Main extends ApplicationAdapter {
 
     // Time management
     private float accumulator = 0f;
-    private final float TIME_STEP = 1f; // One second real time per game time step
+    private final float TIME_STEP = 1f;
 
     // Camera movement variables
     private final float CAMERA_SPEED = 500f;
@@ -50,6 +63,17 @@ public class Main extends ApplicationAdapter {
     private Building selectedBuilding = null;
     private boolean isPlacingBuilding = false;
 
+    // UI elements
+    private Stage stage;
+    private Stage endGameStage;
+    private Label timeLabel;
+    private Label satisfactionLabel;
+    private Label fundsLabel;
+    private Window endGameWindow;
+    private boolean gameEnded = false;
+    private Skin skin;
+    private BitmapFont font;
+
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -62,7 +86,7 @@ public class Main extends ApplicationAdapter {
         buildingManager = new BuildingManager();
         player = new Player();
         university = new University();
-        timeManager = new TimeManager(1, 0); // Initialize with timeStep=1 and currentTime=0
+        timeManager = new TimeManager(1, 0);
 
         // Set initial camera position
         targetPosition.set(camera.position.x, camera.position.y);
@@ -70,15 +94,117 @@ public class Main extends ApplicationAdapter {
         // Load building textures
         loadBuildingTextures();
 
-        setupInputProcessor();
+        // UI init
+        setupUI();
+
+        // Setup input handling
+        setupInputProcessors();
     }
 
-    private void loadBuildingTextures() {
-        // TODO: load in building textures to be used
+    private void setupUI() {
+        stage = new Stage(new ScreenViewport());
+        endGameStage = new Stage(new ScreenViewport());
+
+        // Create font and style for labels
+        font = new BitmapFont();
+        font.getData().setScale(1.5f);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+
+        // Create UI labels
+        timeLabel = new Label("Time: 0", labelStyle);
+        satisfactionLabel = new Label("Satisfaction: " + player.getSatisfaction(), labelStyle);
+        fundsLabel = new Label("Funds: $" + player.getFunds(), labelStyle);
+
+        // Create and position the HUD table
+        Table hudTable = new Table();
+        hudTable.top().right();
+        hudTable.setFillParent(true);
+        hudTable.pad(10);
+        hudTable.add(timeLabel).padBottom(5).row();
+        hudTable.add(satisfactionLabel).padBottom(5).row();
+        hudTable.add(fundsLabel);
+
+        // Add HUD to stage
+        stage.addActor(hudTable);
+
+        // Create end game window
+        createEndGameWindow();
     }
 
-    private void setupInputProcessor() {
-        Gdx.input.setInputProcessor(new com.badlogic.gdx.InputAdapter() {
+    private void createEndGameWindow() {
+        // Create a simple style for the window
+        Window.WindowStyle windowStyle = new Window.WindowStyle();
+        windowStyle.titleFont = font;
+        windowStyle.titleFontColor = Color.WHITE;
+
+        // Create the window with custom style
+        endGameWindow = new Window("Game Over!", new Window.WindowStyle(font, Color.WHITE, null));
+        endGameWindow.setMovable(false);
+        endGameWindow.setModal(true);
+
+        // Set window background color
+        endGameWindow.setColor(0, 0, 0, 0.8f);
+
+        // Create content table
+        Table content = new Table();
+        content.pad(20);
+
+        // Create labels for final stats with custom style
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+        Label finalScoreLabel = new Label("Satisfaction Score: " + player.getSatisfaction(), labelStyle);
+        content.add(finalScoreLabel).pad(10).row();
+
+        // Create buttons with custom style
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = font;
+        buttonStyle.fontColor = Color.WHITE;
+        buttonStyle.downFontColor = Color.LIGHT_GRAY;
+
+        TextButton restartButton = new TextButton("Restart", buttonStyle);
+        restartButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                restartGame();
+            }
+        });
+
+        TextButton exitButton = new TextButton("Exit", buttonStyle);
+        exitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
+        });
+
+        // Add buttons to window
+        Table buttonTable = new Table();
+        buttonTable.add(restartButton).pad(10).width(100);
+        buttonTable.add(exitButton).pad(10).width(100);
+        content.add(buttonTable);
+
+        // Add content to window
+        endGameWindow.add(content);
+        endGameWindow.pack();
+
+        // Make window slightly larger for better appearance
+        endGameWindow.setSize(endGameWindow.getWidth() + 40, endGameWindow.getHeight() + 40);
+
+        // Position window in center of screen
+        endGameWindow.setPosition(
+            (Gdx.graphics.getWidth() - endGameWindow.getWidth()) / 2,
+            (Gdx.graphics.getHeight() - endGameWindow.getHeight()) / 2
+        );
+
+        // Add to end game stage but hide initially
+        endGameStage.addActor(endGameWindow);
+        endGameWindow.setVisible(false);
+    }
+
+    private void setupInputProcessors() {
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(stage);
+        multiplexer.addProcessor(endGameStage);
+        multiplexer.addProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 if (button == Input.Buttons.LEFT) {
@@ -125,35 +251,38 @@ public class Main extends ApplicationAdapter {
                 return true;
             }
         });
+        Gdx.input.setInputProcessor(multiplexer);
     }
 
-    private void updateTime() {
-        // Update game time based on real time
-        accumulator += Gdx.graphics.getDeltaTime();
+    private void loadBuildingTextures() {
+        // Still TODO
+    }
 
-        // Update game time when accumulator reaches TIME_STEP
-        while (accumulator >= TIME_STEP) {
-            timeManager.incrementTime();
-            updateGameState();
-            accumulator -= TIME_STEP;
+    private void updateUI() {
+        int timeLeft = timeManager.getTimeLimit() - TimeManager.getCurrentTime();
+        timeLabel.setText("Time Left: " + timeLeft);
+        satisfactionLabel.setText("Satisfaction: " + player.getSatisfaction());
+        fundsLabel.setText("Funds: $" + player.getFunds());
+    }
 
-            // Check for game end condition
-            if (timeManager.isEndOfGame()) {
-                // Handle game end
-                // TODO: Show end game splash and stop user input
-                System.out.println("Game Over! Time limit reached.");
-            }
+    private void showEndGameScreen() {
+        gameEnded = true;
+        endGameWindow.setVisible(true);
+
+        // Update final score in window
+        Label finalScoreLabel = endGameWindow.findActor("finalScoreLabel");
+        if (finalScoreLabel != null) {
+            finalScoreLabel.setText("Final Satisfaction Score: " + player.getSatisfaction());
         }
     }
 
-    private void updateGameState() {
-        // Update player's funds with income
-        player.setFunds(player.getFunds() + player.getIncome());
-
-        // TODO: add stuff below
-        // - Check for random events
-        // - Update building effects
-        // - Update satisfaction levels
+    private void restartGame() {
+        // Reset game state
+        timeManager = new TimeManager(1, 0);
+        player = new Player();
+        university = new University();
+        gameEnded = false;
+        endGameWindow.setVisible(false);
     }
 
     private void handleInput() {
@@ -167,7 +296,6 @@ public class Main extends ApplicationAdapter {
     }
 
     private void updateCamera() {
-        // Clamp target position to map boundaries
         float minX = camera.viewportWidth * camera.zoom / 2;
         float maxX = MAP_WIDTH - minX;
         float minY = camera.viewportHeight * camera.zoom / 2;
@@ -176,9 +304,26 @@ public class Main extends ApplicationAdapter {
         targetPosition.x = MathUtils.clamp(targetPosition.x, minX, maxX);
         targetPosition.y = MathUtils.clamp(targetPosition.y, minY, maxY);
 
-        // Smooth camera movement
         camera.position.x = MathUtils.lerp(camera.position.x, targetPosition.x, LERP_ALPHA);
         camera.position.y = MathUtils.lerp(camera.position.y, targetPosition.y, LERP_ALPHA);
+    }
+
+    private void updateTime() {
+        accumulator += Gdx.graphics.getDeltaTime();
+
+        while (accumulator >= TIME_STEP) {
+            timeManager.incrementTime();
+            updateGameState();
+            accumulator -= TIME_STEP;
+
+            if (timeManager.isEndOfGame() && !gameEnded) {
+                showEndGameScreen();
+            }
+        }
+    }
+
+    private void updateGameState() {
+        player.setFunds(player.getFunds() + player.getIncome());
     }
 
     public void setSelectedBuilding(Building building) {
@@ -199,24 +344,36 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
-        // Update time and game state
-        updateTime();
+        if (!gameEnded) {
+            updateTime();
+            handleInput();
+            updateCamera();
+            updateUI();
 
-        // Handle input and camera
-        handleInput();
-        updateCamera();
+            ScreenUtils.clear(0, 0, 0, 1);
+            camera.update();
 
-        // Render the game
-        ScreenUtils.clear(0, 0, 0, 1);
-        camera.update();
+            mapRenderer.setView(camera);
+            mapRenderer.render();
 
-        mapRenderer.setView(camera);
-        mapRenderer.render();
+            batch.setProjectionMatrix(camera.combined);
+            batch.begin();
+            buildingManager.render(batch);
+            batch.end();
 
-        batch.setProjectionMatrix(camera.combined);
-        batch.begin();
-        buildingManager.render(batch);
-        batch.end();
+            stage.act(Gdx.graphics.getDeltaTime());
+            stage.draw();
+        } else {
+            ScreenUtils.clear(0, 0, 0, 0.8f);
+            endGameStage.act(Gdx.graphics.getDeltaTime());
+            endGameStage.draw();
+        }
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height, true);
+        endGameStage.getViewport().update(width, height, true);
     }
 
     @Override
@@ -224,5 +381,8 @@ public class Main extends ApplicationAdapter {
         batch.dispose();
         map.dispose();
         mapRenderer.dispose();
+        stage.dispose();
+        endGameStage.dispose();
+        font.dispose();
     }
 }

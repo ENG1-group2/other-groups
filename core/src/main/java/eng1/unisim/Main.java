@@ -65,7 +65,6 @@ public class Main extends ApplicationAdapter {
         player = new Player();
         university = new University();
         timeManager = new TimeManager(1, 0);
-        buildingManager = new BuildingManager();
     }
 
     private void setupCamera() {
@@ -91,8 +90,8 @@ public class Main extends ApplicationAdapter {
     }
 
     private void setupManagers() {
-        buildingManager = new BuildingManager();
         uiManager = new UIManager(player, this::restartGame, this::setSelectedBuilding);
+        buildingManager = new BuildingManager(uiManager);
         inputManager = new InputManager(camera, this::placeSelectedBuilding, targetPosition, maxZoom);
     }
 
@@ -174,7 +173,7 @@ public class Main extends ApplicationAdapter {
         timeManager = new TimeManager(1, 0);
         player = new Player();
         university = new University();
-        uiManager = new UIManager(player, this::restartGame, this::setSelectedBuilding);
+        setupManagers();
         setupInput();
     }
 
@@ -211,11 +210,11 @@ public class Main extends ApplicationAdapter {
         updateCamera();
         updateCursorPosition();
 
-        // Update UI
+        // update time left and render
         int timeLeft = timeManager.getTimeLimit() - TimeManager.getCurrentTime();
         uiManager.updateHUD(timeLeft);
 
-        // Render game
+        // render the game
         ScreenUtils.clear(0, 0, 0, 1);
         camera.update();
 
@@ -227,7 +226,6 @@ public class Main extends ApplicationAdapter {
         buildingManager.render(batch, cursorPosition);
         batch.end();
 
-        // Render UI
         uiManager.render();
     }
 

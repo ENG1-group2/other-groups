@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import eng1.unisim.Player;
 import eng1.unisim.Building;
+import java.util.HashMap;
 
 public class UIManager {
     private Stage stage;
@@ -28,6 +29,9 @@ public class UIManager {
     private Table backgroundTable;
     private Runnable onRestartGame;
     private BuildingSelectionCallback buildingSelectionCallback;
+    private HashMap<String, Label> buildingCounters = new HashMap<>();
+    private HashMap<String, Integer> buildingCounts = new HashMap<>();
+    private static final String[] BUILDING_TYPES = {"Accommodation", "Learning", "Food", "Recreation"};
 
     public interface BuildingSelectionCallback {
         void onBuildingSelected(Building building);
@@ -72,6 +76,11 @@ public class UIManager {
 
 
     private void createBuildingInventory() {
+        // start building counts from 0
+        for (String type : BUILDING_TYPES) {
+            buildingCounts.put(type, 0);
+        }
+
         // vertical button display for buildings
         Table buildingTable = new Table();
         buildingTable.top().left();
@@ -102,20 +111,56 @@ public class UIManager {
         Label placementLabel = new Label("Click to place building", labelStyle);
         placementLabel.setVisible(false);
 
-        // buttons for other buildings
-        // TODO add other buildings (one place to learn, one place to eat, one recreational activity)
+        // counters
         Button.ButtonStyle emptyStyle = new Button.ButtonStyle();
-        for (int i = 0; i < 4; i++) {
+        Label.LabelStyle counterStyle = new Label.LabelStyle(font, Color.WHITE);
+        for (int i = 0; i < BUILDING_TYPES.length; i++) {
+            Table buttonContainer = new Table();
+            String buildingType = BUILDING_TYPES[i];
+
+            // label the counters
+            Label counter = new Label("0", counterStyle);
+            buildingCounters.put(buildingType, counter);
+
+            // position counter over button
+            Stack stack = new Stack();
+
+            // button container
+            Table buttonTable = new Table();
             if (i == 0) {
-                buildingTable.add(accommodationButton).size(100, 100).pad(5).row();
-                buildingTable.add(placementLabel).padLeft(10).row();
+                buttonTable.add(accommodationButton).size(100, 100);
             } else {
                 Button emptyButton = new Button(emptyStyle);
-                buildingTable.add(emptyButton).size(100, 100).pad(5).row();
+                buttonTable.add(emptyButton).size(100, 100);
             }
+
+            // counter container
+            Table counterTable = new Table();
+            counterTable.top().right();
+            counterTable.add(counter).pad(5);
+
+            stack.add(buttonTable);
+            stack.add(counterTable);
+
+            buttonContainer.add(stack).pad(5);
+
+            buildingTable.add(buttonContainer).row();
         }
 
         stage.addActor(buildingTable);
+    }
+
+    public void updateBuildingCount(String buildingType, int count) {
+        buildingCounts.put(buildingType, count);
+        Label counter = buildingCounters.get(buildingType);
+        if (counter != null) {
+            counter.setText(String.valueOf(count));
+        }
+    }
+
+    public void incrementBuildingCount(String buildingType) {
+        int currentCount = buildingCounts.getOrDefault(buildingType, 0);
+        updateBuildingCount(buildingType, currentCount + 1);
     }
 
     private void createEndGameWindow() {
@@ -144,6 +189,8 @@ public class UIManager {
 
         endGameStage.addActor(endGameWindow);
         endGameWindow.setVisible(false);
+
+        // TODO: block user input on game when time is up
     }
 
     private Table createEndGameContent() {

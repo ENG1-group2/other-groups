@@ -16,11 +16,15 @@ public class BuildingManager {
     private Texture selectedTexture;
     private static final float PLACED_SCALE = 0.5f; // scale down placed buildings
     private static final float PREVIEW_SCALE = 0.6f; // marginally larger scale for draggable preview
+    private final UIManager uiManager;
+    private HashMap<String, Integer> buildingCounts = new HashMap<>();
 
-    public BuildingManager() {
+    public BuildingManager(UIManager uiManager) {  // now takes UIManager
+        this.uiManager = uiManager;
         placedBuildings = new HashMap<>();
         buildingTextures = new HashMap<>();
         buildingTypeTextures = new HashMap<>();
+        buildingCounts = new HashMap<>();
         loadTextures();
     }
 
@@ -41,6 +45,12 @@ public class BuildingManager {
 
         placedBuildings.put(position, building);
         buildingTextures.put(position, buildingTypeTextures.get(building.getName()));
+
+        // building counters
+        int count = buildingCounts.getOrDefault(building.getName(), 0) + 1;
+        buildingCounts.put(building.getName(), count);
+        uiManager.updateBuildingCount(building.getName(), count);
+
         selectedBuilding = null;
         selectedTexture = null;
         return true;

@@ -1,18 +1,16 @@
 package io.github.universityTycoon;
 
-import com.badlogic.gdx.math.Vector2;
 import io.github.universityTycoon.PlaceableObjects.Building;
 import io.github.universityTycoon.PlaceableObjects.MapObject;
 import io.github.universityTycoon.PlaceableObjects.MapObjectPointer;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
 public class MapController {
     private int tilesWide;
     private int tilesHigh;
     MapObject[][] mapObjects;
-
+    private final int MIN_DISTANCE_TO_TOP = 2;
 
 
     public MapController(int tilesWide, int tilesHigh) {
@@ -26,7 +24,7 @@ public class MapController {
         // Note that the top left square is 0,0, so y/j is negative
         for (int i = 0; i < building.getSize() ; i++) {
             for (int j = 0; j < building.getSize() ; j++) {
-                if ((xPos + i >= tilesWide || yPos - j < 0) || mapObjects[xPos + i][yPos - j] != null) {
+                if ((xPos + i >= tilesWide || yPos - j < MIN_DISTANCE_TO_TOP || yPos - j >= tilesHigh) || mapObjects[xPos + i][yPos - j] != null) {
                     buildingFits = false;
                     break;
                 }

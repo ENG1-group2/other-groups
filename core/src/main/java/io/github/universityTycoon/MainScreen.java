@@ -111,7 +111,7 @@ public class MainScreen implements Screen {
     }
 
     private void logic() {
-        if (mouseDown && mousePos.y < 810) {
+        if (mouseDown) {
             placeBuilding();
         }
         time = String.valueOf(floorDiv((int) gameModel.getTimeRemainingSeconds(), 60))
@@ -162,14 +162,11 @@ public class MainScreen implements Screen {
     }
 
     private void placeBuilding() {
-        int tileLocationX = (int)(gameModel.getTilesWide() * mousePos.x / viewport.getScreenWidth() );
-        int tileLocationY = (int)(gameModel.getTilesHigh() * mousePos.y /(viewport.getScreenHeight() * 7f/9f)); // Multiply by 7/9 because the map covers 7/9ths of the screen
+        Vector2 mouseWorldPos = viewport.unproject(new Vector2(mousePos.x, viewport.getScreenHeight() - mousePos.y));
+        int tileLocationX = (int)(gameModel.getTilesWide() * mouseWorldPos.x / viewport.getWorldWidth());
+        int tileLocationY = (int)(gameModel.getTilesHigh() * mouseWorldPos.y / (viewport.getWorldHeight() - 2)); // Subtract 2 since the map is 2 world units up
         // Defaulting to accommodation building for now
-        // if statement prevents placing buildings on the top 2 tiles, this keeps text visible
-        if (tileLocationY >2) {
-            gameModel.mapController.addBuilding(new AccommodationBuilding(gameModel.getGameTimeGMT()), tileLocationX, tileLocationY);
-        }
-        System.out.println(tileLocationX + " " + tileLocationY);
+        gameModel.mapController.addBuilding(new AccommodationBuilding(gameModel.getGameTimeGMT()), tileLocationX, tileLocationY);
     }
 
     private void drawMapObjects() {

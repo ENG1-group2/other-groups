@@ -3,6 +3,7 @@ package eng1.unisim;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -12,7 +13,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.InputMultiplexer;
 
 import eng1.unisim.managers.BuildingManager;
 import eng1.unisim.managers.InputManager;
@@ -56,6 +56,18 @@ public class Main extends ApplicationAdapter {
         setupManagers();
         setupInput();
         cursorPosition = new Vector3();
+        centerCameraOnMap();
+    }
+
+    private void centerCameraOnMap() {
+        // Retrieve the map dimensions
+        float mapWidth = map.getProperties().get("width", Integer.class) * map.getProperties().get("tilewidth", Integer.class);
+        float mapHeight = map.getProperties().get("height", Integer.class) * map.getProperties().get("tileheight", Integer.class);
+
+        // Set the camera's position to the center of the map
+        camera.position.set(mapWidth / 2, mapHeight / 2, 0);
+        targetPosition.set(mapWidth / 2, mapHeight / 2); // Set targetPosition to the center as well
+        camera.update();
     }
 
     private void initializeGame() {
@@ -70,23 +82,29 @@ public class Main extends ApplicationAdapter {
     private void setupCamera() {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1280, 720);
-        targetPosition.set(camera.position.x, camera.position.y);
 
-        // calc maximum zoom level based on map size and screen size
-        float mapAspect = MAP_WIDTH / MAP_HEIGHT;
-        float screenAspect = Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight();
+        // Calculate the center of the map
+        float mapWidth = MAP_WIDTH;
+        float mapHeight = MAP_HEIGHT;
+        float centerX = mapWidth / 2f;
+        float centerY = mapHeight / 2f;
+
+        // Set the camera's position to the center of the map
+        camera.position.set(centerX, centerY, 0);
+        targetPosition.set(centerX, centerY);
+
+        // Calculate maximum zoom level based on map size and screen size
+        float mapAspect = mapWidth / mapHeight;
+        float screenAspect = Gdx.graphics.getWidth() / (float) Gdx.graphics.getHeight();
 
         if (mapAspect > screenAspect) {
-            // try and fit to width (might not work)
-            maxZoom = MAP_WIDTH / camera.viewportWidth;
+            // Fit to width
+            maxZoom = mapWidth / camera.viewportWidth;
         } else {
-            // try and fit to height (might not work)
-            maxZoom = MAP_HEIGHT / camera.viewportHeight;
+            // Fit to height
+            maxZoom = mapHeight / camera.viewportHeight;
         }
-
-        // initial map position
-        camera.position.set(MAP_WIDTH / 2f, MAP_HEIGHT / 2f, 0);
-        targetPosition.set(camera.position.x, camera.position.y);
+        camera.update();
     }
 
     private void setupManagers() {

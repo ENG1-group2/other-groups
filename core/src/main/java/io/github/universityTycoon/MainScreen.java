@@ -173,7 +173,7 @@ public class MainScreen implements Screen {
     }
 
     private void drawMapObjects() {
-        MapObject[][] mapObjects = gameModel.getMapObjects();g
+        MapObject[][] mapObjects = gameModel.getMapObjects();
         for (int i = 0; i < mapObjects.length; i++) {
             for (int j = 0; j < mapObjects[i].length; j++) {
                 float tileSizeOnScreen = viewport.getWorldWidth() / gameModel.getTilesWide() ;

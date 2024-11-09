@@ -87,7 +87,7 @@ public class UIManager {
 
         stage.addActor(hudTable);
     }
-
+    //TODO improve look of pause button
     private void createPauseButton() {
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font;

@@ -1,6 +1,7 @@
 package io.github.universityTycoon.PlaceableObjects;
 
 import com.badlogic.gdx.math.MathUtils;
+import io.github.universityTycoon.BuildingTypes;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

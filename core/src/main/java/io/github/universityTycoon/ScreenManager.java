@@ -11,7 +11,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class ScreenManager extends Game {
 
     public SpriteBatch batch;
-    public BitmapFont font;
     public FitViewport viewport;
 
     public MainScreen gameScreen;
@@ -31,17 +30,10 @@ public class ScreenManager extends Game {
 
         fullScreen = false;
 
-        // use libGDX's default font
-        font = new BitmapFont(Gdx.files.internal("ui/font.fnt"),
-            Gdx.files.internal("ui/font.png"), false);
 
-        viewport = new FitViewport(16, 9);
 
-        //font has 15pt, but we need to scale it to our viewport by ratio of viewport height to screen height
-        font.setUseIntegerPositions(false);
-        // Changing the 1 in the line below can change the font size, though only in
-        // integer increments, so probably better to use a non-default font.
-        font.getData().setScale(1 *(viewport.getWorldHeight() / Gdx.graphics.getHeight()));
+
+
 
 
         // use these lines to choose which screen is displayed.
@@ -57,13 +49,16 @@ public class ScreenManager extends Game {
             else
                 Gdx.graphics.setFullscreenMode(currentMode);
         }
-        font.getData().setScale(0.003f, 0.003f);
+
         super.render();
     }
 
     public void dispose() {
         batch.dispose();
-        font.dispose();
+        GameModel.font.dispose();
+        GameModel.smaller_font.dispose();
+        GameModel.black_font.dispose();
+
     }
 
     public void switchToMainScreen() {

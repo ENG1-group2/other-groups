@@ -19,12 +19,18 @@ public class GameModel {
     public float timeRemainingSeconds = START_TIME_SECONDS;
 
 
-    public BitmapFont font;
+    public static BitmapFont font;
+    public static BitmapFont smaller_font;
+    public static BitmapFont black_font;
 
     public int tilesWide = 32;
     public int tilesHigh = 14;
 
     int noBuildingTypes;
+    public int cafeteriaBuildingCount;
+    public int accommodationBuildingCount;
+    public int leisureBuildingCount;
+    public int teachingBuildingCount;
 
     public boolean isPaused;
     // Objects
@@ -57,9 +63,21 @@ public class GameModel {
         font = new BitmapFont(Gdx.files.internal("ui/font.fnt"),
             Gdx.files.internal("ui/font.png"), false);
 
-        //font has 15pt, but we need to scale it to our viewport by ratio of viewport height to screen height
+        smaller_font = new BitmapFont(Gdx.files.internal("ui/font.fnt"),
+            Gdx.files.internal("ui/font.png"), false);
+
+        black_font = new BitmapFont(Gdx.files.internal("ui/arial.fnt"),
+            Gdx.files.internal("ui/arial.png"), false);
+
+        //font is 150x150 pixels, but we need to scale it to our viewport by ratio of viewport height to screen height
         font.setUseIntegerPositions(false);
         font.getData().setScale(0.003f, 0.003f);
+
+        smaller_font.setUseIntegerPositions(false);
+        smaller_font.getData().setScale(0.0015f, 0.0015f);
+
+        black_font.setUseIntegerPositions(false);
+        black_font.getData().setScale(0.0015f, 0.0015f);
     }
 
     // Everything that should be executed every frame
@@ -92,6 +110,22 @@ public class GameModel {
 
     public boolean getIsPaused() {
         return isPaused;
+    }
+
+    public int getCafeteriaBuildingCount() {
+        return cafeteriaBuildingCount;
+    }
+
+    public int getAccommodationBuildingCount() {
+        return accommodationBuildingCount;
+    }
+
+    public int getLeisureBuildingCount() {
+        return leisureBuildingCount;
+    }
+
+    public int getTeachingBuildingCount() {
+        return teachingBuildingCount;
     }
 
     public GameState getGameState() {

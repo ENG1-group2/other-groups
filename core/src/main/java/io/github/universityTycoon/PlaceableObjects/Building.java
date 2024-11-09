@@ -57,4 +57,8 @@ public class Building extends MapObject {
         float percent = MathUtils.clamp((float)timePassed.getSeconds() / (float)constructionGameTime.getSeconds(), 0, 1);
         return String.format("%.0f%%", percent * 100);
     }
+
+    public int getSize() {
+        return size;
+    }
 }

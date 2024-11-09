@@ -10,6 +10,7 @@ public class AccommodationBuilding extends Building {
 
     public AccommodationBuilding(LocalDateTime constructionStartedAt) {
         super(constructionStartedAt, "images/sleep_building.png");
+        size = 2;
     }
 
     @Override

@@ -21,8 +21,8 @@ public class GameModel {
 
     public BitmapFont font;
 
-    public int tilesWide = 64;
-    public int tilesHigh = 28;
+    public int tilesWide = 32;
+    public int tilesHigh = 14;
 
     int noBuildingTypes;
 
@@ -48,7 +48,7 @@ public class GameModel {
         eventManager = new EventManager(eventListener);
         scoreCalculator = new ScoreCalculator();
         audioSelector = new AudioSelector();
-        mapController = new MapController(64, 28);
+        mapController = new MapController(tilesWide, tilesHigh);
 
         isPaused = false;
 

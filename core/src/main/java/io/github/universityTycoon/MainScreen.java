@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -32,6 +33,7 @@ public class MainScreen implements Screen {
 
     Texture backgroundTexture;
     Texture constructionTexture;
+    Texture squareTexture;
 
     Rectangle[] buildingButtons;
 
@@ -66,6 +68,7 @@ public class MainScreen implements Screen {
 
         backgroundTexture = new Texture("images/map.png");
         constructionTexture = new Texture("images/scaffold.png");
+        squareTexture = new Texture("images/Gridsquare.png");
         mapObjTextures = new HashMap<>();
         buildingButtons = new Rectangle[gameModel.getNoBuildingTypes()];
 
@@ -91,7 +94,7 @@ public class MainScreen implements Screen {
 
     private void input() {
 
-        if (Gdx.input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.P)) {
+        if (playerInputHandler.getIsPauseJustPressed()) {
             if (gameModel.getIsPaused()) {
                 resume();
             } else {
@@ -126,10 +129,13 @@ public class MainScreen implements Screen {
 
 
         batch.draw(backgroundTexture, 0, 2, 16, 7);
+
+        drawMapObjects();
+
         game.font.draw(batch, time, 7.6f, 8.5f);
         game.font.draw(batch, dateTimeString, 0.2f, 8.8f);
 
-        drawMapObjects();
+
 
         //drawBuildingMenu();
 
@@ -137,36 +143,34 @@ public class MainScreen implements Screen {
     }
 
     private void placeBuilding() {
-        // Not sure why, but this if statement is needed to prevent attempting to place a building,
-        // off to the left of the screen.
-        if ((mousePos.x >= 30))  {
-            int tileLocationX = (int)(-2 +gameModel.getTilesWide() * mousePos.x / viewport.getScreenWidth() );
-            int tileLocationY = (int)(2 +gameModel.getTilesHigh() * mousePos.y / viewport.getScreenHeight());
+        int tileLocationX = (int)(gameModel.getTilesWide() * mousePos.x / viewport.getScreenWidth() );
+        int tileLocationY = (int)(gameModel.getTilesHigh() * mousePos.y /(viewport.getScreenHeight() * 7f/9f)); // Multiply by 7/9 because the map covers 7/9ths of the screen
+        // Defaulting to accommodation building for now
+        gameModel.mapController.addBuilding(new AccommodationBuilding(gameModel.getGameTimeGMT()), tileLocationX, tileLocationY);
 
-            // Defaulting to accommodation building for now
-            gameModel.mapController.addBuilding(new AccommodationBuilding(gameModel.getGameTimeGMT()), tileLocationX, tileLocationY);
-        }
-
+        System.out.println(tileLocationX + " " + tileLocationY);
     }
 
     private void drawMapObjects() {
         MapObject[][] mapObjects = gameModel.getMapObjects();
         for (int i = 0; i < mapObjects.length; i++) {
             for (int j = 0; j < mapObjects[i].length; j++) {
-                if (mapObjects[i][j] != null) {
-                    // Find where to draw the building
-                    Vector2 screenPos = new Vector2((float) i / gameModel.getTilesWide() * viewport.getWorldWidth(), viewport.getWorldHeight() - (float) j / gameModel.getTilesHigh() * viewport.getWorldHeight());
+                float tileSizeOnScreen = viewport.getWorldWidth() / gameModel.getTilesWide() ;
+                Vector2 screenPos = new Vector2((float) i * tileSizeOnScreen, viewport.getWorldHeight() - ((float) (j + 1) * tileSizeOnScreen));
+                // Optional line to show the grid (mainly for testing)
+                batch.draw(squareTexture, screenPos.x, screenPos.y, tileSizeOnScreen, tileSizeOnScreen);
+                // Could make this a more general MapObject for decoration object implementation
+                if (mapObjects[i][j] instanceof Building building) {
                     // Get the texture for the object
                     String texturePath = mapObjects[i][j].getTexturePath();
                     if (!mapObjTextures.containsKey(texturePath))
                         mapObjTextures.put(texturePath, new Texture(texturePath));
 
-                    batch.draw(mapObjTextures.get(texturePath), screenPos.x, screenPos.y, 1, 1);
+                    batch.draw(mapObjTextures.get(texturePath), screenPos.x, screenPos.y, tileSizeOnScreen * building.getSize(), tileSizeOnScreen * building.getSize());
 
                     // Construction visualisation
-                    Building building = (Building)mapObjects[i][j];
                     if (building.isUnderConstruction) {
-                        batch.draw(constructionTexture, screenPos.x, screenPos.y, 1, 1);
+                        batch.draw(constructionTexture, screenPos.x, screenPos.y, tileSizeOnScreen * building.getSize(), tileSizeOnScreen * building.getSize());
                         game.font.draw(batch, building.getConstructionPercent(gameModel.getGameTimeGMT()), screenPos.x, screenPos.y);
                     }
                 }

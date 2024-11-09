@@ -24,7 +24,7 @@ public class MapController {
         // Note that the top left square is 0,0, so y/j is negative
         for (int i = 0; i < building.getSize() ; i++) {
             for (int j = 0; j < building.getSize() ; j++) {
-                if ((xPos + i >= tilesWide || yPos - j < 0) || mapObjects[xPos + i][yPos - j] != null) {
+                if ((xPos + i >= tilesWide || yPos - j < 0 || yPos - j >= tilesHigh) || mapObjects[xPos + i][yPos - j] != null) {
                     buildingFits = false;
                     break;
                 }

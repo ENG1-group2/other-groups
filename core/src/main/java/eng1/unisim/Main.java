@@ -46,6 +46,7 @@ public class Main extends ApplicationAdapter {
     private Building selectedBuilding = null;
     private boolean isPlacingBuilding = false;
     private final Vector2 targetPosition = new Vector2();
+    private boolean isPaused = true; // Start the game in a paused state
 
     private Vector3 cursorPosition;
 
@@ -108,7 +109,7 @@ public class Main extends ApplicationAdapter {
     }
 
     private void setupManagers() {
-        uiManager = new UIManager(player, this::restartGame, this::setSelectedBuilding);
+        uiManager = new UIManager(player, this::restartGame, this::setSelectedBuilding, this::togglePause);
         buildingManager = new BuildingManager(uiManager);
         inputManager = new InputManager(camera, this::placeSelectedBuilding, targetPosition, maxZoom);
     }
@@ -174,15 +175,17 @@ public class Main extends ApplicationAdapter {
     }
 
     private void updateTime() {
-        accumulator += Gdx.graphics.getDeltaTime();
+        if (!isPaused) {
+            accumulator += Gdx.graphics.getDeltaTime();
 
-        while (accumulator >= TIME_STEP) {
-            timeManager.incrementTime();
-            updateGameState();
-            accumulator -= TIME_STEP;
+            while (accumulator >= TIME_STEP) {
+                timeManager.incrementTime();
+                updateGameState();
+                accumulator -= TIME_STEP;
 
-            if (timeManager.isEndOfGame()) {
-                uiManager.showEndGameScreen();
+                if (timeManager.isEndOfGame()) {
+                    uiManager.showEndGameScreen();
+                }
             }
         }
     }
@@ -193,6 +196,7 @@ public class Main extends ApplicationAdapter {
         university = new University();
         setupManagers();
         setupInput();
+        isPaused = true; // Pause the game when restarting
     }
 
     private void placeSelectedBuilding(float worldX, float worldY) {
@@ -208,7 +212,7 @@ public class Main extends ApplicationAdapter {
             } else {
                 // show insufficient funds message for 2 seconds
                 String message = "Insufficient funds! Need $" + selectedBuilding.getCost() +
-                    " (Current: $" + player.getFunds() + ")";
+                        " (Current: $" + player.getFunds() + ")";
                 uiManager.showNotification(message);
             }
         }
@@ -227,6 +231,10 @@ public class Main extends ApplicationAdapter {
             float screenY = Gdx.input.getY();
             cursorPosition = camera.unproject(new Vector3(screenX, screenY, 0));
         }
+    }
+
+    public void togglePause() {
+        isPaused = !isPaused;
     }
 
     @Override

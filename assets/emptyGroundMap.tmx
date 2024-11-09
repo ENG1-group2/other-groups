@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="60" height="34" tilewidth="32" tileheight="32" infinite="0" nextlayerid="2" nextobjectid="1">
- <tileset firstgid="1" source="grass.tsx"/>
- <tileset firstgid="170" source="dirt.tsx"/>
- <tileset firstgid="426" source="dirt2.tsx"/>
- <tileset firstgid="682" source="dirt3.tsx"/>
- <tileset firstgid="938" source="water.tsx"/>
- <tileset firstgid="1194" source="cobble.tsx"/>
+ <tileset firstgid="1" source="ground-textures/grass.tsx"/>
+ <tileset firstgid="170" source="ground-textures/dirt.tsx"/>
+ <tileset firstgid="426" source="ground-textures/dirt2.tsx"/>
+ <tileset firstgid="682" source="ground-textures/dirt3.tsx"/>
+ <tileset firstgid="938" source="ground-textures/water.tsx"/>
+ <tileset firstgid="1194" source="ground-textures/cobble.tsx"/>
  <layer id="1" name="Tile Layer 1" width="60" height="34">
   <data encoding="csv">
 2,3,4,5,6,7,8,9,10,11,12,13,2,3,4,5,6,7,8,9,10,11,12,13,2,3,4,5,6,7,8,9,10,11,1,2,3,4,5,6,7,8,9,10,11,12,13,1,2,3,4,5,6,7,8,9,10,11,12,13,

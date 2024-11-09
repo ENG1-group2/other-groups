@@ -60,7 +60,7 @@ public class Main extends ApplicationAdapter {
 
     private void initializeGame() {
         batch = new SpriteBatch();
-        map = new TmxMapLoader().load("emptyMap2.tmx");
+        map = new TmxMapLoader().load("emptyGroundMap.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map);
         player = new Player();
         university = new University();

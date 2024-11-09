@@ -1,5 +1,7 @@
 package eng1.unisim.managers;
 
+import java.util.HashMap;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -9,13 +11,19 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import eng1.unisim.Player;
+
 import eng1.unisim.Building;
-import java.util.HashMap;
+import eng1.unisim.Player;
 
 public class UIManager {
     private Stage stage;
@@ -29,6 +37,7 @@ public class UIManager {
     private Table backgroundTable;
     private Runnable onRestartGame;
     private BuildingSelectionCallback buildingSelectionCallback;
+    private Runnable onPauseToggle;
     private HashMap<String, Label> buildingCounters = new HashMap<>();
     private HashMap<String, Integer> buildingCounts = new HashMap<>();
     private static final String[] BUILDING_TYPES = {"Accommodation", "Learning", "Food", "Recreation"};
@@ -40,10 +49,11 @@ public class UIManager {
         void onBuildingSelected(Building building);
     }
 
-    public UIManager(Player player, Runnable onRestartGame, BuildingSelectionCallback buildingCallback) {
+    public UIManager(Player player, Runnable onRestartGame, BuildingSelectionCallback buildingCallback, Runnable onPauseToggle) {
         this.player = player;
         this.onRestartGame = onRestartGame;
         this.buildingSelectionCallback = buildingCallback;
+        this.onPauseToggle = onPauseToggle;
         setupUI();
     }
 
@@ -58,6 +68,7 @@ public class UIManager {
         createBuildingInventory();
         createEndGameWindow();
         createNotificationSystem();
+        createPauseButton();
     }
 
     private void createHUD() {
@@ -77,7 +88,29 @@ public class UIManager {
         stage.addActor(hudTable);
     }
 
+    private void createPauseButton() {
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = font;
+        buttonStyle.fontColor = Color.WHITE;
+        buttonStyle.downFontColor = Color.LIGHT_GRAY;
 
+        TextButton pauseButton = new TextButton("Resume", buttonStyle);
+        pauseButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                onPauseToggle.run();
+                pauseButton.setText(pauseButton.getText().toString().equals("Pause") ? "Resume" : "Pause");
+            }
+        });
+
+        Table pauseTable = new Table();
+        pauseTable.top().left();
+        pauseTable.setFillParent(true);
+        pauseTable.pad(10);
+        pauseTable.add(pauseButton).padBottom(5).row();
+
+        stage.addActor(pauseTable);
+    }
 
     private void createBuildingInventory() {
         // start building counts from 0

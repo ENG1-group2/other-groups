@@ -1,4 +1,4 @@
-package uk.ac.york.vfc510.unisim.managers;
+package eng1.unisim.managers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import uk.ac.york.vfc510.unisim.Player;
+import eng1.unisim.Player;
 
 public class UIManager {
     private Stage stage;

@@ -1,4 +1,4 @@
-package uk.ac.york.vfc510.unisim;
+package eng1.unisim;
 
 public class Player {
     private int funds;

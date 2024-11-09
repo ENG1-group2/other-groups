@@ -1,4 +1,4 @@
-package uk.ac.york.vfc510.unisim.managers;
+package eng1.unisim.managers;
 
 public class TimeManager {
     private static int currentTime;

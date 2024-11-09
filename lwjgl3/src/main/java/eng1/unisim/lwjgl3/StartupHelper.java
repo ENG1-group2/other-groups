@@ -14,7 +14,7 @@
  */
 //Note, the above license and copyright applies to this file only.
 
-package uk.ac.york.vfc510.unisim.lwjgl3;
+package eng1.unisim.lwjgl3;
 
 import org.lwjgl.system.macosx.LibC;
 

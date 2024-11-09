@@ -1,4 +1,4 @@
-package uk.ac.york.vfc510.unisim;
+package eng1.unisim;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -13,7 +13,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.InputMultiplexer;
 
-import uk.ac.york.vfc510.unisim.managers.*;
+import eng1.unisim.managers.BuildingManager;
+import eng1.unisim.managers.InputManager;
+import eng1.unisim.managers.TimeManager;
+import eng1.unisim.managers.UIManager;
+import eng1.unisim.managers.*;
 
 public class Main extends ApplicationAdapter {
     private SpriteBatch batch;

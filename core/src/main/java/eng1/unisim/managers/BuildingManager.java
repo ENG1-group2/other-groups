@@ -1,11 +1,10 @@
-package uk.ac.york.vfc510.unisim.managers;
+package eng1.unisim.managers;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import uk.ac.york.vfc510.unisim.Building;
+import eng1.unisim.Building;
 import java.util.HashMap;
-import java.util.ArrayList;
 
 public class BuildingManager {
     private HashMap<Vector2, Building> placedBuildings;

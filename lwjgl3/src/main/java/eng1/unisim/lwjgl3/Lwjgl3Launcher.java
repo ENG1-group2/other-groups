@@ -1,8 +1,8 @@
-package uk.ac.york.vfc510.unisim.lwjgl3;
+package eng1.unisim.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import uk.ac.york.vfc510.unisim.Main;
+import eng1.unisim.Main;
 
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {

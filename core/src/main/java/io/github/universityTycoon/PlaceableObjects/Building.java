@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 public class Building extends MapObject {
 
-    public Duration constructionGameTime = Duration.ofDays(365);
+    public Duration constructionGameTime = Duration.ofDays(90);
     public LocalDateTime finishDate;
     public boolean isUnderConstruction = true;
 
@@ -52,10 +52,10 @@ public class Building extends MapObject {
         }
     }
 
-    public String getConstructionPercent(LocalDateTime currentGameTime) {
+    public float getConstructionPercent(LocalDateTime currentGameTime) {
         Duration timePassed = Duration.between(constructionStartedAt, currentGameTime);
         float percent = MathUtils.clamp((float)timePassed.getSeconds() / (float)constructionGameTime.getSeconds(), 0, 1);
-        return String.format("%.0f%%", percent * 100);
+        return percent * 100;
     }
 
     public int getSize() {

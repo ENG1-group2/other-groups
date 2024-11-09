@@ -163,7 +163,7 @@ public class MainScreen implements Screen {
 
     private void placeBuilding() {
         int tileLocationX = (int)(gameModel.getTilesWide() * mousePos.x / viewport.getScreenWidth() );
-        int tileLocationY = (int)(1 +gameModel.getTilesHigh() * mousePos.y /(viewport.getScreenHeight() * 7f/9f)); // Multiply by 7/9 because the map covers 7/9ths of the screen
+        int tileLocationY = (int)(gameModel.getTilesHigh() * mousePos.y /(viewport.getScreenHeight() * 7f/9f)); // Multiply by 7/9 because the map covers 7/9ths of the screen
         // Defaulting to accommodation building for now
         // if statement prevents placing buildings on the top 2 tiles, this keeps text visible
         if (tileLocationY >2) {

@@ -13,6 +13,8 @@ public class MapController {
     private int tilesHigh;
     MapObject[][] mapObjects;
 
+
+
     public MapController(int tilesWide, int tilesHigh) {
         this.tilesWide = tilesWide;
         this.tilesHigh = tilesHigh;

@@ -1,5 +1,6 @@
 package io.github.universityTycoon;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -132,33 +133,53 @@ public class MainScreen implements Screen {
 
         drawMapObjects();
 
-        game.font.draw(batch, time, 7.6f, 8.5f);
-        game.font.draw(batch, dateTimeString, 0.2f, 8.8f);
+        GameModel.font.draw(batch, time, 7.6f, 8.5f);
+        GameModel.font.draw(batch, dateTimeString, 0.2f, 8.8f);
 
 
 
-        //drawBuildingMenu();
+        GameModel.smaller_font.draw(batch, "Leisure Buildings: " + gameModel.getLeisureBuildingCount(), 13.15f, 8.9f);
+        GameModel.smaller_font.draw(batch, "Teaching Buildings: " + gameModel.getTeachingBuildingCount(), 13.15f, 8.7f);
+        GameModel.smaller_font.draw(batch, "Cafeteria Buildings: " + gameModel.getCafeteriaBuildingCount(), 13.15f, 8.5f);
+        GameModel.smaller_font.draw(batch, "Accommodation Buildings: " + gameModel.getAccommodationBuildingCount(), 13.15f, 8.3f);
+
+
+
+
+
 
         batch.end();
+        // Can't do a batch and ShapeRenderer that overlap, you have to begin and end one before beginning the other
+        // So batch.end() must go before anything with ShapeRenderer
+        drawBuildingMenu();
+
+        // Draws a box around the building counters
+        ShapeRenderer sr = new ShapeRenderer();
+        sr.begin(ShapeRenderer.ShapeType.Filled);
+        sr.rectLine(1570, 948, 1570, 1080, 5, Color.BLACK, Color.BLACK);
+        sr.rectLine(1568, 950, 1920, 950, 4, Color.BLACK, Color.BLACK);
+        sr.end();
     }
 
     private void placeBuilding() {
         int tileLocationX = (int)(gameModel.getTilesWide() * mousePos.x / viewport.getScreenWidth() );
-        int tileLocationY = (int)(gameModel.getTilesHigh() * mousePos.y /(viewport.getScreenHeight() * 7f/9f)); // Multiply by 7/9 because the map covers 7/9ths of the screen
+        int tileLocationY = (int)(1 +gameModel.getTilesHigh() * mousePos.y /(viewport.getScreenHeight() * 7f/9f)); // Multiply by 7/9 because the map covers 7/9ths of the screen
         // Defaulting to accommodation building for now
-        gameModel.mapController.addBuilding(new AccommodationBuilding(gameModel.getGameTimeGMT()), tileLocationX, tileLocationY);
-
+        // if statement prevents placing buildings on the top 2 tiles, this keeps text visible
+        if (tileLocationY >2) {
+            gameModel.mapController.addBuilding(new AccommodationBuilding(gameModel.getGameTimeGMT()), tileLocationX, tileLocationY);
+        }
         System.out.println(tileLocationX + " " + tileLocationY);
     }
 
     private void drawMapObjects() {
-        MapObject[][] mapObjects = gameModel.getMapObjects();
+        MapObject[][] mapObjects = gameModel.getMapObjects();g
         for (int i = 0; i < mapObjects.length; i++) {
             for (int j = 0; j < mapObjects[i].length; j++) {
                 float tileSizeOnScreen = viewport.getWorldWidth() / gameModel.getTilesWide() ;
                 Vector2 screenPos = new Vector2((float) i * tileSizeOnScreen, viewport.getWorldHeight() - ((float) (j + 1) * tileSizeOnScreen));
                 // Optional line to show the grid (mainly for testing)
-                batch.draw(squareTexture, screenPos.x, screenPos.y, tileSizeOnScreen, tileSizeOnScreen);
+                //batch.draw(squareTexture, screenPos.x, screenPos.y, tileSizeOnScreen, tileSizeOnScreen);
                 // Could make this a more general MapObject for decoration object implementation
                 if (mapObjects[i][j] instanceof Building building) {
                     // Get the texture for the object
@@ -171,7 +192,7 @@ public class MainScreen implements Screen {
                     // Construction visualisation
                     if (building.isUnderConstruction) {
                         batch.draw(constructionTexture, screenPos.x, screenPos.y, tileSizeOnScreen * building.getSize(), tileSizeOnScreen * building.getSize());
-                        game.font.draw(batch, building.getConstructionPercent(gameModel.getGameTimeGMT()), screenPos.x, screenPos.y);
+                        GameModel.smaller_font.draw(batch, building.getConstructionPercent(gameModel.getGameTimeGMT()), screenPos.x, screenPos.y );
                     }
                 }
             }
@@ -191,7 +212,8 @@ public class MainScreen implements Screen {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
         shapeRenderer.setColor((float) 79 / 255, (float) 79 / 255, (float) 79 / 255, 1);
-        shapeRenderer.rect(background.x, background.y, background.width, background.height);
+        // when not in full screen, the +45 is needed to make the grey background go far enough to the right
+        shapeRenderer.rect(background.x, background.y, background.width +45, background.height);
 
         shapeRenderer.setColor((float) 120 / 255, (float) 120 / 255, (float) 120 / 255, 1);
         shapeRenderer.rect(buildingButton1.x, buildingButton1.y, buildingButton1.width, buildingButton1.height);

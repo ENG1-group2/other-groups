@@ -23,6 +23,10 @@ public class TimeManager {
         return timeStep;
     }
 
+    public int getTimeLimit() {
+        return timeLimit;
+    }
+
     public boolean isEndOfGame() {
         return currentTime >= timeLimit;
     }

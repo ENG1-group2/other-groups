@@ -192,7 +192,7 @@ public class MainScreen implements Screen {
                     // Construction visualisation
                     if (building.isUnderConstruction) {
                         batch.draw(constructionTexture, screenPos.x, screenPos.y, tileSizeOnScreen * building.getSize(), tileSizeOnScreen * building.getSize());
-                        GameModel.smaller_font.draw(batch, building.getConstructionPercent(gameModel.getGameTimeGMT()), screenPos.x, screenPos.y );
+                        GameModel.black_font.draw(batch, building.getConstructionPercent(gameModel.getGameTimeGMT()), screenPos.x, screenPos.y );
                     }
                 }
             }

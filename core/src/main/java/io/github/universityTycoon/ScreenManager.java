@@ -57,6 +57,7 @@ public class ScreenManager extends Game {
         batch.dispose();
         GameModel.font.dispose();
         GameModel.smaller_font.dispose();
+        GameModel.black_font.dispose();
 
     }
 

@@ -11,7 +11,10 @@ public class LeisureBuilding extends Building {
         satisfactionBonus = 3;
         constructionGameTime = Duration.ofDays(45);
         finishDate = constructionStartedAt.plus(constructionGameTime);
+        buildingCapacity = 150;
     }
+
+
 
     @Override
     public float calculateSatisfaction() {

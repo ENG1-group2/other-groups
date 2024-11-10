@@ -15,9 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import io.github.universityTycoon.PlaceableObjects.AccommodationBuilding;
-import io.github.universityTycoon.PlaceableObjects.Building;
-import io.github.universityTycoon.PlaceableObjects.MapObject;
+import io.github.universityTycoon.PlaceableObjects.*;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -174,6 +172,7 @@ public class MainScreen implements Screen {
             } else {
                 pause();
             }
+            buttonCooldownTimer = gameModel.BUTTON_COOLDOWN_TIMER;
         }
 
 
@@ -204,7 +203,7 @@ public class MainScreen implements Screen {
         drawMapObjects();
 
         GameModel.font.draw(batch, time, 7.6f, 8.5f);
-        GameModel.font.draw(batch,"Satisfaction score: " + String.format("%.2f%%", gameModel.getSatisfactionScore()), 5.8f, 8.9f);
+        GameModel.font.draw(batch,"Satisfaction score: " + String.format("%.2f", gameModel.getSatisfactionScore()), 5.8f, 8.9f);
         GameModel.smaller_font.draw(batch, dateTimeString, 0.05f, 8.95f);
 
 
@@ -213,6 +212,7 @@ public class MainScreen implements Screen {
         GameModel.smaller_font.draw(batch, "Teaching Buildings: " + gameModel.getTeachingBuildingCount(), 13.15f, 8.7f);
         GameModel.smaller_font.draw(batch, "Cafeteria Buildings: " + gameModel.getCafeteriaBuildingCount(), 13.15f, 8.5f);
         GameModel.smaller_font.draw(batch, "Accommodation Buildings: " + gameModel.getAccommodationBuildingCount(), 13.15f, 8.3f);
+
 
         List<int[]> found = new ArrayList<>();
         for (int[] entry : mapObjUnderConstruction) {
@@ -234,6 +234,38 @@ public class MainScreen implements Screen {
         // So batch.end() must go before anything with ShapeRenderer
         drawBuildingMenu();
 
+        //This text goes over the building menu, so must be drawn after.
+        // This also therefore needs a new batch begin and end statement.
+        batch.begin();
+        GameModel.black_font.draw(batch, "Building type:" + currentBuilding.toString(),  0.01f, 1.98f);
+
+        switch (currentBuilding) {
+            case Accommodation:
+                GameModel.black_font.draw(batch, "Number of rooms: " + AccommodationBuilding.getBuildingCapacity(),  0.01f, 1.68f);
+                GameModel.black_font.draw(batch, "Satisfaction score bonus: " + AccommodationBuilding.getSatisfactionBonus(),  0.01f, 1.38f);
+                GameModel.black_font.draw(batch, "Rent per month: " + AccommodationBuilding.getRentPricePPM(),  0.01f, 1.08f);
+                GameModel.black_font.draw(batch, "Number of common rooms: " + AccommodationBuilding.getCommonRoomsCount(),  0.01f, 0.78f);
+                break;
+            case Leisure:
+                GameModel.black_font.draw(batch, "Building capacity: " + LeisureBuilding.getBuildingCapacity() + " students",  0.01f, 1.68f);
+                GameModel.black_font.draw(batch, "Satisfaction score bonus: " + LeisureBuilding.getSatisfactionBonus(),  0.01f, 1.38f);
+                break;
+            case Cafeteria:
+                GameModel.black_font.draw(batch, "People fed per hour: " + Cafeteria.getBuildingCapacity(),  0.01f, 1.68f);
+                GameModel.black_font.draw(batch, "Satisfaction score bonus: " + Cafeteria.getSatisfactionBonus(),  0.01f, 1.38f);
+                GameModel.black_font.draw(batch, "Food quality: " + Cafeteria.getFoodQuality() + "/10",  0.01f, 1.08f);
+                GameModel.black_font.draw(batch, "Hygiene rating: " + Cafeteria.getHygieneRating() + "/5",  0.01f, 0.78f);
+                break;
+            case Teaching:
+                GameModel.black_font.draw(batch, "Building capacity: " + TeachingBuilding.getBuildingCapacity() + " students",  0.01f, 1.68f);
+                GameModel.black_font.draw(batch, "Satisfaction score bonus: " + TeachingBuilding.getSatisfactionBonus(),  0.01f, 1.38f);
+                GameModel.black_font.draw(batch, "Number of Lecture halls: " + TeachingBuilding.getLectureHallCount(),  0.01f, 1.08f);
+                GameModel.black_font.draw(batch, "Number of lab rooms: " + TeachingBuilding.getLabCount(),  0.01f, 0.78f);
+                GameModel.black_font.draw(batch, "Number of classrooms: " + TeachingBuilding.getClassroomCount(),  0.01f, 0.48f);
+                break;
+        }
+        batch.end();
+
         // Draws a box around the building counters
         ShapeRenderer sr = new ShapeRenderer();
         sr.begin(ShapeRenderer.ShapeType.Filled);
@@ -251,6 +283,12 @@ public class MainScreen implements Screen {
         Building buildingToAdd = Building.getObjectFromEnum(currentBuilding, gameModel.getGameTimeGMT());
         if (gameModel.mapController.addBuilding(buildingToAdd, tileLocationX, tileLocationY)) {
             gameModel.satisfactionScore += buildingToAdd.getSatisfactionBonus();
+            switch (currentBuilding) {
+                case Accommodation -> gameModel.accommodationBuildingCount += 1;
+                case Leisure -> gameModel.leisureBuildingCount += 1;
+                case Cafeteria -> gameModel.cafeteriaBuildingCount += 1;
+                case Teaching -> gameModel.teachingBuildingCount += 1;
+            }
         }
         placeMode = false;
     }
@@ -345,7 +383,10 @@ public class MainScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        batch.dispose();
+        GameModel.font.dispose();
+        GameModel.smaller_font.dispose();
+        GameModel.black_font.dispose();
     }
 }
 

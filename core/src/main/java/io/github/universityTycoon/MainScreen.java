@@ -154,7 +154,10 @@ public class MainScreen implements Screen {
         }
         // Decrements the current building value if the left arrow is clicked
         else if (playerInputHandler.mouseJustClicked() && leftButton.contains(touch.x, touch.y)) {
-            currentBuilding = BuildingTypes.values()[(currentBuilding.ordinal() - 1) % BuildingTypes.values().length];
+            if (currentBuilding.ordinal() - 1 < 0)
+                currentBuilding = BuildingTypes.values()[BuildingTypes.values().length - 1];
+            else
+                currentBuilding = BuildingTypes.values()[currentBuilding.ordinal() - 1];
         }
 
         if (playerInputHandler.mouseJustClicked() && pausePlayBox.contains(touch.x, touch.y)) {

@@ -26,8 +26,8 @@ public class BuildingManager {
     private final HashMap<String, Texture> buildingTypeTextures;
     private Building selectedBuilding;
     private Texture selectedTexture;
-    private static final float PLACED_SCALE = 0.5f; // scale down placed buildings
-    private static final float PREVIEW_SCALE = 0.6f; // marginally larger scale for draggable preview
+    private static final float PLACED_SCALE = 0.3f; // scale down placed buildings
+    private static final float PREVIEW_SCALE = 0.4f; // marginally larger scale for draggable preview
     private final UIManager uiManager;
     private HashMap<String, Integer> buildingCounts = new HashMap<>();
 
@@ -47,7 +47,7 @@ public class BuildingManager {
         buildingTypeTextures.put("Recreation",
                 new Texture(Gdx.files.internal("buildings/recreationPlaceholder.png")));
         buildingTypeTextures.put("Dining",
-                new Texture(Gdx.files.internal("buildings/diningPlaceholder.png")));
+                new Texture(Gdx.files.internal("buildings/dining.png")));
         buildingTypeTextures.put("Learning",
                 new Texture(Gdx.files.internal("buildings/learningPlaceholder.png")));
     }

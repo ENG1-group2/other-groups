@@ -143,7 +143,7 @@ public class UIManager {
         });
 
         // dining building button
-        Texture diningTexture = new Texture(Gdx.files.internal("buildings/diningPlaceholder.png"));
+        Texture diningTexture = new Texture(Gdx.files.internal("buildings/dining.png"));
         ImageButton.ImageButtonStyle diningStyle = new ImageButton.ImageButtonStyle();
         diningStyle.imageUp = new TextureRegionDrawable(new TextureRegion(diningTexture));
         diningStyle.imageChecked = new TextureRegionDrawable(new TextureRegion(diningTexture));

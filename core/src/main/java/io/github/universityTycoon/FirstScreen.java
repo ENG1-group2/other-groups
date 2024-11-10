@@ -6,16 +6,27 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-
+/**
+ * FirstScreen is an implementation of the screen interface.
+ * It is used for the initial startup screen, and an instance of it is created within ScreenManager.
+ *
+ * @param batch The batch which draws textures.
+ * @param input An instance of the PlayerInputHandler class, which handles inputs.
+ * @param viewport The viewport things are displayed on.
+ * @param startButton The rectangle used to check for mouse inputs on the start button.
+ * @param mousePos The vector position of the mouse.
+ * @param mouseDown The updated when the mouse is clicked.
+ * @param music The music.
+ *
+ * @param game An instance of the ScreenManager class, used in the constructor so that stuff works.
+ */
 public class FirstScreen implements Screen {
     SpriteBatch batch;
     PlayerInputHandler input;
@@ -24,10 +35,6 @@ public class FirstScreen implements Screen {
     Rectangle startButton;
     Vector2 mousePos;
     boolean mouseDown;
-    PlayerInputHandler playerInputHandler;
-
-    Vector2 touchPos;
-    Array<Sprite> dropSprites;
 
     Music music = Gdx.audio.newMusic(Gdx.files.internal("music/title.mp3"));
 
@@ -37,6 +44,10 @@ public class FirstScreen implements Screen {
     }
 
 
+    /**
+     * Show is responsible for setting all variables.
+     * It is effectively the constructor.
+     */
     @Override
     public void show() {
         batch = new SpriteBatch();
@@ -49,9 +60,13 @@ public class FirstScreen implements Screen {
 
         startButton = new Rectangle();
         mousePos = new Vector2(0,0);
-        playerInputHandler = new PlayerInputHandler();
     }
 
+    /**
+     * Calls three functions which are used to split up the rendering method.
+     *
+     * @param v Not sure what this does, but it's part of the screen interface ¯\_(ツ)_/¯
+     */
     @Override
     public void render(float v) {
         input();
@@ -59,20 +74,29 @@ public class FirstScreen implements Screen {
         draw();
     }
 
+    /**
+     * Resizes the viewport
+     *
+     * @param width The new width
+     * @param height The new height
+     */
     @Override
     public void resize(int width, int height) {
 
         viewport.update(width, height, true);
     }
 
+    /**
+     * Does things when inputs are received.
+     */
     private void input() {
         if (input.getKeyJustPressed(Input.Keys.SPACE)) {
             music.stop();
             game.switchToMainScreen();  // Switch to MainScreen
         }
 
-        if (playerInputHandler.getIsMouseDown()) {
-            mousePos = playerInputHandler.getMousePos();
+        if (input.getIsMouseDown()) {
+            mousePos = input.getMousePos();
             mouseDown = true;
 
         }
@@ -80,7 +104,9 @@ public class FirstScreen implements Screen {
     }
 
 
-
+    /**
+     * Deals with the logic of the screen.
+     */
     private void logic() {
         Vector3 touch = new Vector3(mousePos.x, mousePos.y, 0);
         viewport.getCamera().unproject(touch);
@@ -92,8 +118,10 @@ public class FirstScreen implements Screen {
     }
 
 
-
-
+    /**
+     * Draws all textures on the screen.
+     * Note: Batch.begin() and batch.end() must contain all draw statements, and cannot overlap with other begin/ends.
+     */
     private void draw() {
         batch.begin();
 
@@ -107,9 +135,6 @@ public class FirstScreen implements Screen {
 
         viewport.apply();
         batch.setProjectionMatrix(viewport.getCamera().combined);
-
-
-
 
         batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
         batch.draw(logo, 6, 4.5f, 4, 4);

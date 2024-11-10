@@ -347,6 +347,7 @@ public class MainScreen implements Screen {
 
         Building buildingToAdd = Building.getObjectFromEnum(currentBuilding, gameModel.getGameTimeGMT());
         if (gameModel.mapController.addBuilding(buildingToAdd, (int)gridPos.x, (int)gridPos.y)) {
+            // TEMPORARY CALCULATION FOR DEMONSTRATION PURPOSES ONLY. IN FUTURE, THIS WILL BE CALCULATED BY THE SCORECALCULATOR AT REGULAR INTERVALS
             gameModel.satisfactionScore += buildingToAdd.getSatisfactionBonus();
             switch (currentBuilding) {
                 case Accommodation -> gameModel.accommodationBuildingCount += 1;

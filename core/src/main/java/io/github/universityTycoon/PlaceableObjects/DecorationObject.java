@@ -1,5 +1,8 @@
 package io.github.universityTycoon.PlaceableObjects;
 
+/**
+ * A generic decorative object to be placed on the map. May affect satisfaction
+ */
 public class DecorationObject extends MapObject {
 
     public String getName() {
@@ -8,12 +11,7 @@ public class DecorationObject extends MapObject {
     public String getTexturePath() {
         return texturePath;
     }
-    //public PolygonShape getShape() {
-    //    return shape;
-    //}
-    public int getCapacity() {
-        return capacity;
-    }
+
     public boolean getIsStackable() {
         return isStackable;
     }

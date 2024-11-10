@@ -2,6 +2,10 @@ package io.github.universityTycoon;
 
 import java.util.ArrayList;
 
+/**
+ * Class to invoke to calculate the current satisfaction score. Stores a list of active modifiers that can affect how
+ * satisfaction is calculated.
+ */
 public class ScoreCalculator {
     ArrayList<GameModifiers> activeModifiers = new ArrayList<GameModifiers>();
     int currentScore; // Possibly unnecessary

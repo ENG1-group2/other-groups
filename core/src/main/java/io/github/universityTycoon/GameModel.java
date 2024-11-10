@@ -16,7 +16,6 @@ public class GameModel {
     private final int STARTING_YEAR = 2024; // Don't make this < 1970 I beg
 
     public final BuildingTypes DEFAULT_SELECTED_BUILDING_TYPE = BuildingTypes.Accommodation;
-    public static final float BUTTON_COOLDOWN_TIMER = 0.5f;
 
     final float START_TIME_SECONDS = 300;
     public float timeRemainingSeconds = START_TIME_SECONDS;

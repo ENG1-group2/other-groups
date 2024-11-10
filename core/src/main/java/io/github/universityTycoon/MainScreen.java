@@ -50,7 +50,6 @@ public class MainScreen implements Screen {
     Vector2 mousePos;
     boolean mouseDown;
     boolean placeMode;
-    float buttonCooldownTimer;
     PlayerInputHandler playerInputHandler;
 
 
@@ -91,8 +90,6 @@ public class MainScreen implements Screen {
         leftButton = new Rectangle();
         pausePlayBox = new Rectangle();
 
-        buttonCooldownTimer = 0f;
-
         // start the playback of the background music when the screen is shown
         music.setVolume(0.5f);
         music.setLooping(true);
@@ -127,17 +124,14 @@ public class MainScreen implements Screen {
             mousePos = playerInputHandler.getMousePos();
             mouseDown = true;
         }
-        else {mouseDown = false;}
+        else {
+            mouseDown = false;
+        }
     }
 
     private void logic() {
         Vector3 touch = new Vector3(mousePos.x, mousePos.y, 0);
         viewport.getCamera().unproject(touch);
-
-        buttonCooldownTimer -= Gdx.graphics.getDeltaTime();
-        if (buttonCooldownTimer <= 0f) {
-            buttonCooldownTimer = 0f;
-        }
 
         // Checks to see if the building icon has been clicked
         if (mouseDown && buildingIcon.contains(touch.x, touch.y)) {
@@ -152,29 +146,20 @@ public class MainScreen implements Screen {
             placeMode = false;
         }
         // Increments the current building value if the right arrow is clicked
-        if (mouseDown && rightButton.contains(touch.x, touch.y) && buttonCooldownTimer == 0f) {
-            if (currentBuilding.ordinal() + 1 > BuildingTypes.values().length - 1)
-                currentBuilding = BuildingTypes.values()[0];
-            else
-                currentBuilding = BuildingTypes.values()[currentBuilding.ordinal() + 1];
-            buttonCooldownTimer = GameModel.BUTTON_COOLDOWN_TIMER;
+        if (playerInputHandler.mouseJustClicked() && rightButton.contains(touch.x, touch.y)) {
+            currentBuilding = BuildingTypes.values()[(currentBuilding.ordinal() + 1) % BuildingTypes.values().length];
         }
         // Decrements the current building value if the left arrow is clicked
-        else if (mouseDown && leftButton.contains(touch.x, touch.y) && buttonCooldownTimer == 0f) {
-            if (currentBuilding.ordinal() - 1 < 0)
-                currentBuilding = BuildingTypes.values()[BuildingTypes.values().length - 1];
-            else
-                currentBuilding = BuildingTypes.values()[currentBuilding.ordinal() - 1];
-            buttonCooldownTimer = GameModel.BUTTON_COOLDOWN_TIMER;
+        else if (playerInputHandler.mouseJustClicked() && leftButton.contains(touch.x, touch.y)) {
+            currentBuilding = BuildingTypes.values()[(currentBuilding.ordinal() - 1) % BuildingTypes.values().length];
         }
 
-        if (mouseDown && pausePlayBox.contains(touch.x, touch.y) && buttonCooldownTimer == 0f) {
+        if (playerInputHandler.mouseJustClicked() && pausePlayBox.contains(touch.x, touch.y)) {
             if (gameModel.getIsPaused()) {
                 resume();
             } else {
                 pause();
             }
-            buttonCooldownTimer = GameModel.BUTTON_COOLDOWN_TIMER;
         }
 
 

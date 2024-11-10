@@ -15,6 +15,10 @@ public class PlayerInputHandler {
         return Gdx.input.isButtonPressed(Input.Buttons.LEFT);
     }
 
+    public boolean mouseJustClicked() {
+        return Gdx.input.isButtonJustPressed(Input.Buttons.LEFT);
+    }
+
     public boolean getIsPauseJustPressed() {
         return Gdx.input.isKeyJustPressed(PAUSE_KEY);
     }
@@ -22,4 +26,5 @@ public class PlayerInputHandler {
     public boolean getKeyJustPressed(int key) {
         return Gdx.input.isKeyJustPressed(key);
     }
+
 }

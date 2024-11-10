@@ -17,7 +17,6 @@ public class InputManager extends InputAdapter {
     private static final float CAMERA_ZOOM_SPEED = 0.1f;
     private static final float MIN_ZOOM = 0.5f;
     private final float maxZoom;
-    private static final float DRAG_SENSITIVITY = 2.5f; // Increased drag sensitivity
 
     public interface BuildingPlacementCallback {
         void onPlaceBuilding(float worldX, float worldY);
@@ -60,13 +59,15 @@ public class InputManager extends InputAdapter {
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         if (isDragging && !isPlacingBuilding) {
-            float deltaX = (screenX - lastX) * camera.zoom;
-            float deltaY = (lastY - screenY) * camera.zoom;
+            float deltaX = (lastX - screenX) * camera.zoom;
+            float deltaY = (screenY - lastY) * camera.zoom;
 
-            // drag movement is based off zoom level
-            float movementScale = Math.min(1.0f, camera.zoom) * DRAG_SENSITIVITY;
-            targetPosition.x = camera.position.x - deltaX * movementScale;
-            targetPosition.y = camera.position.y - deltaY * movementScale;
+            targetPosition.x = camera.position.x + deltaX;
+            targetPosition.y = camera.position.y + deltaY;
+
+            // Don't smooth dragging
+            camera.position.x = targetPosition.x;
+            camera.position.y = targetPosition.y;
 
             lastX = screenX;
             lastY = screenY;

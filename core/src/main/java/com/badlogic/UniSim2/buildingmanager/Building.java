@@ -1,5 +1,6 @@
 package com.badlogic.UniSim2.buildingmanager;
 
+import com.badlogic.UniSim2.GUImanager.BuildingMenu;
 import com.badlogic.UniSim2.mapmanager.Map;
 import com.badlogic.UniSim2.resources.*;
 import com.badlogic.gdx.graphics.Texture;
@@ -95,11 +96,19 @@ public abstract class Building extends Sprite {
      * placed texture.
      */
     public void placeBuilding() {
+        incrimentCount();
         isSelected = false;
         isPlaced = true;
         setRegion(placedTexture);
         SoundManager.playClick();
     }
+
+    private void incrimentCount(){
+        int index = type.ordinal();
+        BuildingMenu.buildingCounts[index]++;
+        BuildingMenu.updateCountLabel(index); // Increments the building count label by 1 and displays
+    }
+
 
     /**
      * Sets the texture to collision or dragging dependings on if it is colliding

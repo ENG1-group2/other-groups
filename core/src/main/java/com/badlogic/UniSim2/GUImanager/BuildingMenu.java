@@ -31,10 +31,10 @@ public class BuildingMenu {
 
     // Holds the count of each type of building
     private int accomodationCount, lectureHallCount, libraryCount, courseCount, foodZoneCount, recreationalCount, natureCount;
-    private int[] buildingCounts;
+    public static int[] buildingCounts;
 
     // Holds the labels that display the count of each building
-    private Array<Label> countLabels;
+    private static Array<Label> countLabels;
     
     public BuildingMenu(Stage stage, BuildingManager buildings){
         this.stage = stage;
@@ -150,12 +150,10 @@ public class BuildingMenu {
                 if(!buildings.getCurrentlySelecting()){
                     SoundManager.playClick();
                     buildings.handleSelection(type); // Creates a building of whatever type the button pressed is
-                    updateCountLabel(index); // Increments the building count label by 1 and displays
                 }
             }
         });
     }
-
     
     /**
      * A count label is created for each building button to show how many building
@@ -183,10 +181,8 @@ public class BuildingMenu {
      * Increments the count label for a specified building button label.
      * @param index The index of the building in the enum {@link Building#BuildingTypes}
      */
-    private void updateCountLabel(int index){
-        buildingCounts[index]++;
-        int newCount = buildingCounts[index];
-        countLabels.get(index).setText(String.valueOf(newCount));
+    public static void updateCountLabel(int index){
+        countLabels.get(index).setText(String.valueOf(buildingCounts[index]));
     }
 
     /**

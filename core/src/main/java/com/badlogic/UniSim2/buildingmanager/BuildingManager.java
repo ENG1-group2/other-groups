@@ -38,17 +38,28 @@ public class BuildingManager {
      * @param mousePos The position of the mouse in world coordinates.
      * @param clicked true if a click has happened and false if not.
      */
-    public void input(Vector2 mousePos, boolean clicked) {
+    public void input(Vector2 mousePos, boolean clicked, boolean backspacePressed) {
 
         // If we're currently selecting a building
         if(currentlySelecting){
             if(clicked){
                 handlePlacing(); // Place the building in the location of the click
             }
+            else if(backspacePressed){
+                removeBuilding();
+            }
+            
             else{
                 handleDragging(mousePos); // Otherwise continue dragging the building
             }
         }
+    }
+
+    private void removeBuilding(){
+        buildings.removeValue(currentBuilding, true);
+        Map.collidableSprites.removeValue(currentBuilding, true);
+        currentBuilding = null;
+        currentlySelecting = false;
     }
 
     /**
@@ -59,6 +70,7 @@ public class BuildingManager {
         // If the current building is not colliding 
         if(!isColliding(currentBuilding)){
             currentBuilding.placeBuilding(); // Place building
+            currentBuilding = null;
             currentlySelecting = false; // No longer selecting a building
         }
     }

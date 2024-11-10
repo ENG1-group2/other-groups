@@ -5,6 +5,7 @@ import com.badlogic.UniSim2.buildingmanager.Building;
 import com.badlogic.UniSim2.buildingmanager.BuildingManager;
 import com.badlogic.UniSim2.resources.*;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -56,7 +57,8 @@ public class Map {
         Vector2 mousePos = new Vector2(Gdx.input.getX(), Gdx.input.getY()); // Gets the position of the mouse
         viewport.unproject(mousePos);
         boolean clicked = Gdx.input.justTouched(); // True when the mouse is clicked
-        buildings.input(mousePos, clicked); // Handles input for all buildings in the game
+        boolean backspacePressed = Gdx.input.isKeyJustPressed(Input.Keys.BACKSPACE);
+        buildings.input(mousePos, clicked, backspacePressed); // Handles input for all buildings in the game
     }
 
     /**

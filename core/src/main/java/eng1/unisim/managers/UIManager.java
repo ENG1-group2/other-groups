@@ -143,7 +143,7 @@ public class UIManager {
         });
 
         // dining building button
-        Texture diningTexture = new Texture(Gdx.files.internal("buildings/diningPlaceholder.png"));
+        Texture diningTexture = new Texture(Gdx.files.internal("buildings/dining.png"));
         ImageButton.ImageButtonStyle diningStyle = new ImageButton.ImageButtonStyle();
         diningStyle.imageUp = new TextureRegionDrawable(new TextureRegion(diningTexture));
         diningStyle.imageChecked = new TextureRegionDrawable(new TextureRegion(diningTexture));
@@ -162,7 +162,7 @@ public class UIManager {
         });
 
         // learning building button
-        Texture learningTexture = new Texture(Gdx.files.internal("buildings/learningPlaceholder.png"));
+        Texture learningTexture = new Texture(Gdx.files.internal("buildings/learning.png"));
         ImageButton.ImageButtonStyle learningStyle = new ImageButton.ImageButtonStyle();
         learningStyle.imageUp = new TextureRegionDrawable(new TextureRegion(learningTexture));
         learningStyle.imageChecked = new TextureRegionDrawable(new TextureRegion(learningTexture));
@@ -181,7 +181,7 @@ public class UIManager {
         });
 
         // recreation building button
-        Texture recreationTexture = new Texture(Gdx.files.internal("buildings/recreationPlaceholder.png"));
+        Texture recreationTexture = new Texture(Gdx.files.internal("buildings/recreation.png"));
         ImageButton.ImageButtonStyle recreationStyle = new ImageButton.ImageButtonStyle();
         recreationStyle.imageUp = new TextureRegionDrawable(new TextureRegion(recreationTexture));
         recreationStyle.imageChecked = new TextureRegionDrawable(new TextureRegion(recreationTexture));

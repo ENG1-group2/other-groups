@@ -33,7 +33,6 @@ public class MainScreen implements Screen {
     ShapeRenderer shapeRenderer;
     Viewport viewport;
     HashMap<String, Texture> mapObjTextures; // Maintain a dict of paths -> Textures for map objects so that they are only loaded once
-    List<int[]> mapObjUnderConstruction;
     Texture backgroundTexture;
     Texture pauseTexture;
     Texture playTexture;
@@ -67,7 +66,6 @@ public class MainScreen implements Screen {
     public MainScreen(ScreenManager main) {
         this.game = main;
         gameModel = new GameModel();
-        mapObjUnderConstruction = new ArrayList<>();
     }
 
     @Override
@@ -155,14 +153,18 @@ public class MainScreen implements Screen {
         }
         // Increments the current building value if the right arrow is clicked
         if (mouseDown && rightButton.contains(touch.x, touch.y) && buttonCooldownTimer == 0f) {
-            if (currentBuilding.ordinal() + 1 > BuildingTypes.values().length - 1) {currentBuilding = BuildingTypes.values()[0];}
-            else {currentBuilding = BuildingTypes.values()[currentBuilding.ordinal() + 1];}
+            if (currentBuilding.ordinal() + 1 > BuildingTypes.values().length - 1)
+                currentBuilding = BuildingTypes.values()[0];
+            else
+                currentBuilding = BuildingTypes.values()[currentBuilding.ordinal() + 1];
             buttonCooldownTimer = GameModel.BUTTON_COOLDOWN_TIMER;
         }
         // Decrements the current building value if the left arrow is clicked
         else if (mouseDown && leftButton.contains(touch.x, touch.y) && buttonCooldownTimer == 0f) {
-            if (currentBuilding.ordinal() - 1 < 0) {currentBuilding = BuildingTypes.values()[BuildingTypes.values().length - 1];}
-            else {currentBuilding = BuildingTypes.values()[currentBuilding.ordinal() - 1];}
+            if (currentBuilding.ordinal() - 1 < 0)
+                currentBuilding = BuildingTypes.values()[BuildingTypes.values().length - 1];
+            else
+                currentBuilding = BuildingTypes.values()[currentBuilding.ordinal() - 1];
             buttonCooldownTimer = GameModel.BUTTON_COOLDOWN_TIMER;
         }
 
@@ -213,22 +215,6 @@ public class MainScreen implements Screen {
         GameModel.smallerFont.draw(batch, "Cafeteria Buildings: " + gameModel.getCafeteriaBuildingCount(), 13.15f, 8.5f);
         GameModel.smallerFont.draw(batch, "Accommodation Buildings: " + gameModel.getAccommodationBuildingCount(), 13.15f, 8.3f);
 
-
-        List<int[]> found = new ArrayList<>();
-        for (int[] entry : mapObjUnderConstruction) {
-            MapObject[][] mapObjects = gameModel.getMapObjects();
-            if (mapObjects[entry[0]][entry[1]] instanceof Building building) {
-                if (building.isUnderConstruction) {
-                    float tileSizeOnScreen = viewport.getWorldWidth() / gameModel.getTilesWide();
-                    Vector2 screenPos = new Vector2((float) entry[0] * tileSizeOnScreen, viewport.getWorldHeight() - ((float) (entry[1] + 1) * tileSizeOnScreen));
-                    GameModel.blackFont.draw(batch, String.format("%.0f%%", building.getConstructionPercent(gameModel.getGameTimeGMT())), screenPos.x + 0.29f, screenPos.y + 0.61f);
-                }
-                else {
-                    found.add(entry);
-                }
-            }
-        }
-        mapObjUnderConstruction.removeAll(found);
         batch.end();
         // Can't do a batch and ShapeRenderer that overlap, you have to begin and end one before beginning the other
         // So batch.end() must go before anything with ShapeRenderer
@@ -312,9 +298,8 @@ public class MainScreen implements Screen {
                     }
                     batch.draw(mapObjTextures.get(texturePath), screenPos.x, screenPos.y, tileSizeOnScreen * building.getSize(), tileSizeOnScreen * building.getSize());
                     if (building.isUnderConstruction) {
-                        int[] position = new int[]{i, j};
-                        mapObjUnderConstruction.add(position);
                         batch.draw(constructionTexture, screenPos.x, screenPos.y, tileSizeOnScreen * building.getSize(), tileSizeOnScreen * building.getSize());
+                        GameModel.blackFont.draw(batch, String.format("%.0f%%", building.getConstructionPercent(gameModel.getGameTimeGMT())), screenPos.x + 0.29f, screenPos.y + 0.61f);
                     }
                 }
             }

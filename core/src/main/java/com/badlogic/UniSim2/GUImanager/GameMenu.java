@@ -41,7 +41,6 @@ public class GameMenu {
     private void createMenu(){
         buildingMenu.createBuildingMenu();
         createTimerLabel();
-        //createPausedLabel();
     }
 
     // Adds a label at the top of the screen displaying the time
@@ -61,6 +60,10 @@ public class GameMenu {
     }
 
     // Updates the time shown on the label to the time played
+    /**
+     * Updates the time shown on the label to the elapsed time got from
+     * the timer.
+     */
     private void updateTimerLabel(){
         float elapsedTime = timer.getElapsedTime();
         int minutes = (int) (elapsedTime / 60); 
@@ -100,10 +103,17 @@ public class GameMenu {
         stage.draw();
     }
 
+    /**
+     * @return true if the menu is paused and false if not.
+     */
     public boolean getPaused(){
         return isPaused;
     }
 
+    /**
+     * Gets rid the all textures. This method should be called when the menu is
+     * not going to be used anymore.
+     */
     public void dispose(){
         buildingMenu.dispose();
         stage.dispose();

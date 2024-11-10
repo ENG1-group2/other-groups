@@ -80,11 +80,11 @@ public class Assets {
      */
     public static void loadTextures(){
 
-        // Music 
-        music =                     Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
-        click =                     Gdx.audio.newSound(Gdx.files.internal("sounds/click.mp3"));
-
-        // Click sound effect
+        // =======================================
+        // SOUND EFFECTS AND MUSIC.
+        // =======================================
+        music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
+        click = Gdx.audio.newSound(Gdx.files.internal("sounds/click.mp3"));
 
         // Start menu textures
         startBackgroundTexture =    new Texture("startBackground.png");

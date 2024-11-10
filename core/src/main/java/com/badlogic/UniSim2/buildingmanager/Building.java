@@ -96,14 +96,14 @@ public abstract class Building extends Sprite {
      * placed texture.
      */
     public void placeBuilding() {
-        incrimentCount();
+        incrementCount();
         isSelected = false;
         isPlaced = true;
         setRegion(placedTexture);
         SoundManager.playClick();
     }
 
-    private void incrimentCount(){
+    private void incrementCount(){
         int index = type.ordinal();
         BuildingMenu.buildingCounts[index]++;
         BuildingMenu.updateCountLabel(index); // Increments the building count label by 1 and displays

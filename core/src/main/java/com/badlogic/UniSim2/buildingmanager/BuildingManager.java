@@ -180,6 +180,9 @@ public class BuildingManager {
         return currentlySelecting;
     }
 
+    /**
+     * Calls {@link Building#dispose()} on each building this stores.
+     */
     public void dispose(){
         for(Building building : buildings){
             building.dispose();

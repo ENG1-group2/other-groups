@@ -93,7 +93,6 @@ public class BuildingMenu {
      * Will place newly created button at ({@link Consts#BUILDING_BUTTON_Y_BOUNDARY} - buttonGap).
      */
     private void createImageButton(Building.BuildingTypes type, int buttonGap){
-
         int index = type.ordinal(); // Gets the index of type within BuildingTypes
         ImageButton button = setupImageButton(index, buttonGap); // Creates a button of the building type
         addImageButtonClick(button, type, index); // Adds a click listener to the button so we can do something when clicked     
@@ -111,7 +110,6 @@ public class BuildingMenu {
      * @return The button.
      */
     private ImageButton setupImageButton(int index, int buttonGap){
-
         Texture buttonUpTexture = Assets.buttonUpTextures[index]; // Texture when not hovering or clicking
         Texture buttonDownTexture = Assets.buttonDownTextures[index]; // Texture when hovering or clicking
         Drawable buttonUpDrawable = new TextureRegionDrawable(buttonUpTexture);
@@ -145,7 +143,6 @@ public class BuildingMenu {
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y){
-
                 // Prevents clicking a button while already selecting a building
                 if(!buildings.getCurrentlySelecting()){
                     SoundManager.playClick();
@@ -201,6 +198,9 @@ public class BuildingMenu {
         stage.addActor(menuBar);
     }
 
+    /**
+     * Draws the building menu.
+     */
     public void draw() {
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();

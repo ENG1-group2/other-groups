@@ -157,13 +157,13 @@ public class MainScreen implements Screen {
         if (mouseDown && rightButton.contains(touch.x, touch.y) && buttonCooldownTimer == 0f) {
             if (currentBuilding.ordinal() + 1 > BuildingTypes.values().length - 1) {currentBuilding = BuildingTypes.values()[0];}
             else {currentBuilding = BuildingTypes.values()[currentBuilding.ordinal() + 1];}
-            buttonCooldownTimer = gameModel.BUTTON_COOLDOWN_TIMER;
+            buttonCooldownTimer = GameModel.BUTTON_COOLDOWN_TIMER;
         }
         // Decrements the current building value if the left arrow is clicked
         else if (mouseDown && leftButton.contains(touch.x, touch.y) && buttonCooldownTimer == 0f) {
             if (currentBuilding.ordinal() - 1 < 0) {currentBuilding = BuildingTypes.values()[BuildingTypes.values().length - 1];}
             else {currentBuilding = BuildingTypes.values()[currentBuilding.ordinal() - 1];}
-            buttonCooldownTimer = gameModel.BUTTON_COOLDOWN_TIMER;
+            buttonCooldownTimer = GameModel.BUTTON_COOLDOWN_TIMER;
         }
 
         if (mouseDown && pausePlayBox.contains(touch.x, touch.y) && buttonCooldownTimer == 0f) {
@@ -172,7 +172,7 @@ public class MainScreen implements Screen {
             } else {
                 pause();
             }
-            buttonCooldownTimer = gameModel.BUTTON_COOLDOWN_TIMER;
+            buttonCooldownTimer = GameModel.BUTTON_COOLDOWN_TIMER;
         }
 
 

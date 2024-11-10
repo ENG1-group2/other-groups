@@ -181,7 +181,7 @@ public class UIManager {
         });
 
         // recreation building button
-        Texture recreationTexture = new Texture(Gdx.files.internal("buildings/recreationPlaceholder.png"));
+        Texture recreationTexture = new Texture(Gdx.files.internal("buildings/recreation.png"));
         ImageButton.ImageButtonStyle recreationStyle = new ImageButton.ImageButtonStyle();
         recreationStyle.imageUp = new TextureRegionDrawable(new TextureRegion(recreationTexture));
         recreationStyle.imageChecked = new TextureRegionDrawable(new TextureRegion(recreationTexture));

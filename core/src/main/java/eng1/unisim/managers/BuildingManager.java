@@ -45,7 +45,7 @@ public class BuildingManager {
         buildingTypeTextures.put("Accommodation",
                 new Texture(Gdx.files.internal("buildings/accommodation.png")));
         buildingTypeTextures.put("Recreation",
-                new Texture(Gdx.files.internal("buildings/recreationPlaceholder.png")));
+                new Texture(Gdx.files.internal("buildings/recreation.png")));
         buildingTypeTextures.put("Dining",
                 new Texture(Gdx.files.internal("buildings/dining.png")));
         buildingTypeTextures.put("Learning",

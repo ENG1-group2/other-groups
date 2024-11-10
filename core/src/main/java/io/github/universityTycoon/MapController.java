@@ -19,7 +19,7 @@ public class MapController {
         this.mapObjects = new MapObject[tilesWide][tilesHigh];
     }
 
-    public void addBuilding(Building building, int xPos, int yPos) {
+    public boolean addBuilding(Building building, int xPos, int yPos) {
         boolean buildingFits = true;
         // Note that the top left square is 0,0, so y/j is negative
         for (int i = 0; i < building.getSize() ; i++) {
@@ -33,6 +33,7 @@ public class MapController {
         if (buildingFits) {
             // Place the bottom left square
             mapObjects[xPos][yPos] = building;
+
             // Then place pointers to the original
             for (int i = 0; i < building.getSize() ; i++) {
                 for (int j = 0; j < building.getSize() ; j++) {
@@ -42,6 +43,7 @@ public class MapController {
                 }
             }
         }
+        return buildingFits;
     }
 
     // Call this to ensure buildings progress from under construction to complete

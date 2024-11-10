@@ -8,15 +8,25 @@ import java.time.LocalDateTime;
 
 public class Building extends MapObject {
 
-    public Duration constructionGameTime = Duration.ofDays(30);
+    public Duration constructionGameTime;
     public LocalDateTime finishDate;
     public boolean isUnderConstruction = true;
+
+    // All of these building statistics (such as buildingCapacity), and those for its subclasses are currently static,
+    // as we are not currently making subclasses of accommodation buildings for example, when that is the case,
+    // those classes will have their own values, and at that point, these statistics should be made no longer static.
+    public static float satisfactionBonus;
+
+    // This is multipurpose, it's how many people can live in an accommodation building, how many can eat in the cafeteria
+    // at any given time, how many can leisure? in a leisure building, and how many can be taught at once in a teaching building.
+    // These should affect the satisfaction later on, meaning if 2000 students attend the university, the other buildings
+    // should have a capacity that is high enough to accommodate for that, or the satisfaction score reduces.
+    public static float buildingCapacity;
 
     LocalDateTime constructionStartedAt; // IN-GAME TIME
 
     public Building(LocalDateTime constructionStartedAt, String texturePath) {
         this.constructionStartedAt = constructionStartedAt;
-        finishDate = constructionStartedAt.plus(constructionGameTime);
         this.texturePath = texturePath;
     }
 
@@ -35,6 +45,15 @@ public class Building extends MapObject {
     //public PolygonShape getShape() {
     //    return shape;
     //}
+
+    public static float getSatisfactionBonus() {
+        return satisfactionBonus;
+    }
+
+    public static float getBuildingCapacity() {
+        return buildingCapacity;
+    }
+
     public int getCapacity() {
         return capacity;
     }
@@ -62,6 +81,7 @@ public class Building extends MapObject {
     public int getSize() {
         return size;
     }
+
 
 
     public static <T extends Building> T getObjectFromEnum(BuildingTypes type, LocalDateTime time) {

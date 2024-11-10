@@ -16,14 +16,14 @@ public class GameModel {
     private final int STARTING_YEAR = 2024; // Don't make this < 1970 I beg
 
     public final BuildingTypes DEFAULT_SELECTED_BUILDING_TYPE = BuildingTypes.Accommodation;
-    public final float BUTTON_COOLDOWN_TIMER = 0.5f;
+    public static final float BUTTON_COOLDOWN_TIMER = 0.5f;
 
     final float START_TIME_SECONDS = 300;
     public float timeRemainingSeconds = START_TIME_SECONDS;
 
     public static BitmapFont font;
-    public static BitmapFont smaller_font;
-    public static BitmapFont black_font;
+    public static BitmapFont smallerFont;
+    public static BitmapFont blackFont;
 
     public int tilesWide = 32;
     public int tilesHigh = 14;
@@ -67,21 +67,21 @@ public class GameModel {
         font = new BitmapFont(Gdx.files.internal("ui/font.fnt"),
             Gdx.files.internal("ui/font.png"), false);
 
-        smaller_font = new BitmapFont(Gdx.files.internal("ui/font.fnt"),
+        smallerFont = new BitmapFont(Gdx.files.internal("ui/font.fnt"),
             Gdx.files.internal("ui/font.png"), false);
 
-        black_font = new BitmapFont(Gdx.files.internal("ui/arial.fnt"),
+        blackFont = new BitmapFont(Gdx.files.internal("ui/arial.fnt"),
             Gdx.files.internal("ui/arial.png"), false);
 
         //font is 150x150 pixels, but we need to scale it to our viewport by ratio of viewport height to screen height
         font.setUseIntegerPositions(false);
         font.getData().setScale(0.003f, 0.003f);
 
-        smaller_font.setUseIntegerPositions(false);
-        smaller_font.getData().setScale(0.0015f, 0.0015f);
+        smallerFont.setUseIntegerPositions(false);
+        smallerFont.getData().setScale(0.0015f, 0.0015f);
 
-        black_font.setUseIntegerPositions(false);
-        black_font.getData().setScale(0.002f, 0.002f);
+        blackFont.setUseIntegerPositions(false);
+        blackFont.getData().setScale(0.002f, 0.002f);
     }
 
     // Everything that should be executed every frame

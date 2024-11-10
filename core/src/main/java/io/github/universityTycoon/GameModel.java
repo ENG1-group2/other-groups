@@ -93,7 +93,7 @@ public class GameModel {
      */
     public GameModel() {
 
-        eventListener = new GameEventListener(this::handleEvent); // If you're confused, look into "Java listener pattern" (I am also confused)
+        eventListener = new GameEventListener(this::handleEvent); // If you're confused, look into "Java listener pattern"
         eventManager = new EventManager(eventListener);
         scoreCalculator = new ScoreCalculator();
         audioSelector = new AudioSelector();

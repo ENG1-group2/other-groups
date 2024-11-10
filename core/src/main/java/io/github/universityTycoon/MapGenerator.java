@@ -2,6 +2,9 @@ package io.github.universityTycoon;
 
 import java.util.ArrayList;
 
+/**
+ * Generates a SIZExSIZE map of different terrain types. Not yet implemented
+ */
 public class MapGenerator {
     final int SIZE = 64;
 

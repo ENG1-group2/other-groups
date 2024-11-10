@@ -68,11 +68,9 @@ public class MapController {
         return buildingFits;
     }
 
-    // Call this to ensure buildings progress from under construction to complete
-
     /**
      * This function checks all the buildings against the current game time, and updates them when they've finished
-     * being constructed.
+     * being constructed. Call this to ensure buildings progress from under construction to complete
      * @param gameTime The current in game time.
      */
     public void updateBuildings(LocalDateTime gameTime) {

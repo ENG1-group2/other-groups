@@ -7,7 +7,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
- * Builidng extends the abstract class MapObject, and is the superclass of all other building types.
+ * Building extends the abstract class MapObject, and is the superclass of all other building types.
  *
  * @param constructionGameTime The duration it will take for the building to be built.
  * @param finishDate The in game date the building will finish being built.
@@ -58,7 +58,7 @@ public class Building extends MapObject {
     }
 
     /**
-     * Retrieves the builiding name.
+     * Retrieves the building name.
      * @return The name.
      */
     public String getName() {
@@ -100,14 +100,6 @@ public class Building extends MapObject {
         return constructionGameTime;
     }
 
-    /**
-     * Retrieves the current capacity of the building. (I think)
-     *
-     * @return The current capacity.
-     */
-    public int getCapacity() {
-        return capacity;
-    }
 
     /**
      * Returns if where the object is stackable.

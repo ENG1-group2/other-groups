@@ -145,6 +145,7 @@ public class MainScreen implements Screen {
         else if (!mouseDown && placeMode) {
             placeMode = false;
         }
+
         // Increments the current building value if the right arrow is clicked
         if (playerInputHandler.mouseJustClicked() && rightButton.contains(touch.x, touch.y)) {
             currentBuilding = BuildingTypes.values()[(currentBuilding.ordinal() + 1) % BuildingTypes.values().length];
@@ -188,6 +189,7 @@ public class MainScreen implements Screen {
 
 
         drawMapObjects();
+
 
         GameModel.font.draw(batch, time, 7.6f, 8.5f);
         GameModel.font.draw(batch,"Satisfaction score: " + String.format("%.2f", gameModel.getSatisfactionScore()), 5.8f, 8.9f);
@@ -235,6 +237,21 @@ public class MainScreen implements Screen {
                 GameModel.blackFont.draw(batch, "Number of classrooms: " + TeachingBuilding.getClassroomCount(),  0.01f, 0.48f);
                 break;
         }
+
+        // Show building when dragging
+        if (placeMode && mouseDown) {
+            Building buildingToAdd = Building.getObjectFromEnum(currentBuilding, gameModel.getGameTimeGMT());
+            Vector2 mouseGridPos = getMouseGridPos(mousePos);
+            Vector2 screenPos = new Vector2(viewport.getWorldWidth() * mouseGridPos.x / gameModel.getTilesWide(), viewport.getWorldHeight() - ((viewport.getWorldHeight() - 2) * (mouseGridPos.y + 1) / gameModel.getTilesHigh()));
+            float tileSizeOnScreen = viewport.getWorldWidth() / gameModel.getTilesWide();
+            String texturePath = buildingToAdd.getTexturePath();
+            if (!mapObjTextures.containsKey(texturePath)) {
+                mapObjTextures.put(texturePath, new Texture(texturePath));
+            }
+            batch.draw(mapObjTextures.get(buildingToAdd.getTexturePath()), screenPos.x, screenPos.y, tileSizeOnScreen * buildingToAdd.getSize(), tileSizeOnScreen * buildingToAdd.getSize());
+        }
+
+
         batch.end();
 
         // Draws a box around the building counters
@@ -246,13 +263,10 @@ public class MainScreen implements Screen {
     }
 
     private void placeBuilding() {
-        Vector2 mouseWorldPos = viewport.unproject(new Vector2(mousePos.x, viewport.getScreenHeight() - mousePos.y));
-        int tileLocationX = (int)(gameModel.getTilesWide() * mouseWorldPos.x / viewport.getWorldWidth());
-        int tileLocationY = (int)(gameModel.getTilesHigh() * mouseWorldPos.y / (viewport.getWorldHeight() - 2)); // Subtract 2 since the map is 2 world units up
-
+        Vector2 gridPos = getMouseGridPos(mousePos);
 
         Building buildingToAdd = Building.getObjectFromEnum(currentBuilding, gameModel.getGameTimeGMT());
-        if (gameModel.mapController.addBuilding(buildingToAdd, tileLocationX, tileLocationY)) {
+        if (gameModel.mapController.addBuilding(buildingToAdd, (int)gridPos.x, (int)gridPos.y)) {
             gameModel.satisfactionScore += buildingToAdd.getSatisfactionBonus();
             switch (currentBuilding) {
                 case Accommodation -> gameModel.accommodationBuildingCount += 1;
@@ -262,6 +276,13 @@ public class MainScreen implements Screen {
             }
         }
         placeMode = false;
+    }
+
+    public Vector2 getMouseGridPos(Vector2 mouseScreenPos) {
+        Vector2 mouseWorldPos = viewport.unproject(new Vector2(mouseScreenPos.x, viewport.getScreenHeight() - mouseScreenPos.y));
+        int tileLocationX = (int)(gameModel.getTilesWide() * mouseWorldPos.x / viewport.getWorldWidth());
+        int tileLocationY = (int)(gameModel.getTilesHigh() * mouseWorldPos.y / (viewport.getWorldHeight() - 2)); // Subtract 2 since the map is 2 world units up
+        return new Vector2(tileLocationX, tileLocationY);
     }
 
     private void drawMapObjects() {

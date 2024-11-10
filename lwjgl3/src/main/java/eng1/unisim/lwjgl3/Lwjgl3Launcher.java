@@ -2,7 +2,6 @@ package eng1.unisim.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-
 import eng1.unisim.Main;
 
 /** Launches the desktop (LWJGL3) application. */
@@ -30,7 +29,7 @@ public class Lwjgl3Launcher {
         //// You may also need to configure GPU drivers to fully disable Vsync; this can cause screen tearing.
         configuration.setWindowedMode(1920, 1080);
         //// You can change these files; they are in lwjgl3/src/main/resources/ .
-        configuration.setWindowIcon("lwjgl3\\src\\main\\resources\\favicon-16x16.png", "lwjgl3\\\\src\\\\main\\\\resources\\\\favicon-32x32.png");
+        configuration.setWindowIcon("favicon-16x16.png", "favicon-32x32.png");
         return configuration;
     }
 }

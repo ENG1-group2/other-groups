@@ -40,6 +40,7 @@ public class MainScreen implements Screen {
     Texture squareTexture;
     Texture rightArrowTexture;
     Texture leftArrowTexture;
+    Texture percentTexture;
 
     BuildingTypes currentBuilding;
     Rectangle pausePlayBox;
@@ -82,6 +83,7 @@ public class MainScreen implements Screen {
         squareTexture = new Texture("images/Gridsquare.png");
         rightArrowTexture = new Texture("ui/right-arrow.png");
         leftArrowTexture = new Texture("ui/left-arrow.png");
+        percentTexture = new Texture("images/percent_plate.png");
         mapObjTextures = new HashMap<>();
 
         currentBuilding = gameModel.DEFAULT_SELECTED_BUILDING_TYPE;
@@ -305,6 +307,7 @@ public class MainScreen implements Screen {
                     batch.draw(mapObjTextures.get(texturePath), screenPos.x, screenPos.y, tileSizeOnScreen * building.getSize(), tileSizeOnScreen * building.getSize());
                     if (building.isUnderConstruction) {
                         batch.draw(constructionTexture, screenPos.x, screenPos.y, tileSizeOnScreen * building.getSize(), tileSizeOnScreen * building.getSize());
+                        batch.draw(percentTexture, screenPos.x + 0.17f, screenPos.y+ 0.25f, 48 * 0.015f, 32 * 0.015f);
                         GameModel.blackFont.draw(batch, String.format("%.0f%%", building.getConstructionPercent(gameModel.getGameTimeGMT())), screenPos.x + 0.29f, screenPos.y + 0.61f);
                     }
                 }

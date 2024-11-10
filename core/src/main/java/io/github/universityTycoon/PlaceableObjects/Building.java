@@ -6,9 +6,16 @@ import io.github.universityTycoon.BuildingTypes;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+/**
+ * Builidng extends the abstract class MapObject, and is the superclass of all other building types.
+ *
+ * @param constructionGameTime The duration it will take for the building to be built.
+ * @param finishDate The in game date the building will finish being built.
+ * @param isUnderConstruction A property that states whether the building is under construction.
+ */
 public class Building extends MapObject {
 
-    public Duration constructionGameTime;
+    public static Duration constructionGameTime;
     public LocalDateTime finishDate;
     public boolean isUnderConstruction = true;
 
@@ -25,65 +32,137 @@ public class Building extends MapObject {
 
     LocalDateTime constructionStartedAt; // IN-GAME TIME
 
+    /**
+     * Constructor with the following parameters.
+     *
+     * @param constructionStartedAt The date the construction starts
+     * @param texturePath The file path for the texture.
+     */
     public Building(LocalDateTime constructionStartedAt, String texturePath) {
         this.constructionStartedAt = constructionStartedAt;
         this.texturePath = texturePath;
     }
 
+    /**
+     * Constructor with the following parameters.
+     *
+     * @param constructionStartedAt The date the construction starts
+     * @param texturePath The file path for the texture.
+     * @param constructionGameTime The time it will take to construct the building.
+     */
     public Building(LocalDateTime constructionStartedAt, String texturePath, Duration constructionGameTime) {
         this.constructionStartedAt = constructionStartedAt;
         this.constructionGameTime = constructionGameTime;
+        this.texturePath = texturePath;
         finishDate = constructionStartedAt.plus(constructionGameTime);
     }
 
+    /**
+     * Retrieves the builiding name.
+     * @return The name.
+     */
     public String getName() {
         return name;
     }
+
+    /**
+     * Retrieves the file path of the texture associated with this object.
+     * @return File path as a string.
+     */
     public String getTexturePath() {
         return texturePath;
     }
-    //public PolygonShape getShape() {
-    //    return shape;
-    //}
 
+    /**
+     * Retrieves the satisfaction bonus provided by this building.
+     *
+     * @return The bonus.
+     */
     public static float getSatisfactionBonus() {
         return satisfactionBonus;
     }
 
+    /**
+     * Retrieves the capacity of the building.
+     *
+     * @return The capacity.
+     */
     public static float getBuildingCapacity() {
         return buildingCapacity;
     }
 
+    /**
+     * Retrieves the time taken to construct the building.
+     *
+     * @return The time taken to construct the building.
+     */
+    public static Duration getConstructionGameTime() {
+        return constructionGameTime;
+    }
+
+    /**
+     * Retrieves the current capacity of the building. (I think)
+     *
+     * @return The current capacity.
+     */
     public int getCapacity() {
         return capacity;
     }
+
+    /**
+     * Returns if where the object is stackable.
+     *
+     * @return true if the object is stackable, false otherwise.
+     */
     public boolean getIsStackable() {
         return isStackable;
     }
 
-    // As a percentage
+    // As a percentage (not implemented)
     public float calculateSatisfaction() {
         return 1f;
     }
 
+    /**
+     * Updates isUnderConstruction when the building is finished being built.
+     * @param currentGameTime the in game time
+     */
     public void update(LocalDateTime currentGameTime) {
         if (currentGameTime.isAfter(finishDate)) {
             isUnderConstruction = false;
         }
     }
 
+    /**
+     * Returns the current construction progress as a percentage.
+     * @param currentGameTime The current in game time.
+     * @return The construction progress as a percentage.
+     */
     public float getConstructionPercent(LocalDateTime currentGameTime) {
         Duration timePassed = Duration.between(constructionStartedAt, currentGameTime);
         float percent = MathUtils.clamp((float)timePassed.getSeconds() / (float)constructionGameTime.getSeconds(), 0, 1);
         return percent * 100;
     }
 
+    /**
+     * Gets the size of the building.
+     * @return The size of the building
+     */
     public int getSize() {
         return size;
     }
 
 
-
+    /**
+     * Creates and returns a new instance of a specific building type based on the provided enum type.
+     * The type of building returned corresponds to the `BuildingTypes` enum value.
+     *
+     * @param type The type of building to create, specified as a `BuildingTypes` enum value.
+     * @param time The time the building will be constructed at.
+     * @param <T> A generic type parameter that extends the `Building` class, representing the type of building to create.
+     *
+     * @return A new instance of the specified building type, constructed at the specified time.
+     */
     public static <T extends Building> T getObjectFromEnum(BuildingTypes type, LocalDateTime time) {
         return switch (type) {
             case Accommodation -> (T) new AccommodationBuilding(time);

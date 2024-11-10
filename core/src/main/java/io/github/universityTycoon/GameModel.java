@@ -2,8 +2,6 @@ package io.github.universityTycoon;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github.universityTycoon.PlaceableObjects.MapObject;
 
 import java.time.LocalDateTime;
@@ -53,7 +51,7 @@ public class GameModel {
 
     public GameModel() {
 
-        eventListener = new GameEventListener(this::handleEvent); // If you're confused, look into "Java listener pattern" (I am also confused)
+        eventListener = new GameEventListener(this::handleEvent); // If you're confused, look into "Java listener pattern"
         eventManager = new EventManager(eventListener);
         scoreCalculator = new ScoreCalculator();
         audioSelector = new AudioSelector();

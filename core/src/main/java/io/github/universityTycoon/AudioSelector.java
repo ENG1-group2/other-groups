@@ -4,6 +4,9 @@ import com.badlogic.gdx.audio.Music;
 
 import java.util.ArrayList;
 
+/**
+ * Placeholder class to select tracks based on the game-state.
+ */
 public class AudioSelector {
     ArrayList<Music> tracks;
 
@@ -12,7 +15,7 @@ public class AudioSelector {
         // Put music here
     }
 
-    public Music selectTrack() {
+    public Music selectTrack(GameModel gameModel) {
         return tracks.get(0);
     }
 }

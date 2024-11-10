@@ -23,6 +23,7 @@ public class GameScreen implements Screen {
 
     boolean isPaused = false;
 
+    // This variable is needed to stop a crash from occuring when the game ends.
     boolean hasEnded = false;
 
     private Map map;
@@ -49,6 +50,9 @@ public class GameScreen implements Screen {
         draw();
     }
 
+    /**
+     * Processes input. Will pause/resume the game if the space is pressed.
+     */
     private void input() {
         menu.input();
         map.input();
@@ -66,6 +70,10 @@ public class GameScreen implements Screen {
 
     }
 
+    /**
+     * Will update the timer or not (depending on whether the game is paused)
+     * and will end the game if the timer has reached its max time.
+     */
     private void update() {
         if (isPaused == false) {
             timer.update();
@@ -76,6 +84,10 @@ public class GameScreen implements Screen {
         }
     }
 
+    /**
+     * Draws the game. This means drawing the game menu, building menu and game
+     * map.
+     */
     private void draw() {
         viewport.apply();
         ScreenUtils.clear(Consts.BACKGROUND_COLOR);

@@ -59,7 +59,6 @@ public class GameMenu {
         stage.addActor(timerLabel);
     }
 
-    // Updates the time shown on the label to the time played
     /**
      * Updates the time shown on the label to the elapsed time got from
      * the timer.
@@ -89,12 +88,15 @@ public class GameMenu {
     }
     
     /**
-     * 
+     * Processes any input.
      */
     public void input(){
         stage.act(Gdx.graphics.getDeltaTime());
     }
 
+    /**
+     * Updates and draws the menu.
+     */
     public void draw(){
         if (isPaused == false) {
             updateTimerLabel();    

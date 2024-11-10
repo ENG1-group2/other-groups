@@ -49,7 +49,7 @@ public class BuildingManager {
         buildingTypeTextures.put("Dining",
                 new Texture(Gdx.files.internal("buildings/dining.png")));
         buildingTypeTextures.put("Learning",
-                new Texture(Gdx.files.internal("buildings/learningPlaceholder.png")));
+                new Texture(Gdx.files.internal("buildings/learning.png")));
     }
 
     private void loadBuildingAreaObjects() {

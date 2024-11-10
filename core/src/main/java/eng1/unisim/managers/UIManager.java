@@ -162,7 +162,7 @@ public class UIManager {
         });
 
         // learning building button
-        Texture learningTexture = new Texture(Gdx.files.internal("buildings/learningPlaceholder.png"));
+        Texture learningTexture = new Texture(Gdx.files.internal("buildings/learning.png"));
         ImageButton.ImageButtonStyle learningStyle = new ImageButton.ImageButtonStyle();
         learningStyle.imageUp = new TextureRegionDrawable(new TextureRegion(learningTexture));
         learningStyle.imageChecked = new TextureRegionDrawable(new TextureRegion(learningTexture));

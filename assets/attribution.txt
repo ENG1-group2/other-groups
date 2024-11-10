@@ -7,3 +7,4 @@ cobble.png - https://opengameart.org/content/cobble-path-texture
 
 Buildings
 accommodation.png - https://opengameart.org/content/building-tileset-0
+dining.png, learning.png - DALL.E AI generated. More details in Impl1.pdf

@@ -33,7 +33,6 @@ public class MainScreen implements Screen {
     ShapeRenderer shapeRenderer;
     Viewport viewport;
     HashMap<String, Texture> mapObjTextures; // Maintain a dict of paths -> Textures for map objects so that they are only loaded once
-    List<int[]> mapObjUnderConstruction;
     Texture backgroundTexture;
     Texture pauseTexture;
     Texture playTexture;
@@ -41,6 +40,7 @@ public class MainScreen implements Screen {
     Texture squareTexture;
     Texture rightArrowTexture;
     Texture leftArrowTexture;
+    Texture percentTexture;
 
     BuildingTypes currentBuilding;
     Rectangle pausePlayBox;
@@ -51,7 +51,6 @@ public class MainScreen implements Screen {
     Vector2 mousePos;
     boolean mouseDown;
     boolean placeMode;
-    float buttonCooldownTimer;
     PlayerInputHandler playerInputHandler;
 
 
@@ -67,7 +66,6 @@ public class MainScreen implements Screen {
     public MainScreen(ScreenManager main) {
         this.game = main;
         gameModel = new GameModel();
-        mapObjUnderConstruction = new ArrayList<>();
     }
 
     @Override
@@ -85,6 +83,7 @@ public class MainScreen implements Screen {
         squareTexture = new Texture("images/Gridsquare.png");
         rightArrowTexture = new Texture("ui/right-arrow.png");
         leftArrowTexture = new Texture("ui/left-arrow.png");
+        percentTexture = new Texture("images/percent_plate.png");
         mapObjTextures = new HashMap<>();
 
         currentBuilding = gameModel.DEFAULT_SELECTED_BUILDING_TYPE;
@@ -92,8 +91,6 @@ public class MainScreen implements Screen {
         rightButton = new Rectangle();
         leftButton = new Rectangle();
         pausePlayBox = new Rectangle();
-
-        buttonCooldownTimer = 0f;
 
         // start the playback of the background music when the screen is shown
         music.setVolume(0.5f);
@@ -129,17 +126,14 @@ public class MainScreen implements Screen {
             mousePos = playerInputHandler.getMousePos();
             mouseDown = true;
         }
-        else {mouseDown = false;}
+        else {
+            mouseDown = false;
+        }
     }
 
     private void logic() {
         Vector3 touch = new Vector3(mousePos.x, mousePos.y, 0);
         viewport.getCamera().unproject(touch);
-
-        buttonCooldownTimer -= Gdx.graphics.getDeltaTime();
-        if (buttonCooldownTimer <= 0f) {
-            buttonCooldownTimer = 0f;
-        }
 
         // Checks to see if the building icon has been clicked
         if (mouseDown && buildingIcon.contains(touch.x, touch.y)) {
@@ -153,26 +147,25 @@ public class MainScreen implements Screen {
         else if (!mouseDown && placeMode) {
             placeMode = false;
         }
+
         // Increments the current building value if the right arrow is clicked
-        if (mouseDown && rightButton.contains(touch.x, touch.y) && buttonCooldownTimer == 0f) {
-            if (currentBuilding.ordinal() + 1 > BuildingTypes.values().length - 1) {currentBuilding = BuildingTypes.values()[0];}
-            else {currentBuilding = BuildingTypes.values()[currentBuilding.ordinal() + 1];}
-            buttonCooldownTimer = GameModel.BUTTON_COOLDOWN_TIMER;
+        if (playerInputHandler.mouseJustClicked() && rightButton.contains(touch.x, touch.y)) {
+            currentBuilding = BuildingTypes.values()[(currentBuilding.ordinal() + 1) % BuildingTypes.values().length];
         }
         // Decrements the current building value if the left arrow is clicked
-        else if (mouseDown && leftButton.contains(touch.x, touch.y) && buttonCooldownTimer == 0f) {
-            if (currentBuilding.ordinal() - 1 < 0) {currentBuilding = BuildingTypes.values()[BuildingTypes.values().length - 1];}
-            else {currentBuilding = BuildingTypes.values()[currentBuilding.ordinal() - 1];}
-            buttonCooldownTimer = GameModel.BUTTON_COOLDOWN_TIMER;
+        else if (playerInputHandler.mouseJustClicked() && leftButton.contains(touch.x, touch.y)) {
+            if (currentBuilding.ordinal() - 1 < 0)
+                currentBuilding = BuildingTypes.values()[BuildingTypes.values().length - 1];
+            else
+                currentBuilding = BuildingTypes.values()[currentBuilding.ordinal() - 1];
         }
 
-        if (mouseDown && pausePlayBox.contains(touch.x, touch.y) && buttonCooldownTimer == 0f) {
+        if (playerInputHandler.mouseJustClicked() && pausePlayBox.contains(touch.x, touch.y)) {
             if (gameModel.getIsPaused()) {
                 resume();
             } else {
                 pause();
             }
-            buttonCooldownTimer = GameModel.BUTTON_COOLDOWN_TIMER;
         }
 
 
@@ -202,6 +195,7 @@ public class MainScreen implements Screen {
 
         drawMapObjects();
 
+
         GameModel.font.draw(batch, time, 7.6f, 8.5f);
         GameModel.font.draw(batch,"Satisfaction score: " + String.format("%.2f", gameModel.getSatisfactionScore()), 5.8f, 8.9f);
         GameModel.smallerFont.draw(batch, dateTimeString, 0.05f, 8.95f);
@@ -213,22 +207,6 @@ public class MainScreen implements Screen {
         GameModel.smallerFont.draw(batch, "Cafeteria Buildings: " + gameModel.getCafeteriaBuildingCount(), 13.15f, 8.5f);
         GameModel.smallerFont.draw(batch, "Accommodation Buildings: " + gameModel.getAccommodationBuildingCount(), 13.15f, 8.3f);
 
-
-        List<int[]> found = new ArrayList<>();
-        for (int[] entry : mapObjUnderConstruction) {
-            MapObject[][] mapObjects = gameModel.getMapObjects();
-            if (mapObjects[entry[0]][entry[1]] instanceof Building building) {
-                if (building.isUnderConstruction) {
-                    float tileSizeOnScreen = viewport.getWorldWidth() / gameModel.getTilesWide();
-                    Vector2 screenPos = new Vector2((float) entry[0] * tileSizeOnScreen, viewport.getWorldHeight() - ((float) (entry[1] + 1) * tileSizeOnScreen));
-                    GameModel.blackFont.draw(batch, String.format("%.0f%%", building.getConstructionPercent(gameModel.getGameTimeGMT())), screenPos.x + 0.29f, screenPos.y + 0.61f);
-                }
-                else {
-                    found.add(entry);
-                }
-            }
-        }
-        mapObjUnderConstruction.removeAll(found);
         batch.end();
         // Can't do a batch and ShapeRenderer that overlap, you have to begin and end one before beginning the other
         // So batch.end() must go before anything with ShapeRenderer
@@ -264,6 +242,21 @@ public class MainScreen implements Screen {
                 GameModel.blackFont.draw(batch, "Number of classrooms: " + TeachingBuilding.getClassroomCount(),  0.01f, 0.48f);
                 break;
         }
+
+        // Show building when dragging
+        if (placeMode && mouseDown) {
+            Building buildingToAdd = Building.getObjectFromEnum(currentBuilding, gameModel.getGameTimeGMT());
+            Vector2 mouseGridPos = getMouseGridPos(mousePos);
+            Vector2 screenPos = new Vector2(viewport.getWorldWidth() * mouseGridPos.x / gameModel.getTilesWide(), viewport.getWorldHeight() - ((viewport.getWorldHeight() - 2) * (mouseGridPos.y + 1) / gameModel.getTilesHigh()));
+            float tileSizeOnScreen = viewport.getWorldWidth() / gameModel.getTilesWide();
+            String texturePath = buildingToAdd.getTexturePath();
+            if (!mapObjTextures.containsKey(texturePath)) {
+                mapObjTextures.put(texturePath, new Texture(texturePath));
+            }
+            batch.draw(mapObjTextures.get(buildingToAdd.getTexturePath()), screenPos.x, screenPos.y, tileSizeOnScreen * buildingToAdd.getSize(), tileSizeOnScreen * buildingToAdd.getSize());
+        }
+
+
         batch.end();
 
         // Draws a box around the building counters
@@ -275,13 +268,10 @@ public class MainScreen implements Screen {
     }
 
     private void placeBuilding() {
-        Vector2 mouseWorldPos = viewport.unproject(new Vector2(mousePos.x, viewport.getScreenHeight() - mousePos.y));
-        int tileLocationX = (int)(gameModel.getTilesWide() * mouseWorldPos.x / viewport.getWorldWidth());
-        int tileLocationY = (int)(gameModel.getTilesHigh() * mouseWorldPos.y / (viewport.getWorldHeight() - 2)); // Subtract 2 since the map is 2 world units up
-
+        Vector2 gridPos = getMouseGridPos(mousePos);
 
         Building buildingToAdd = Building.getObjectFromEnum(currentBuilding, gameModel.getGameTimeGMT());
-        if (gameModel.mapController.addBuilding(buildingToAdd, tileLocationX, tileLocationY)) {
+        if (gameModel.mapController.addBuilding(buildingToAdd, (int)gridPos.x, (int)gridPos.y)) {
             gameModel.satisfactionScore += buildingToAdd.getSatisfactionBonus();
             switch (currentBuilding) {
                 case Accommodation -> gameModel.accommodationBuildingCount += 1;
@@ -291,6 +281,13 @@ public class MainScreen implements Screen {
             }
         }
         placeMode = false;
+    }
+
+    public Vector2 getMouseGridPos(Vector2 mouseScreenPos) {
+        Vector2 mouseWorldPos = viewport.unproject(new Vector2(mouseScreenPos.x, viewport.getScreenHeight() - mouseScreenPos.y));
+        int tileLocationX = (int)(gameModel.getTilesWide() * mouseWorldPos.x / viewport.getWorldWidth());
+        int tileLocationY = (int)(gameModel.getTilesHigh() * mouseWorldPos.y / (viewport.getWorldHeight() - 2)); // Subtract 2 since the map is 2 world units up
+        return new Vector2(tileLocationX, tileLocationY);
     }
 
     private void drawMapObjects() {
@@ -312,9 +309,9 @@ public class MainScreen implements Screen {
                     }
                     batch.draw(mapObjTextures.get(texturePath), screenPos.x, screenPos.y, tileSizeOnScreen * building.getSize(), tileSizeOnScreen * building.getSize());
                     if (building.isUnderConstruction) {
-                        int[] position = new int[]{i, j};
-                        mapObjUnderConstruction.add(position);
                         batch.draw(constructionTexture, screenPos.x, screenPos.y, tileSizeOnScreen * building.getSize(), tileSizeOnScreen * building.getSize());
+                        batch.draw(percentTexture, screenPos.x + 0.17f, screenPos.y+ 0.25f, 48 * 0.015f, 32 * 0.015f);
+                        GameModel.blackFont.draw(batch, String.format("%.0f%%", building.getConstructionPercent(gameModel.getGameTimeGMT())), screenPos.x + 0.29f, screenPos.y + 0.61f);
                     }
                 }
             }

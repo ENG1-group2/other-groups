@@ -11,7 +11,7 @@ public class Cafeteria extends Building {
 
     public Cafeteria(LocalDateTime constructionStartedAt) {
         super(constructionStartedAt, "images/rec_building.png");
-        size = 2;
+        size = 1;
         satisfactionBonus = 2;
         constructionGameTime = Duration.ofDays(10);
         finishDate = constructionStartedAt.plus(constructionGameTime);

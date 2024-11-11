@@ -58,6 +58,14 @@ public class UIManager {
         buildingInventoryView.updateBuildingCount(buildingType, count);
     }
 
+    public void showPlacementMessage() {
+        notificationView.showPlacementMessage();
+    }
+
+    public void clearPlacementMessage() {
+        notificationView.hidePlacementMessage();
+    }
+
     // displays temporary notification messages
     public void showNotification(String message) {
         notificationView.showMessage(message);

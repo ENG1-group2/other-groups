@@ -115,7 +115,7 @@ public class Main extends ApplicationAdapter {
     private void setupManagers() {
         uiManager = new UIManager(player, this::restartGame, this::setSelectedBuilding, this::togglePause);
         buildingManager = new BuildingManager(uiManager);
-        inputManager = new InputManager(camera, this::placeSelectedBuilding, targetPosition, maxZoom);
+        inputManager = new InputManager(camera, this::placeSelectedBuilding, targetPosition, maxZoom, this::cancelBuildingPlacement);
     }
 
     private void setupInput() {
@@ -225,6 +225,14 @@ public class Main extends ApplicationAdapter {
                 uiManager.showNotification(message);
             }
         }
+    }
+
+    private void cancelBuildingPlacement() {
+        selectedBuilding = null;
+        isPlacingBuilding = false;
+        inputManager.setPlacingBuilding(false);
+        buildingManager.setSelectedBuilding(null);
+        uiManager.clearPlacementMessage();  // Add this method to UIManager
     }
 
     public void setSelectedBuilding(Building building) {

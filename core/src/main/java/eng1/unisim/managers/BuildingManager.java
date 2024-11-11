@@ -23,18 +23,18 @@ public class BuildingManager {
     // store building areas defined in the tiled map
     private Array<PolygonMapObject> buildingAreaPolygons;
     private Array<PolylineMapObject> buildingAreaPolylines;
-    
+
     // track placed buildings and their textures
     private final HashMap<Vector2, Building> placedBuildings;
     private final HashMap<Vector2, Texture> buildingTextures;
-    
+
     // store textures for each building type
     private final HashMap<String, Texture> buildingTypeTextures;
-    
+
     // currently selected building for placement
     private Building selectedBuilding;
     private Texture selectedTexture;
-    
+
     private static final float PLACED_SCALE = 0.3f; // scale down placed buildings
     private static final float PREVIEW_SCALE = 0.4f; // marginally larger scale for draggable preview
     private final UIManager uiManager;
@@ -88,7 +88,7 @@ public class BuildingManager {
 
         boolean isWithinBuildingArea = false;
 
-        // use polygons to check if near stuff
+        // check for polygons
         for (PolygonMapObject polygonObject : buildingAreaPolygons) {
             Polygon polygon = polygonObject.getPolygon();
             if (polygon.contains(position.x, position.y)) {
@@ -97,7 +97,7 @@ public class BuildingManager {
             }
         }
 
-        // allow placement near polylines
+        // check for polylines
         if (!isWithinBuildingArea) {
             for (PolylineMapObject polylineObject : buildingAreaPolylines) {
                 Polyline polyline = polylineObject.getPolyline();
@@ -117,16 +117,21 @@ public class BuildingManager {
             }
         }
 
-        // make sure not already occupied
-        if (!isWithinBuildingArea || placedBuildings.containsKey(position)) {
-            System.out.println("Cannot place building at (" + worldX + ", " + worldY + ").");
+        // show notification if building cant be placed
+        if (!isWithinBuildingArea) {
+            uiManager.showNotification("Cannot place building here - must be near roads or building areas");
+            return false;
+        }
+
+        if (placedBuildings.containsKey(position)) {
+            uiManager.showNotification("Cannot place building here - space already occupied");
             return false;
         }
 
         placedBuildings.put(position, building);
         buildingTextures.put(position, buildingTypeTextures.get(building.getName()));
 
-        // building counters
+        // update the building counters
         int count = buildingCounts.getOrDefault(building.getName(), 0) + 1;
         buildingCounts.put(building.getName(), count);
         uiManager.updateBuildingCount(building.getName(), count);

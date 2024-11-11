@@ -208,10 +208,8 @@ public class Main extends ApplicationAdapter {
     }
 
     private void placeSelectedBuilding(float worldX, float worldY) {
-        // attempt to place a building at the given world coordinates
         if (selectedBuilding != null) {
             if (player.getFunds() >= selectedBuilding.getCost()) {
-                // try to place building and update game state if successful
                 if (buildingManager.placeBuilding(selectedBuilding, worldX, worldY)) {
                     player.placeBuilding(selectedBuilding);
                     university.addBuilding(selectedBuilding);
@@ -219,10 +217,11 @@ public class Main extends ApplicationAdapter {
                     inputManager.setPlacingBuilding(false);
                     selectedBuilding = null;
                 }
+                // buildingManager now handles the invalid placement notification
             } else {
                 // show error if player can't afford the building
                 String message = "Insufficient funds! Need $" + selectedBuilding.getCost() +
-                        " (Current: $" + player.getFunds() + ")";
+                    " (Current: $" + player.getFunds() + ")";
                 uiManager.showNotification(message);
             }
         }

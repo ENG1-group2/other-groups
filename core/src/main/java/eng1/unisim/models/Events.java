@@ -5,17 +5,17 @@ package eng1.unisim.models;
  */
 public class Events {
     // description of the event that will be displayed to the player
-    private String description;
+    private final String description;
     // immediate change to university funds when event occurs
-    private int effectOnFunds;
+    private final int effectOnFunds;
     // immediate change to student satisfaction when event occurs
-    private int effectOnSatisfaction;
+    private final int effectOnSatisfaction;
     // multiplier applied to income while event is active
-    private float incomeMultiplier;
+    private final float incomeMultiplier;
     // how many turns the event lasts for
-    private int duration;
+    private final int duration;
     // chance of this event occurring (0-1)
-    private float probability;
+    private final float probability;
     // stores when the event started to track duration
     public int startTime;
 

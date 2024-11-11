@@ -27,7 +27,7 @@ public class InputManager extends InputAdapter {
         void onPlaceBuilding(float worldX, float worldY);
     }
 
-    // to cancel buildign placement on ESC
+    // to cancel building placement on ESC
     public interface CancelPlacementCallback {
         void onCancelPlacement();
     }
@@ -44,7 +44,7 @@ public class InputManager extends InputAdapter {
         this.isPlacingBuilding = false;
     }
 
-    // ESC key cancells building placement
+    // ESC key cancels building placement
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.ESCAPE && isPlacingBuilding) {

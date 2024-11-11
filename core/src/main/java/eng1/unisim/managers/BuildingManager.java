@@ -157,7 +157,7 @@ public class BuildingManager {
     // updates the currently selected building for placement
     public void setSelectedBuilding(Building building) {
         this.selectedBuilding = building;
-        // only try ant get the texture if we have a building
+        // only try and get the texture if we have a building
         if (building != null) {
             this.selectedTexture = buildingTypeTextures.get(building.getName());
         } else {

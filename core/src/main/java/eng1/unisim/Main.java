@@ -22,6 +22,7 @@ import eng1.unisim.models.Building;
 import eng1.unisim.models.Player;
 import eng1.unisim.models.University;
 
+// main game class that handles core game logic and rendering
 public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
     private TimeManager timeManager;
@@ -34,22 +35,22 @@ public class Main extends ApplicationAdapter {
     private Player player;
     private University university;
 
-    // Constants
-    private static final float MAP_WIDTH = 2000f;
-    private static final float MAP_HEIGHT = 2000f;
-    private static final float TIME_STEP = 1f;
-    private static final float CAMERA_SPEED = 500f;
-    private static final float CAMERA_ZOOM_SPEED = 0.1f;
-    private static final float MIN_ZOOM = 0.5f;
-    private float maxZoom; // calc based on map size
-    private static final float LERP_ALPHA = 0.1f;
+    // game configuration constants
+    private static final float MAP_WIDTH = 2000f;  // width of game world in pixels
+    private static final float MAP_HEIGHT = 2000f; // height of game world in pixels
+    private static final float TIME_STEP = 1f;     // how often the game state updates (in seconds)
+    private static final float CAMERA_SPEED = 500f; // how fast the camera moves when using WASD
+    private static final float CAMERA_ZOOM_SPEED = 0.1f; // zoom speed when scrolling
+    private static final float MIN_ZOOM = 0.5f;    // closest zoom level allowed
+    private float maxZoom;                         // furthest zoom level, calculated based on map size
+    private static final float LERP_ALPHA = 0.1f;  // smoothing factor for camera movement (0-1)
 
-    // State
-    private float accumulator = 0f;
-    private Building selectedBuilding = null;
-    private boolean isPlacingBuilding = false;
-    private final Vector2 targetPosition = new Vector2();
-    private boolean isPaused = true; // Start the game in a paused state
+    // game state variables
+    private float accumulator = 0f;                // tracks time between updates
+    private Building selectedBuilding = null;       // building currently selected for placement
+    private boolean isPlacingBuilding = false;     // whether player is currently placing a building
+    private final Vector2 targetPosition = new Vector2(); // where the camera is trying to move to
+    private boolean isPaused = true;               // tracks if game is paused
 
     private Vector3 cursorPosition;
 
@@ -76,6 +77,7 @@ public class Main extends ApplicationAdapter {
     }
 
     private void initializeGame() {
+        // create core game objects and load initial map
         batch = new SpriteBatch();
         map = new TmxMapLoader().load("emptyGroundMap.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map);
@@ -128,16 +130,19 @@ public class Main extends ApplicationAdapter {
     }
 
     private void updateGameState() {
+        // update player's funds based on income (called each time step)
         player.setFunds(player.getFunds() + player.getIncome());
     }
 
     private void updateCamera() {
+        // handle camera movement, boundaries, and smooth transitions
         handleCameraInput();
         applyCameraBounds();
         smoothCameraMovement();
     }
 
     private void handleCameraInput() {
+        // move camera based on WASD keys, accounting for zoom level
         float deltaTime = Gdx.graphics.getDeltaTime();
         float effectiveSpeed = CAMERA_SPEED * camera.zoom * deltaTime;
 
@@ -205,8 +210,10 @@ public class Main extends ApplicationAdapter {
     }
 
     private void placeSelectedBuilding(float worldX, float worldY) {
+        // attempt to place a building at the given world coordinates
         if (selectedBuilding != null) {
             if (player.getFunds() >= selectedBuilding.getCost()) {
+                // try to place building and update game state if successful
                 if (buildingManager.placeBuilding(selectedBuilding, worldX, worldY)) {
                     player.placeBuilding(selectedBuilding);
                     university.addBuilding(selectedBuilding);
@@ -215,7 +222,7 @@ public class Main extends ApplicationAdapter {
                     selectedBuilding = null;
                 }
             } else {
-                // show insufficient funds message for 2 seconds
+                // show error if player can't afford the building
                 String message = "Insufficient funds! Need $" + selectedBuilding.getCost() +
                         " (Current: $" + player.getFunds() + ")";
                 uiManager.showNotification(message);
@@ -244,15 +251,16 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
+        // main game loop - update game state and render everything
         updateTime();
         updateCamera();
         updateCursorPosition();
 
-        // update time left and render
+        // update ui with remaining time
         int timeLeft = timeManager.getTimeLimit() - TimeManager.getCurrentTime();
         uiManager.updateHUD(timeLeft);
 
-        // render the game
+        // clear screen and render map, buildings, and ui
         ScreenUtils.clear(0, 0, 0, 1);
         camera.update();
 

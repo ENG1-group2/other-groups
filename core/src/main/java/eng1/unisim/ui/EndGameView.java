@@ -14,13 +14,23 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import eng1.unisim.models.Player;
 
+/**
+ * handles the game over screen that appears when the game ends
+ */
 public class EndGameView {
+    // ui components for the end game screen
     private final Stage stage;
     private final Window endGameWindow;
     private final Table backgroundTable;
     private final Player player;
     private final Runnable onRestartGame;
 
+    /**
+     * creates a new end game screen
+     * @param font the font to use for text
+     * @param player the player to get the final score from
+     * @param onRestartGame callback to run when player clicks restart
+     */
     public EndGameView(BitmapFont font, Player player, Runnable onRestartGame) {
         this.stage = new Stage(new ScreenViewport());
         this.player = player;
@@ -37,6 +47,9 @@ public class EndGameView {
         hide();
     }
 
+    /**
+     * creates a semi-transparent dark background overlay
+     */
     private Table createBackground() {
         Table background = new Table();
         background.setFillParent(true);
@@ -51,6 +64,9 @@ public class EndGameView {
         return background;
     }
 
+    /**
+     * creates the main window that shows the game over message and score
+     */
     private Window createEndGameWindow(BitmapFont font) {
         Window.WindowStyle windowStyle = new Window.WindowStyle(font, Color.WHITE, null);
         Window window = new Window("Game Over!", windowStyle);
@@ -67,6 +83,9 @@ public class EndGameView {
         return window;
     }
 
+    /**
+     * creates the content layout for the game over window
+     */
     private Table createEndGameContent(BitmapFont font) {
         Table content = new Table();
         content.pad(20);
@@ -84,6 +103,9 @@ public class EndGameView {
         return content;
     }
 
+    /**
+     * creates restart and exit buttons with click handlers
+     */
     private Table createEndGameButtons(BitmapFont font) {
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font;
@@ -114,6 +136,9 @@ public class EndGameView {
         return buttonTable;
     }
 
+    /**
+     * centers the window in the middle of the screen
+     */
     private void centerWindow(Window window) {
         window.setPosition(
             (Gdx.graphics.getWidth() - window.getWidth()) / 2,
@@ -121,17 +146,26 @@ public class EndGameView {
         );
     }
 
+    /**
+     * makes the end game screen visible and updates the score
+     */
     public void show() {
         backgroundTable.setVisible(true);
         endGameWindow.setVisible(true);
         updateFinalScore();
     }
 
+    /**
+     * hides the end game screen
+     */
     public void hide() {
         backgroundTable.setVisible(false);
         endGameWindow.setVisible(false);
     }
 
+    /**
+     * updates the displayed score to match the current player satisfaction
+     */
     private void updateFinalScore() {
         Label finalScoreLabel = endGameWindow.findActor("finalScoreLabel");
         if (finalScoreLabel != null) {
@@ -139,6 +173,10 @@ public class EndGameView {
         }
     }
 
+    /**
+     * updates and draws the end game screen
+     * @param delta time since last frame in seconds
+     */
     public void render(float delta) {
         if (endGameWindow.isVisible()) {
             stage.act(delta);
@@ -146,15 +184,24 @@ public class EndGameView {
         }
     }
 
+    /**
+     * handles window resizing by updating the viewport and re-centering
+     */
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
         centerWindow(endGameWindow);
     }
 
+    /**
+     * cleans up resources when the screen is no longer needed
+     */
     public void dispose() {
         stage.dispose();
     }
 
+    /**
+     * @return the libgdx stage used by this screen
+     */
     public Stage getStage() {
         return stage;
     }

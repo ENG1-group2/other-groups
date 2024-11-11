@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 public class NotificationView extends Table {
     // the label that displays the notification text
     private final Label notificationLabel;
+    private final Label placementLabel;
     // tracks how long the current notification should remain visible
     private float notificationTimer = 0;
     // how long notifications stay on screen (in seconds)
@@ -22,15 +23,30 @@ public class NotificationView extends Table {
      * @param font the bitmap font used to display the text
      */
     public NotificationView(BitmapFont font) {
-        // create a red label style for the notifications
-        Label.LabelStyle style = new Label.LabelStyle(font, Color.RED);
-        notificationLabel = new Label("", style);
+        // create notification label (red for errors/warnings)
+        Label.LabelStyle errorStyle = new Label.LabelStyle(font, Color.RED);
+        notificationLabel = new Label("", errorStyle);
         notificationLabel.setVisible(false);
 
-        // position the notification at the top of the screen with some padding
+        // create placement instruction label (white for information)
+        Label.LabelStyle infoStyle = new Label.LabelStyle(font, Color.WHITE);
+        placementLabel = new Label("Press ESC to cancel building placement", infoStyle);
+        placementLabel.setVisible(false);
+
+        // main container to take up full screen
         this.setFillParent(true);
-        this.top().padTop(50);
-        this.add(notificationLabel);
+
+        // separate containers for each type of message
+        Table errorContainer = new Table();
+        errorContainer.top();
+        errorContainer.add(notificationLabel).padTop(50);
+
+        Table infoContainer = new Table();
+        infoContainer.top();
+        infoContainer.add(placementLabel).padTop(100); // Position below error messages
+
+        this.add(errorContainer).expandX().fillX().row();
+        this.add(infoContainer).expandX().fillX();
     }
 
     /**
@@ -41,6 +57,14 @@ public class NotificationView extends Table {
         notificationLabel.setText(message);
         notificationLabel.setVisible(true);
         notificationTimer = NOTIFICATION_DURATION;
+    }
+
+    public void showPlacementMessage() {
+        placementLabel.setVisible(true);
+    }
+
+    public void hidePlacementMessage() {
+        placementLabel.setVisible(false);
     }
 
     /**

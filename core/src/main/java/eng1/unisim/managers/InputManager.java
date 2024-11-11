@@ -14,6 +14,7 @@ public class InputManager extends InputAdapter {
     private float lastX, lastY;
     private boolean isPlacingBuilding;
     private final BuildingPlacementCallback buildingCallback;
+    private final CancelPlacementCallback cancelCallback;
     private final Vector2 targetPosition;
     // controls how fast the camera zooms in/out
     private static final float CAMERA_ZOOM_SPEED = 0.1f;
@@ -22,20 +23,35 @@ public class InputManager extends InputAdapter {
     private final float maxZoom;
 
     // functional interface for building placement callback
-    @FunctionalInterface
     public interface BuildingPlacementCallback {
         void onPlaceBuilding(float worldX, float worldY);
     }
 
+    // to cancel building placement on ESC
+    public interface CancelPlacementCallback {
+        void onCancelPlacement();
+    }
+
     // initializes input manager with camera and building placement settings
     public InputManager(OrthographicCamera camera, BuildingPlacementCallback buildingCallback,
-                        Vector2 targetPosition, float maxZoom) {
+                        Vector2 targetPosition, float maxZoom, CancelPlacementCallback cancelCallback) {
         this.camera = camera;
         this.buildingCallback = buildingCallback;
         this.targetPosition = targetPosition;
         this.maxZoom = maxZoom;
+        this.cancelCallback = cancelCallback;
         this.isDragging = false;
         this.isPlacingBuilding = false;
+    }
+
+    // ESC key cancels building placement
+    @Override
+    public boolean keyDown(int keycode) {
+        if (keycode == Input.Keys.ESCAPE && isPlacingBuilding) {
+            cancelCallback.onCancelPlacement();
+            return true;
+        }
+        return false;
     }
 
     // handles mouse button press events

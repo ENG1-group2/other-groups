@@ -115,7 +115,7 @@ public class Main extends ApplicationAdapter {
     private void setupManagers() {
         uiManager = new UIManager(player, this::restartGame, this::setSelectedBuilding, this::togglePause);
         buildingManager = new BuildingManager(uiManager);
-        inputManager = new InputManager(camera, this::placeSelectedBuilding, targetPosition, maxZoom);
+        inputManager = new InputManager(camera, this::placeSelectedBuilding, targetPosition, maxZoom, this::cancelBuildingPlacement);
     }
 
     private void setupInput() {
@@ -208,24 +208,32 @@ public class Main extends ApplicationAdapter {
     }
 
     private void placeSelectedBuilding(float worldX, float worldY) {
-        // attempt to place a building at the given world coordinates
         if (selectedBuilding != null) {
             if (player.getFunds() >= selectedBuilding.getCost()) {
-                // try to place building and update game state if successful
                 if (buildingManager.placeBuilding(selectedBuilding, worldX, worldY)) {
                     player.placeBuilding(selectedBuilding);
                     university.addBuilding(selectedBuilding);
                     isPlacingBuilding = false;
                     inputManager.setPlacingBuilding(false);
                     selectedBuilding = null;
+                    uiManager.clearPlacementMessage();
                 }
+                // buildingManager now handles the invalid placement notification
             } else {
                 // show error if player can't afford the building
                 String message = "Insufficient funds! Need $" + selectedBuilding.getCost() +
-                        " (Current: $" + player.getFunds() + ")";
+                    " (Current: $" + player.getFunds() + ")";
                 uiManager.showNotification(message);
             }
         }
+    }
+
+    private void cancelBuildingPlacement() {
+        selectedBuilding = null;
+        isPlacingBuilding = false;
+        inputManager.setPlacingBuilding(false);
+        buildingManager.setSelectedBuilding(null);
+        uiManager.clearPlacementMessage();  // Add this method to UIManager
     }
 
     public void setSelectedBuilding(Building building) {
@@ -233,8 +241,8 @@ public class Main extends ApplicationAdapter {
         this.isPlacingBuilding = true;
         inputManager.setPlacingBuilding(true);
         buildingManager.setSelectedBuilding(building);
+        uiManager.showPlacementMessage();  // show msg when building selected
     }
-
     private void updateCursorPosition() {
         if (isPlacingBuilding) {
             float screenX = Gdx.input.getX();

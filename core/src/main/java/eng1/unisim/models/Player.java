@@ -1,4 +1,4 @@
-package eng1.unisim;
+package eng1.unisim.models;
 
 public class Player {
     private int funds;

@@ -1,12 +1,12 @@
-package eng1.unisim;
+package eng1.unisim.models;
 
 public class Building {
-    private int cost;
-    private int effectOnSatisfaction;
-    private int effectOnIncome;
-    private String name;
+    private final int cost;
+    private final int effectOnSatisfaction;
+    private final int effectOnIncome;
+    private final String name;
 
-    public Building(String name, int cost, int effectOnSatisfaction, int effectOnIncome){
+    public Building(String name, int cost, int effectOnSatisfaction, int effectOnIncome) {
         this.name = name;
         this.cost = cost;
         this.effectOnSatisfaction = effectOnSatisfaction;

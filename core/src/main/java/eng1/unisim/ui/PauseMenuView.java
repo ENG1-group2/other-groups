@@ -33,7 +33,9 @@ public class PauseMenuView {
         stage.addActor(pauseMenuWindow);
         stage.addActor(createPauseButtonContainer());
 
-        hide();
+        background.setVisible(false);
+        pauseMenuWindow.setVisible(false);
+        inGamePauseButton.setVisible(false);
     }
 
     private Table createBackground() {
@@ -51,13 +53,15 @@ public class PauseMenuView {
         Window window = new Window("", new Window.WindowStyle(font, Color.WHITE, null));
         window.setMovable(false);
 
-        TextButton resumeButton = new TextButton("Start Game", new TextButton.TextButtonStyle(null, null, null, font));
+        TextButton resumeButton = new TextButton("Start Game", createButtonStyle(font));
         resumeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (!isGameStarted) {
                     isGameStarted = true;
                     resumeButton.setText("Resume");
+                    // Show the pause button when game starts
+                    inGamePauseButton.setVisible(true);
                 }
                 hide();
                 onPauseToggle.run();
@@ -72,7 +76,7 @@ public class PauseMenuView {
     }
 
     private TextButton createPauseButton(BitmapFont font) {
-        TextButton button = new TextButton("Pause", new TextButton.TextButtonStyle(null, null, null, font));
+        TextButton button = new TextButton("Pause", createButtonStyle(font));
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -81,6 +85,14 @@ public class PauseMenuView {
             }
         });
         return button;
+    }
+
+    private TextButton.TextButtonStyle createButtonStyle(BitmapFont font) {
+        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
+        style.font = font;
+        style.fontColor = Color.WHITE;
+        style.downFontColor = Color.LIGHT_GRAY;
+        return style;
     }
 
     private Table createPauseButtonContainer() {
@@ -102,21 +114,22 @@ public class PauseMenuView {
     public void show() {
         background.setVisible(true);
         pauseMenuWindow.setVisible(true);
+        // while paused menu shown, hide pause button
+        inGamePauseButton.setVisible(false);
     }
 
     public void hide() {
         background.setVisible(false);
         pauseMenuWindow.setVisible(false);
+        // show pause button once game starts
         if (isGameStarted) {
             inGamePauseButton.setVisible(true);
         }
     }
 
     public void render(float delta) {
-        if (pauseMenuWindow.isVisible()) {
-            stage.act(delta);
-            stage.draw();
-        }
+        stage.act(delta);
+        stage.draw();
     }
 
     public void resize(int width, int height) {

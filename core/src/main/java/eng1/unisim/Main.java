@@ -216,6 +216,7 @@ public class Main extends ApplicationAdapter {
                     isPlacingBuilding = false;
                     inputManager.setPlacingBuilding(false);
                     selectedBuilding = null;
+                    uiManager.clearPlacementMessage();
                 }
                 // buildingManager now handles the invalid placement notification
             } else {

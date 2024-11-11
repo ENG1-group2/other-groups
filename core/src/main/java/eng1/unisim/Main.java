@@ -58,6 +58,7 @@ public class Main extends ApplicationAdapter {
         setupInput();
         cursorPosition = new Vector3();
         centerCameraOnMap();
+        uiManager.showPauseMenu(); // Show pause menu on startup
     }
 
     private void centerCameraOnMap() {
@@ -116,6 +117,7 @@ public class Main extends ApplicationAdapter {
 
     private void setupInput() {
         InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(uiManager.getPauseMenuStage());
         multiplexer.addProcessor(uiManager.getStage());
         multiplexer.addProcessor(uiManager.getEndGameStage());
         multiplexer.addProcessor(inputManager);

@@ -43,6 +43,12 @@ public class UIManager {
     private float notificationTimer = 0;
     private static final float NOTIFICATION_DURATION = 2f; // show messages for 2 seconds
 
+    private Stage pauseMenuStage;
+    private Window pauseMenuWindow;
+    private Table pauseBackground;
+    private TextButton inGamePauseButton;
+    private boolean isGameStarted = false;
+
     public interface BuildingSelectionCallback {
         void onBuildingSelected(Building building);
     }
@@ -59,6 +65,7 @@ public class UIManager {
     private void setupUI() {
         stage = new Stage(new ScreenViewport());
         endGameStage = new Stage(new ScreenViewport());
+        pauseMenuStage = new Stage(new ScreenViewport());
 
         font = new BitmapFont();
         font.getData().setScale(1.5f);
@@ -67,7 +74,8 @@ public class UIManager {
         createBuildingInventory();
         createEndGameWindow();
         createNotificationSystem();
-        createPauseButton();
+        createPauseMenu();
+        createInGamePauseButton();
     }
 
     private void createHUD() {
@@ -87,29 +95,90 @@ public class UIManager {
         stage.addActor(hudTable);
     }
 
-    // TODO improve look of pause button
-    private void createPauseButton() {
+    private void createPauseMenu() {
+        // Create semi-transparent background
+        pauseBackground = new Table();
+        pauseBackground.setFillParent(true);
+        pauseBackground.setBackground(new TextureRegionDrawable(new TextureRegion(
+            new Texture(new Pixmap(1, 1, Pixmap.Format.RGBA8888) {{
+                setColor(0, 0, 0, 0.7f);
+                fill();
+            }})
+        )));
+
+        // Create pause menu window
+        Window.WindowStyle windowStyle = new Window.WindowStyle(font, Color.WHITE, null);
+        pauseMenuWindow = new Window("", windowStyle);
+        pauseMenuWindow.setMovable(false);
+
+        // Create buttons
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font;
         buttonStyle.fontColor = Color.WHITE;
         buttonStyle.downFontColor = Color.LIGHT_GRAY;
 
-        TextButton pauseButton = new TextButton("Resume", buttonStyle);
-        pauseButton.addListener(new ClickListener() {
+        TextButton resumeButton = new TextButton("Start Game", buttonStyle);
+        resumeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if (!isGameStarted) {
+                    isGameStarted = true;
+                    resumeButton.setText("Resume");
+                }
+                hidePauseMenu();
                 onPauseToggle.run();
-                pauseButton.setText(pauseButton.getText().toString().equals("Pause") ? "Resume" : "Pause");
             }
         });
 
-        Table pauseTable = new Table();
-        pauseTable.top().left();
-        pauseTable.setFillParent(true);
-        pauseTable.pad(10);
-        pauseTable.add(pauseButton).padBottom(5).row();
+        // Add buttons to window
+        pauseMenuWindow.add(resumeButton).pad(10).width(200).height(50).row();
+        pauseMenuWindow.pack();
+        pauseMenuWindow.setPosition(
+            (Gdx.graphics.getWidth() - pauseMenuWindow.getWidth()) / 2,
+            (Gdx.graphics.getHeight() - pauseMenuWindow.getHeight()) / 2
+        );
 
-        stage.addActor(pauseTable);
+        pauseMenuStage.addActor(pauseBackground);
+        pauseMenuStage.addActor(pauseMenuWindow);
+    }
+
+    private void createInGamePauseButton() {
+        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.font = font;
+        buttonStyle.fontColor = Color.WHITE;
+        buttonStyle.downFontColor = Color.LIGHT_GRAY;
+
+        inGamePauseButton = new TextButton("Pause", buttonStyle);
+        inGamePauseButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                showPauseMenu();
+                onPauseToggle.run();
+            }
+        });
+
+        Table pauseButtonTable = new Table();
+        pauseButtonTable.bottom().left();
+        pauseButtonTable.setFillParent(true);
+        pauseButtonTable.pad(10);
+        pauseButtonTable.add(inGamePauseButton).width(100).height(40);
+
+        stage.addActor(pauseButtonTable);
+        inGamePauseButton.setVisible(false);
+    }
+
+    // Add these methods to UIManager
+    public void showPauseMenu() {
+        pauseMenuWindow.setVisible(true);
+        pauseBackground.setVisible(true);
+    }
+
+    public void hidePauseMenu() {
+        pauseMenuWindow.setVisible(false);
+        pauseBackground.setVisible(false);
+        if (isGameStarted) {
+            inGamePauseButton.setVisible(true);
+        }
     }
 
     private void createBuildingInventory() {
@@ -393,17 +462,37 @@ public class UIManager {
             endGameStage.act(delta);
             endGameStage.draw();
         }
+
+        if (pauseMenuWindow.isVisible()) {
+            pauseMenuStage.act(delta);
+            pauseMenuStage.draw();
+        }
     }
+
 
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
         endGameStage.getViewport().update(width, height, true);
+        pauseMenuStage.getViewport().update(width, height, true);
+
+        // Recenter pause menu window
+        if (pauseMenuWindow != null) {
+            pauseMenuWindow.setPosition(
+                (width - pauseMenuWindow.getWidth()) / 2,
+                (height - pauseMenuWindow.getHeight()) / 2
+            );
+        }
     }
 
     public void dispose() {
         stage.dispose();
         endGameStage.dispose();
+        pauseMenuStage.dispose();
         font.dispose();
+    }
+
+    public Stage getPauseMenuStage() {
+        return pauseMenuStage;
     }
 
     public Stage getStage() {

@@ -40,8 +40,6 @@ public class Main extends ApplicationAdapter {
     private static final float MAP_HEIGHT = 2000f; // height of game world in pixels
     private static final float TIME_STEP = 1f;     // how often the game state updates (in seconds)
     private static final float CAMERA_SPEED = 500f; // how fast the camera moves when using WASD
-    private static final float CAMERA_ZOOM_SPEED = 0.1f; // zoom speed when scrolling
-    private static final float MIN_ZOOM = 0.5f;    // closest zoom level allowed
     private float maxZoom;                         // furthest zoom level, calculated based on map size
     private static final float LERP_ALPHA = 0.1f;  // smoothing factor for camera movement (0-1)
 

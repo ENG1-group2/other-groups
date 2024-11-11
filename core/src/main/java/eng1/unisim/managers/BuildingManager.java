@@ -165,6 +165,7 @@ public class BuildingManager {
         }
     }
 
+
     // renders all placed buildings and preview of selected building
     public void render(SpriteBatch batch, Vector3 cursorPosition) {
         // render placed buildings

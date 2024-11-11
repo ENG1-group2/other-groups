@@ -33,17 +33,20 @@ public class NotificationView extends Table {
         placementLabel = new Label("Press ESC to cancel building placement", infoStyle);
         placementLabel.setVisible(false);
 
-        // layout
+        // main container to take up full screen
         this.setFillParent(true);
 
-        // Add both labels in a vertical arrangement
-        Table labelContainer = new Table();
-        labelContainer.top();
-        labelContainer.add(notificationLabel).padBottom(10).row();
-        labelContainer.add(placementLabel);
+        // separate containers for each type of message
+        Table errorContainer = new Table();
+        errorContainer.top();
+        errorContainer.add(notificationLabel).padTop(50);
 
-        this.top().padTop(50);
-        this.add(labelContainer);
+        Table infoContainer = new Table();
+        infoContainer.top();
+        infoContainer.add(placementLabel).padTop(100); // Position below error messages
+
+        this.add(errorContainer).expandX().fillX().row();
+        this.add(infoContainer).expandX().fillX();
     }
 
     /**

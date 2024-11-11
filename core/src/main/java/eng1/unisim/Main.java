@@ -240,8 +240,8 @@ public class Main extends ApplicationAdapter {
         this.isPlacingBuilding = true;
         inputManager.setPlacingBuilding(true);
         buildingManager.setSelectedBuilding(building);
+        uiManager.showPlacementMessage();  // show msg when building selected
     }
-
     private void updateCursorPosition() {
         if (isPlacingBuilding) {
             float screenX = Gdx.input.getX();

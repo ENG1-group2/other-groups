@@ -13,12 +13,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+// handles the pause menu ui and its interactions
 public class PauseMenuView {
+    // ui components
     private final Stage stage;
     private final Window pauseMenuWindow;
     private final Table background;
     private final TextButton inGamePauseButton;
     private boolean isGameStarted = false;
+    // callback for when pause state changes
     private final Runnable onPauseToggle;
 
     public PauseMenuView(BitmapFont font, Runnable onPauseToggle) {
@@ -38,6 +41,7 @@ public class PauseMenuView {
         inGamePauseButton.setVisible(false);
     }
 
+    // creates a semi-transparent black overlay
     private Table createBackground() {
         Table bg = new Table();
         bg.setFillParent(true);
@@ -49,6 +53,7 @@ public class PauseMenuView {
         return bg;
     }
 
+    // creates the main pause window with the resume/start button
     private Window createPauseWindow(BitmapFont font) {
         Window window = new Window("", new Window.WindowStyle(font, Color.WHITE, null));
         window.setMovable(false);
@@ -75,6 +80,7 @@ public class PauseMenuView {
         return window;
     }
 
+    // creates the pause button that appears in-game
     private TextButton createPauseButton(BitmapFont font) {
         TextButton button = new TextButton("Pause", createButtonStyle(font));
         button.addListener(new ClickListener() {
@@ -87,6 +93,7 @@ public class PauseMenuView {
         return button;
     }
 
+    // creates a consistent style for all buttons
     private TextButton.TextButtonStyle createButtonStyle(BitmapFont font) {
         TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
         style.font = font;
@@ -95,6 +102,7 @@ public class PauseMenuView {
         return style;
     }
 
+    // positions the pause button in the bottom left corner
     private Table createPauseButtonContainer() {
         Table container = new Table();
         container.bottom().left();
@@ -104,6 +112,7 @@ public class PauseMenuView {
         return container;
     }
 
+    // helper method to center a window on the screen
     private void centerWindow(Window window) {
         window.setPosition(
             (Gdx.graphics.getWidth() - window.getWidth()) / 2,
@@ -111,6 +120,7 @@ public class PauseMenuView {
         );
     }
 
+    // displays the pause menu and hides the pause button
     public void show() {
         background.setVisible(true);
         pauseMenuWindow.setVisible(true);
@@ -118,6 +128,7 @@ public class PauseMenuView {
         inGamePauseButton.setVisible(false);
     }
 
+    // hides the pause menu and shows the pause button if game is started
     public void hide() {
         background.setVisible(false);
         pauseMenuWindow.setVisible(false);
@@ -127,20 +138,24 @@ public class PauseMenuView {
         }
     }
 
+    // updates and draws the pause menu
     public void render(float delta) {
         stage.act(delta);
         stage.draw();
     }
 
+    // handles window resizing and repositioning
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
         centerWindow(pauseMenuWindow);
     }
 
+    // cleans up resources
     public void dispose() {
         stage.dispose();
     }
 
+    // getter for the stage (used for input handling)
     public Stage getStage() {
         return stage;
     }

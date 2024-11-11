@@ -18,14 +18,23 @@ import com.badlogic.gdx.utils.Array;
 
 import eng1.unisim.models.Building;
 
+// manages the placement and rendering of buildings in the game world
 public class BuildingManager {
+    // store building areas defined in the tiled map
     private Array<PolygonMapObject> buildingAreaPolygons;
     private Array<PolylineMapObject> buildingAreaPolylines;
+    
+    // track placed buildings and their textures
     private final HashMap<Vector2, Building> placedBuildings;
     private final HashMap<Vector2, Texture> buildingTextures;
+    
+    // store textures for each building type
     private final HashMap<String, Texture> buildingTypeTextures;
+    
+    // currently selected building for placement
     private Building selectedBuilding;
     private Texture selectedTexture;
+    
     private static final float PLACED_SCALE = 0.3f; // scale down placed buildings
     private static final float PREVIEW_SCALE = 0.4f; // marginally larger scale for draggable preview
     private final UIManager uiManager;
@@ -41,6 +50,7 @@ public class BuildingManager {
         loadBuildingAreaObjects();
     }
 
+    // loads building textures from files
     private void loadTextures() {
         buildingTypeTextures.put("Accommodation",
                 new Texture(Gdx.files.internal("buildings/accommodation.png")));
@@ -52,6 +62,7 @@ public class BuildingManager {
                 new Texture(Gdx.files.internal("buildings/learning.png")));
     }
 
+    // loads valid building areas from the tiled map
     private void loadBuildingAreaObjects() {
         TiledMap tileMap = new TmxMapLoader().load("emptyGroundMap.tmx");
         if (tileMap == null) {
@@ -70,6 +81,8 @@ public class BuildingManager {
         System.out.println("Loaded " + buildingAreaPolylines.size + " polyline areas.");
     }
 
+    // attempts to place a building at the given world coordinates
+    // returns true if placement was successful
     public boolean placeBuilding(Building building, float worldX, float worldY) {
         Vector2 position = new Vector2(worldX, worldY);
 
@@ -123,6 +136,7 @@ public class BuildingManager {
         return true;
     }
 
+    // checks if a point is within threshold distance of a line segment
     private boolean isPointNearLine(float px, float py, float x1, float y1, float x2, float y2) {
         float dx = x2 - x1;
         float dy = y2 - y1;
@@ -135,11 +149,13 @@ public class BuildingManager {
         return distanceSquared < 25; // Adjust the threshold as needed
     }
 
+    // updates the currently selected building for placement
     public void setSelectedBuilding(Building building) {
         this.selectedBuilding = building;
         this.selectedTexture = buildingTypeTextures.get(building.getName());
     }
 
+    // renders all placed buildings and preview of selected building
     public void render(SpriteBatch batch, Vector3 cursorPosition) {
         // render placed buildings
         for (HashMap.Entry<Vector2, Texture> entry : buildingTextures.entrySet()) {
@@ -168,12 +184,14 @@ public class BuildingManager {
         }
     }
 
+    // cleans up textures when the manager is no longer needed
     public void dispose() {
         for (Texture texture : buildingTypeTextures.values()) {
             texture.dispose();
         }
     }
 
+    // checks if there is currently a building selected for placement
     public boolean hasSelectedBuilding() {
         return selectedBuilding != null;
     }

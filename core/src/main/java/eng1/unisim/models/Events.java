@@ -1,4 +1,4 @@
-package eng1.unisim;
+package eng1.unisim.models;
 
 public class Events {
     private String description;

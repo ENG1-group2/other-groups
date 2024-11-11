@@ -16,7 +16,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
-import eng1.unisim.Building;
+import eng1.unisim.models.Building;
 
 public class BuildingManager {
     private Array<PolygonMapObject> buildingAreaPolygons;
@@ -75,7 +75,7 @@ public class BuildingManager {
 
         boolean isWithinBuildingArea = false;
 
-        // Check polygons
+        // use polygons to check if near stuff
         for (PolygonMapObject polygonObject : buildingAreaPolygons) {
             Polygon polygon = polygonObject.getPolygon();
             if (polygon.contains(position.x, position.y)) {
@@ -84,7 +84,7 @@ public class BuildingManager {
             }
         }
 
-        // Check polylines (optional, if you want to allow placement near polylines)
+        // allow placement near polylines
         if (!isWithinBuildingArea) {
             for (PolylineMapObject polylineObject : buildingAreaPolylines) {
                 Polyline polyline = polylineObject.getPolyline();
@@ -104,7 +104,7 @@ public class BuildingManager {
             }
         }
 
-        // Check if the position is within a building area and not already occupied
+        // make sure not already occupied
         if (!isWithinBuildingArea || placedBuildings.containsKey(position)) {
             System.out.println("Cannot place building at (" + worldX + ", " + worldY + ").");
             return false;
@@ -113,7 +113,7 @@ public class BuildingManager {
         placedBuildings.put(position, building);
         buildingTextures.put(position, buildingTypeTextures.get(building.getName()));
 
-        // Update building counters
+        // building counters
         int count = buildingCounts.getOrDefault(building.getName(), 0) + 1;
         buildingCounts.put(building.getName(), count);
         uiManager.updateBuildingCount(building.getName(), count);

@@ -18,6 +18,7 @@ public class InputManager extends InputAdapter {
     private static final float MIN_ZOOM = 0.5f;
     private final float maxZoom;
 
+    @FunctionalInterface
     public interface BuildingPlacementCallback {
         void onPlaceBuilding(float worldX, float worldY);
     }
@@ -65,7 +66,6 @@ public class InputManager extends InputAdapter {
             targetPosition.x = camera.position.x + deltaX;
             targetPosition.y = camera.position.y + deltaY;
 
-            // Don't smooth dragging
             camera.position.x = targetPosition.x;
             camera.position.y = targetPosition.y;
 
@@ -85,5 +85,9 @@ public class InputManager extends InputAdapter {
 
     public void setPlacingBuilding(boolean isPlacing) {
         this.isPlacingBuilding = isPlacing;
+    }
+
+    public boolean isPlacingBuilding() {
+        return isPlacingBuilding;
     }
 }

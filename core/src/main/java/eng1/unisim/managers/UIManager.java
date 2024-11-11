@@ -20,8 +20,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import eng1.unisim.Building;
-import eng1.unisim.Player;
+import eng1.unisim.models.Building;
+import eng1.unisim.models.Player;
 
 public class UIManager {
     private Stage stage;
@@ -96,7 +96,7 @@ public class UIManager {
     }
 
     private void createPauseMenu() {
-        // Create semi-transparent background
+        // dark overlay for pause menu
         pauseBackground = new Table();
         pauseBackground.setFillParent(true);
         pauseBackground.setBackground(new TextureRegionDrawable(new TextureRegion(
@@ -106,12 +106,11 @@ public class UIManager {
             }})
         )));
 
-        // Create pause menu window
         Window.WindowStyle windowStyle = new Window.WindowStyle(font, Color.WHITE, null);
         pauseMenuWindow = new Window("", windowStyle);
         pauseMenuWindow.setMovable(false);
 
-        // Create buttons
+        // start/pause buttons
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = font;
         buttonStyle.fontColor = Color.WHITE;
@@ -130,7 +129,6 @@ public class UIManager {
             }
         });
 
-        // Add buttons to window
         pauseMenuWindow.add(resumeButton).pad(10).width(200).height(50).row();
         pauseMenuWindow.pack();
         pauseMenuWindow.setPosition(
@@ -167,7 +165,6 @@ public class UIManager {
         inGamePauseButton.setVisible(false);
     }
 
-    // Add these methods to UIManager
     public void showPauseMenu() {
         pauseMenuWindow.setVisible(true);
         pauseBackground.setVisible(true);
@@ -274,8 +271,7 @@ public class UIManager {
         Label placementLabel = new Label("Click to place building", labelStyle);
         placementLabel.setVisible(false);
 
-        // counters
-        // counters
+        // building counter displays
         Label.LabelStyle counterStyle = new Label.LabelStyle(font, Color.WHITE);
         Label accommodationCounter = new Label("0", counterStyle);
         Label diningCounter = new Label("0", counterStyle);
@@ -287,7 +283,7 @@ public class UIManager {
         buildingCounters.put("Learning", learningCounter);
         buildingCounters.put("Recreation", recreationCounter);
 
-        // Add buttons and counters to the table
+        // buttons and counters together
         buildingTable.add(accommodationButton).size(100, 100).pad(5);
         buildingTable.add(accommodationCounter).pad(5).row();
         buildingTable.add(diningButton).size(100, 100).pad(5);
@@ -475,7 +471,7 @@ public class UIManager {
         endGameStage.getViewport().update(width, height, true);
         pauseMenuStage.getViewport().update(width, height, true);
 
-        // Recenter pause menu window
+        // pause window needs to be in middle, not bottom left
         if (pauseMenuWindow != null) {
             pauseMenuWindow.setPosition(
                 (width - pauseMenuWindow.getWidth()) / 2,

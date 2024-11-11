@@ -18,6 +18,9 @@ import eng1.unisim.managers.BuildingManager;
 import eng1.unisim.managers.InputManager;
 import eng1.unisim.managers.TimeManager;
 import eng1.unisim.managers.UIManager;
+import eng1.unisim.models.Building;
+import eng1.unisim.models.Player;
+import eng1.unisim.models.University;
 
 public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
@@ -62,11 +65,11 @@ public class Main extends ApplicationAdapter {
     }
 
     private void centerCameraOnMap() {
-        // Retrieve the map dimensions
+        // map dimensions
         float mapWidth = map.getProperties().get("width", Integer.class) * map.getProperties().get("tilewidth", Integer.class);
         float mapHeight = map.getProperties().get("height", Integer.class) * map.getProperties().get("tileheight", Integer.class);
 
-        // Set the camera's position to the center of the map
+        // camera starts at center of map
         camera.position.set(mapWidth / 2, mapHeight / 2, 0);
         targetPosition.set(mapWidth / 2, mapHeight / 2); // Set targetPosition to the center as well
         camera.update();
@@ -85,25 +88,25 @@ public class Main extends ApplicationAdapter {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1280, 720);
 
-        // Calculate the center of the map
+        // math to find center of map
         float mapWidth = MAP_WIDTH;
         float mapHeight = MAP_HEIGHT;
         float centerX = mapWidth / 2f;
         float centerY = mapHeight / 2f;
 
-        // Set the camera's position to the center of the map
+        // position camera center of map
         camera.position.set(centerX, centerY, 0);
         targetPosition.set(centerX, centerY);
 
-        // Calculate maximum zoom level based on map size and screen size
+        // maximum zoom based of map length & window size
         float mapAspect = mapWidth / mapHeight;
         float screenAspect = Gdx.graphics.getWidth() / (float) Gdx.graphics.getHeight();
 
         if (mapAspect > screenAspect) {
-            // Fit to width
+            // adjust to width
             maxZoom = mapWidth / camera.viewportWidth;
         } else {
-            // Fit to height
+            // adjust to height
             maxZoom = mapHeight / camera.viewportHeight;
         }
         camera.update();

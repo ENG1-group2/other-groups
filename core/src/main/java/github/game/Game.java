@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
 public class Game {
-    private static final float REALTIME_LENGTH = 60f;
+    private static final float REALTIME_LENGTH = 300f;
     private static final float GAMETIME_LENGTH = 10f;
     private static final String GAMETIME_UNIT = "year";
 
